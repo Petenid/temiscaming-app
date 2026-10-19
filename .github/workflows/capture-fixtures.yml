@@ -1,14 +1,23 @@
-# Downloads real pages from the Town's alert site and saves them in the repo
-# as test "fixtures" (frozen snapshots the parser tests read).
-# Run by hand: Actions tab → "Capture alert fixtures" → Run workflow.
+# Downloads real pages from the Town's sites and saves them in the repo as
+# test "fixtures" (frozen snapshots the parser tests read).
+# Run by hand: Actions tab → "Capture fixtures" → Run workflow → pick a source.
 # It makes a handful of requests, once — not a scheduled job.
-name: Capture alert fixtures
+name: Capture fixtures
 
 on:
   workflow_dispatch:
     inputs:
+      source:
+        description: "Which source to save"
+        type: choice
+        options: [alerts, calendar]
+        default: alerts
       detail_paths:
-        description: "Extra detail pages to save (space-separated paths, e.g. /alertes/2026/10/12/avis-d-ebullition-preventif)"
+        description: "alerts only: extra detail pages to save (space-separated paths, e.g. /alertes/2026/10/12/avis-d-ebullition-preventif)"
+        required: false
+        default: ""
+      year:
+        description: "calendar only: year to save (all 12 months + January of the next year). Empty = this year."
         required: false
         default: ""
 
@@ -21,7 +30,8 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Download pages
+      - name: Download alert pages
+        if: inputs.source == 'alerts'
         env:
           BASE: https://temiscaming.alertesmunicipales.com
           EXTRA: ${{ inputs.detail_paths }}
@@ -30,7 +40,6 @@ jobs:
           day=$(TZ=America/Toronto date +%F)
           out="functions/test/fixtures/$day"
           mkdir -p "$out"
-          # Identify ourselves politely to the Town's server.
           ua="AlloTemis-fixture-capture/1.0 (+https://github.com/${GITHUB_REPOSITORY})"
           get() { # $1 = path, $2 = file name
             curl -sSfL --max-time 30 -A "$ua" "$BASE$1" -o "$out/$2"
@@ -47,11 +56,42 @@ jobs:
           i=0
           for p in $EXTRA; do i=$((i+1)); get "$p" "extra-$i.html"; done
 
+      # Town events calendar (collection pickups live here), month by month,
+      # both languages, plus the MRC's printed collection calendar (PDF).
+      - name: Download calendar pages
+        if: inputs.source == 'calendar'
+        env:
+          BASE: https://www.temiscaming.net
+          YEAR: ${{ inputs.year }}
+        run: |
+          set -euo pipefail
+          day=$(TZ=America/Toronto date +%F)
+          year=${YEAR:-$(TZ=America/Toronto date +%Y)}
+          out="functions/test/fixtures/calendar/$day"
+          mkdir -p "$out"
+          ua="AlloTemis-fixture-capture/1.0 (+https://github.com/${GITHUB_REPOSITORY})"
+          get() { # $1 = path, $2 = file name
+            curl -sSfL --max-time 30 -A "$ua" "$BASE$1" -o "$out/$2"
+            echo "saved $1 → $out/$2 ($(wc -c < "$out/$2") bytes)"
+            sleep 2
+          }
+          month() { # $1 = year, $2 = month number
+            local mm; mm=$(printf %02d "$2")
+            get "/fr/calendrier?year=$1&month=$2" "fr-$1-$mm.html"
+            get "/en/calendar?year=$1&month=$2" "en-$1-$mm.html"
+          }
+          for m in $(seq 1 12); do month "$year" "$m"; done
+          month $((year + 1)) 1
+          # MRC de Témiscamingue 2026 collection calendar (research §1).
+          get /file-24778 "mrc-calendar.pdf"
+
       - name: Commit
+        env:
+          SOURCE: ${{ inputs.source }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add functions/test/fixtures
           git diff --cached --quiet && { echo "nothing new"; exit 0; }
-          git commit -m "Fixtures: capture alert pages $(TZ=America/Toronto date +%F)"
+          git commit -m "Fixtures: capture $SOURCE pages $(TZ=America/Toronto date +%F)"
           git push

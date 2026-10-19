@@ -58,7 +58,7 @@ firebase deploy --only firestore:rules,functions
 
 Logs: Firebase console → Functions → `pollTownAlerts` → Logs. A healthy run ends with `town alerts: ok — 94 alerts …`.
 
-**Refreshing the test pages:** GitHub → Actions → *Capture alert fixtures* → Run workflow. It saves today's pages under `functions/test/fixtures/<date>/`.
+**Refreshing the test pages:** GitHub → Actions → *Capture fixtures* → Run workflow, then pick a source. `alerts` saves today's alert pages under `functions/test/fixtures/<date>/`; `calendar` saves every month of the Town calendar (FR + EN) and the MRC collection PDF under `functions/test/fixtures/calendar/<date>/`.
 
 ## Where things are
 
