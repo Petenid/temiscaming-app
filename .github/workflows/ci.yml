@@ -11,7 +11,7 @@ jobs:
     name: Analyze and test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: subosito/flutter-action@v2
         with:
@@ -27,8 +27,19 @@ jobs:
       - name: Check code for problems
         run: flutter analyze
 
+      # The "github" reporter turns each failing test into an annotation on
+      # the run summary page, so failures are readable without the full log.
       - name: Run tests
-        run: flutter test --exclude-tags screenshots
+        run: |
+          set -o pipefail
+          flutter test --exclude-tags screenshots --reporter github 2>&1 | tee test-output.txt
+
+      - name: Report test failure details
+        if: failure()
+        run: |
+          # Annotations can't contain newlines; GitHub decodes %0A back.
+          details=$(grep -v '^::' test-output.txt | tail -n 120 | sed 's/%/%25/g' | sed ':a;N;$!ba;s/\n/%0A/g')
+          echo "::error title=Test output (last 120 lines)::${details}"
 
       - name: Take screenshots
         run: |
@@ -36,7 +47,7 @@ jobs:
           flutter test --tags screenshots --update-goldens
 
       - name: Upload screenshots
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: screenshots
           path: test/screenshots/
@@ -46,7 +57,7 @@ jobs:
     needs: test
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: subosito/flutter-action@v2
         with:
@@ -56,5 +67,4 @@ jobs:
       # Proves the iPhone app still compiles. No signing, so the result
       # can't be installed; that comes later via TestFlight (spec §10).
       - name: Build iOS app (unsigned)
-        if: hashFiles('ios/Runner.xcodeproj/project.pbxproj') != ''
         run: flutter build ios --no-codesign
