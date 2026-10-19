@@ -93,7 +93,8 @@ void main() {
     await scrollAndTap(tester, find.text(fr.sectorLumsdenName));
     expect(settings.sector, Sector.lumsden);
 
-    await tester.pageBack();
+    // System back (Android back gesture / Esc key) returns to Today.
+    await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
     expect(find.text(fr.todayTitle), findsOneWidget);
   });
