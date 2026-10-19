@@ -1,0 +1,57 @@
+# Downloads real pages from the Town's alert site and saves them in the repo
+# as test "fixtures" (frozen snapshots the parser tests read).
+# Run by hand: Actions tab → "Capture alert fixtures" → Run workflow.
+# It makes a handful of requests, once — not a scheduled job.
+name: Capture alert fixtures
+
+on:
+  workflow_dispatch:
+    inputs:
+      detail_paths:
+        description: "Extra detail pages to save (space-separated paths, e.g. /alertes/2026/10/12/avis-d-ebullition-preventif)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write # to commit the saved pages
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Download pages
+        env:
+          BASE: https://temiscaming.alertesmunicipales.com
+          EXTRA: ${{ inputs.detail_paths }}
+        run: |
+          set -euo pipefail
+          day=$(TZ=America/Toronto date +%F)
+          out="functions/test/fixtures/$day"
+          mkdir -p "$out"
+          # Identify ourselves politely to the Town's server.
+          ua="AlloTemis-fixture-capture/1.0 (+https://github.com/${GITHUB_REPOSITORY})"
+          get() { # $1 = path, $2 = file name
+            curl -sSfL --max-time 30 -A "$ua" "$BASE$1" -o "$out/$2"
+            echo "saved $1 → $out/$2 ($(wc -c < "$out/$2") bytes)"
+            sleep 2
+          }
+          get /alertes list-fr.html
+          get /alerts list-en.html
+          # The current boil-water advisory and its lifting notices (both languages).
+          get /alertes/2026/10/12/avis-d-ebullition-preventif detail-fr-boil.html
+          get /alerts/2026/10/12/precautionary-boil-water-advisory detail-en-boil.html
+          get /alertes/2026/10/19/levee-de-l-avis-d-ebullition-preventif detail-fr-lifted.html
+          get /alerts/2026/10/19/precautionary-boil-water-advisory-lifted detail-en-lifted.html
+          i=0
+          for p in $EXTRA; do i=$((i+1)); get "$p" "extra-$i.html"; done
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add functions/test/fixtures
+          git diff --cached --quiet && { echo "nothing new"; exit 0; }
+          git commit -m "Fixtures: capture alert pages $(TZ=America/Toronto date +%F)"
+          git push
