@@ -1,18 +1,34 @@
 import 'package:community/app.dart';
 import 'package:community/l10n/app_localizations.dart';
+import 'package:community/services.dart';
 import 'package:community/settings/app_settings.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'fakes.dart';
+
 /// Starts the app as if on a device whose saved settings are [savedPrefs]
 /// (empty = fresh install). Returns the settings object so tests can check it.
+///
+/// By default the app gets fake alerts (none) and a push service that isn't
+/// supported (like a desktop), so the notifications step is skipped.
 Future<AppSettings> pumpApp(
   WidgetTester tester, [
   Map<String, Object> savedPrefs = const {},
+  FakeAlertsRepository? alerts,
+  FakePushService? push,
 ]) async {
   SharedPreferences.setMockInitialValues(savedPrefs);
   final settings = await AppSettings.load();
-  await tester.pumpWidget(TemiscamingApp(settings: settings));
+  await tester.pumpWidget(
+    TemiscamingApp(
+      settings: settings,
+      services: AppServices(
+        alerts: alerts ?? FakeAlertsRepository(),
+        push: push ?? FakePushService(),
+      ),
+    ),
+  );
   await tester.pumpAndSettle();
   return settings;
 }

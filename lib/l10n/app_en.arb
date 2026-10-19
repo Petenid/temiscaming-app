@@ -2,47 +2,149 @@
   "@@locale": "en",
 
   "appTitle": "Témiscaming",
-  "@appTitle": { "description": "App name shown by the operating system (placeholder until the app is named)." },
+  "@appTitle": {"description": "App name shown by the operating system (placeholder until the app is named)."},
 
   "chooseLanguage": "Choose your language",
-  "@chooseLanguage": { "description": "First-launch heading. Shown in both languages at once, before a language is chosen." },
+  "@chooseLanguage": {"description": "First-launch heading. Shown in both languages at once, before a language is chosen."},
 
   "languageName": "English",
-  "@languageName": { "description": "This language's name, written in itself. Used on the language buttons." },
+  "@languageName": {"description": "This language's name, written in itself. Used on the language buttons."},
 
   "sectorTitle": "Collection sector",
-  "@sectorTitle": { "description": "App bar title on the first-launch sector screen." },
+  "@sectorTitle": {"description": "App bar title on the first-launch sector screen."},
 
   "sectorPrompt": "Where do you live?",
-  "@sectorPrompt": { "description": "Heading on the sector screen." },
+  "@sectorPrompt": {"description": "Heading on the sector screen."},
 
   "sectorExplanation": "We use this to show the right bin day. You can change it later in Settings.",
-  "@sectorExplanation": { "description": "Why the app asks for the sector." },
+  "@sectorExplanation": {"description": "Why the app asks for the sector."},
 
   "sectorTownName": "Témiscaming town, Lac Tee and cottage roads",
-  "@sectorTownName": { "description": "Name of the town collection sector." },
+  "@sectorTownName": {"description": "Name of the town collection sector."},
 
   "sectorTownDay": "Collection on Tuesdays",
-  "@sectorTownDay": { "description": "Collection day for the town sector." },
+  "@sectorTownDay": {"description": "Collection day for the town sector."},
 
   "sectorLumsdenName": "Lumsden and Letang",
-  "@sectorLumsdenName": { "description": "Name of the Lumsden/Letang collection sector." },
+  "@sectorLumsdenName": {"description": "Name of the Lumsden/Letang collection sector."},
 
   "sectorLumsdenDay": "Collection on Wednesdays",
-  "@sectorLumsdenDay": { "description": "Collection day for the Lumsden/Letang sector." },
+  "@sectorLumsdenDay": {"description": "Collection day for the Lumsden/Letang sector."},
 
   "todayTitle": "Today",
-  "@todayTitle": { "description": "Title of the home screen." },
+  "@todayTitle": {"description": "Title of the home screen."},
 
   "todayComingSoon": "Town alerts, bin day, events and more will appear here soon.",
-  "@todayComingSoon": { "description": "Placeholder on the home screen until features are built." },
+  "@todayComingSoon": {"description": "Placeholder on the home screen until features are built."},
 
   "settingsTitle": "Settings",
-  "@settingsTitle": { "description": "Settings screen title and the settings button label." },
+  "@settingsTitle": {"description": "Settings screen title and the settings button label."},
 
   "settingsLanguage": "Language",
-  "@settingsLanguage": { "description": "Settings section heading for the language choice." },
+  "@settingsLanguage": {"description": "Settings section heading for the language choice."},
 
   "settingsSector": "Collection sector",
-  "@settingsSector": { "description": "Settings section heading for the sector choice." }
+  "@settingsSector": {"description": "Settings section heading for the sector choice."},
+
+  "alertsTitle": "Alerts",
+  "@alertsTitle": {"description": "Title of the Alerts tab and screen."},
+
+  "alertStatusInEffect": "In effect",
+  "@alertStatusInEffect": {"description": "Label on an advisory the Town hasn't lifted (posted in the last 30 days)."},
+
+  "alertStatusLifted": "Lifted",
+  "@alertStatusLifted": {"description": "Label on an advisory the Town has lifted."},
+
+  "alertStatusExpired": "Expired",
+  "@alertStatusExpired": {"description": "Label on an alert the Town marked as no longer valid."},
+
+  "alertWaterLabel": "Water advisory",
+  "@alertWaterLabel": {"description": "Screen-reader label for the water icon on an alert."},
+
+  "alertsLastChecked": "Last checked {time}",
+  "@alertsLastChecked": {"description": "When the Town's alert site was last read successfully.", "placeholders": {"time": {"type": "String"}}},
+
+  "alertsCheckFailedSince": "Couldn't check the Town's alerts since {time}",
+  "@alertsCheckFailedSince": {"description": "Shown in red when the Town's alert site hasn't been read for over 30 minutes.", "placeholders": {"time": {"type": "String"}}},
+
+  "alertsNeverChecked": "The Town's alerts haven't been checked yet.",
+  "@alertsNeverChecked": {"description": "Shown in red when the backend has never read the alert site."},
+
+  "alertsLoadFailed": "Couldn't load alerts. Check your internet connection.",
+  "@alertsLoadFailed": {"description": "Shown when alerts can't be loaded at all."},
+
+  "alertsEmpty": "The Town hasn't posted any alerts.",
+  "@alertsEmpty": {"description": "Shown when the alert list is empty and the source is working."},
+
+  "alertsSignUp": "Sign up for the Town's official alerts",
+  "@alertsSignUp": {"description": "Link to the Town's own alert sign-up page. Always shown (DESIGN §6.1)."},
+
+  "alertsSourceNote": "From the Town of Témiscaming's alert site. This app is independent of the Town.",
+  "@alertsSourceNote": {"description": "Source note under the alert list."},
+
+  "alertOnlyFrench": "Available in French only",
+  "@alertOnlyFrench": {"description": "Shown when the Town posted this alert in French only."},
+
+  "alertOnlyEnglish": "Available in English only",
+  "@alertOnlyEnglish": {"description": "Shown when the Town posted this alert in English only."},
+
+  "alertExcerptNote": "This is a summary. Read the full notice on the Town's site.",
+  "@alertExcerptNote": {"description": "Shown when only the Town's short summary is available."},
+
+  "alertViewOnSite": "View on the Town's site",
+  "@alertViewOnSite": {"description": "Button opening the alert on the Town's website."},
+
+  "alertPosted": "Posted {date}",
+  "@alertPosted": {"description": "When the Town posted the alert.", "placeholders": {"date": {"type": "String"}}},
+
+  "alertNotFound": "This alert couldn't be loaded.",
+  "@alertNotFound": {"description": "Shown when a tapped notification's alert can't be found."},
+
+  "bannerBoilTitle": "Boil-water advisory in effect",
+  "@bannerBoilTitle": {"description": "Red banner on Today while a boil-water advisory is in effect."},
+
+  "bannerBoilBody": "Boil tap water before drinking it. Tap for details.",
+  "@bannerBoilBody": {"description": "Second line of the boil-water banner."},
+
+  "notificationsTitle": "Notifications",
+  "@notificationsTitle": {"description": "App bar title on the notifications step."},
+
+  "notificationsPrompt": "Get water advisories?",
+  "@notificationsPrompt": {"description": "Heading on the notifications step."},
+
+  "notificationsExplanation": "We'll notify you when the Town posts a water advisory, like a boil-water notice or a water cut, and when it's lifted. Weather and general news never send notifications.",
+  "@notificationsExplanation": {"description": "What will and won't notify (DESIGN §7)."},
+
+  "notificationsReminder": "This app doesn't replace the Town's official alerts. We recommend signing up for those too.",
+  "@notificationsReminder": {"description": "Reminder on the notifications step (DESIGN principle 2)."},
+
+  "notificationsAllow": "Allow notifications",
+  "@notificationsAllow": {"description": "Button that asks the system for notification permission."},
+
+  "notificationsNotNow": "Not now",
+  "@notificationsNotNow": {"description": "Button that skips notifications (can be turned on in Settings)."},
+
+  "settingsNotifications": "Notifications",
+  "@settingsNotifications": {"description": "Settings section heading."},
+
+  "settingsWaterAlerts": "Water advisories",
+  "@settingsWaterAlerts": {"description": "Settings switch for water advisory notifications."},
+
+  "settingsWaterAlertsSubtitle": "Boil-water notices, water cuts, and when they're lifted",
+  "@settingsWaterAlertsSubtitle": {"description": "Explains the water advisories switch."},
+
+  "settingsPermissionDenied": "Notifications are turned off for this app in your phone's settings.",
+  "@settingsPermissionDenied": {"description": "Shown when the system refuses notification permission."},
+
+  "channelUrgentName": "Water advisories",
+  "@channelUrgentName": {"description": "Android notification channel name for urgent water advisories."},
+
+  "channelUrgentDescription": "Boil-water notices, water cuts and other water advisories from the Town",
+  "@channelUrgentDescription": {"description": "Android notification channel description."},
+
+  "channelUpdatesName": "Advisories lifted",
+  "@channelUpdatesName": {"description": "Android notification channel name for 'advisory lifted' notices."},
+
+  "channelUpdatesDescription": "When the Town lifts a water advisory",
+  "@channelUpdatesDescription": {"description": "Android notification channel description."}
 }

@@ -1,14 +1,28 @@
 import 'package:flutter/material.dart';
 
 import 'l10n/app_localizations.dart';
+import 'push/push_service.dart';
 import 'settings/app_settings.dart';
 import 'settings/sector.dart';
 
-/// Change the language or sector after first launch. Changes apply at once.
+/// Change the language, sector or notifications after first launch.
+/// Changes apply at once.
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key, required this.settings});
+  const SettingsScreen({super.key, required this.settings, required this.push});
 
   final AppSettings settings;
+  final PushService push;
+
+  Future<void> _setWaterAlerts(BuildContext context, bool on) async {
+    if (!on) return settings.setWaterAlerts(false);
+    final messenger = ScaffoldMessenger.of(context);
+    final denied = AppLocalizations.of(context).settingsPermissionDenied;
+    if (await push.requestPermission()) {
+      await settings.setWaterAlerts(true);
+    } else {
+      messenger.showSnackBar(SnackBar(content: Text(denied)));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +55,17 @@ class SettingsScreen extends StatelessWidget {
                   selected: settings.sector == sector,
                   onTap: () => settings.setSector(sector),
                 ),
+              // Push works on phones only (DESIGN §4).
+              if (push.isSupported) ...[
+                const Divider(),
+                _SectionHeader(l10n.settingsNotifications),
+                SwitchListTile(
+                  title: Text(l10n.settingsWaterAlerts),
+                  subtitle: Text(l10n.settingsWaterAlertsSubtitle),
+                  value: settings.waterAlertsEnabled,
+                  onChanged: (on) => _setWaterAlerts(context, on),
+                ),
+              ],
             ],
           );
         },

@@ -40,7 +40,7 @@ void main() {
 
       await scrollAndTap(tester, find.text(strings.sectorTownName));
       expect(find.byType(TodayScreen), findsOneWidget);
-      expect(find.text(strings.todayTitle), findsOneWidget);
+      expect(find.widgetWithText(AppBar, strings.todayTitle), findsOneWidget);
 
       expect(settings.language, language);
       expect(settings.sector, Sector.town);
@@ -68,7 +68,7 @@ void main() {
   ) async {
     await pumpApp(tester, {'language': 'en', 'sector': 'lumsden'});
     expect(find.byType(TodayScreen), findsOneWidget);
-    expect(find.text('Today'), findsOneWidget);
+    expect(find.widgetWithText(AppBar, 'Today'), findsOneWidget);
     expect(find.text('Choose your language'), findsNothing);
   });
 
@@ -96,6 +96,6 @@ void main() {
     // System back (Android back gesture / Esc key) returns to Today.
     await tester.binding.handlePopRoute();
     await tester.pumpAndSettle();
-    expect(find.text(fr.todayTitle), findsOneWidget);
+    expect(find.widgetWithText(AppBar, fr.todayTitle), findsOneWidget);
   });
 }

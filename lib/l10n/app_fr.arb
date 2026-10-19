@@ -2,21 +2,100 @@
   "@@locale": "fr",
 
   "appTitle": "Témiscaming",
+
   "chooseLanguage": "Choisissez votre langue",
+
   "languageName": "Français",
 
   "sectorTitle": "Secteur de collecte",
+
   "sectorPrompt": "Où habitez-vous?",
+
   "sectorExplanation": "Nous l’utilisons pour afficher le bon jour de collecte. Vous pourrez le changer plus tard dans les Paramètres.",
+
   "sectorTownName": "Ville de Témiscaming, lac Tee et chemins de chalets",
+
   "sectorTownDay": "Collecte le mardi",
+
   "sectorLumsdenName": "Lumsden et Letang",
+
   "sectorLumsdenDay": "Collecte le mercredi",
 
   "todayTitle": "Aujourd’hui",
+
   "todayComingSoon": "Les alertes municipales, le jour de collecte, les événements et plus encore s’afficheront ici bientôt.",
 
   "settingsTitle": "Paramètres",
+
   "settingsLanguage": "Langue",
-  "settingsSector": "Secteur de collecte"
+
+  "settingsSector": "Secteur de collecte",
+
+  "alertsTitle": "Alertes",
+
+  "alertStatusInEffect": "En vigueur",
+
+  "alertStatusLifted": "Levé",
+
+  "alertStatusExpired": "Expiré",
+
+  "alertWaterLabel": "Avis sur l'eau",
+
+  "alertsLastChecked": "Dernière vérification : {time}",
+
+  "alertsCheckFailedSince": "Impossible de vérifier les avis de la Ville depuis {time}",
+
+  "alertsNeverChecked": "Les avis de la Ville n'ont pas encore été vérifiés.",
+
+  "alertsLoadFailed": "Impossible de charger les avis. Vérifiez votre connexion Internet.",
+
+  "alertsEmpty": "La Ville n'a publié aucun avis.",
+
+  "alertsSignUp": "Inscrivez-vous aux alertes officielles de la Ville",
+
+  "alertsSourceNote": "Provient du site d'alertes de la Ville de Témiscaming. Cette application est indépendante de la Ville.",
+
+  "alertOnlyFrench": "Disponible en français seulement",
+
+  "alertOnlyEnglish": "Disponible en anglais seulement",
+
+  "alertExcerptNote": "Ceci est un résumé. Lisez l'avis complet sur le site de la Ville.",
+
+  "alertViewOnSite": "Voir sur le site de la Ville",
+
+  "alertPosted": "Publié le {date}",
+
+  "alertNotFound": "Impossible de charger cet avis.",
+
+  "bannerBoilTitle": "Avis d'ébullition en vigueur",
+
+  "bannerBoilBody": "Faites bouillir l'eau du robinet avant de la boire. Touchez pour les détails.",
+
+  "notificationsTitle": "Notifications",
+
+  "notificationsPrompt": "Recevoir les avis sur l'eau?",
+
+  "notificationsExplanation": "Nous vous avertirons quand la Ville publie un avis sur l'eau, comme un avis d'ébullition ou une coupure d'eau, et quand il est levé. La météo et les nouvelles générales n'envoient jamais de notification.",
+
+  "notificationsReminder": "Cette application ne remplace pas les alertes officielles de la Ville. Nous vous recommandons de vous y inscrire aussi.",
+
+  "notificationsAllow": "Autoriser les notifications",
+
+  "notificationsNotNow": "Pas maintenant",
+
+  "settingsNotifications": "Notifications",
+
+  "settingsWaterAlerts": "Avis sur l'eau",
+
+  "settingsWaterAlertsSubtitle": "Avis d'ébullition, coupures d'eau, et leur levée",
+
+  "settingsPermissionDenied": "Les notifications de cette application sont désactivées dans les réglages de votre téléphone.",
+
+  "channelUrgentName": "Avis sur l'eau",
+
+  "channelUrgentDescription": "Avis d'ébullition, coupures d'eau et autres avis sur l'eau de la Ville",
+
+  "channelUpdatesName": "Avis levés",
+
+  "channelUpdatesDescription": "Quand la Ville lève un avis sur l'eau"
 }

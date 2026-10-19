@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/widgets.dart';
 
+import 'alerts/alerts_repository.dart';
 import 'app.dart';
 import 'firebase_options.dart';
+import 'push/push_service.dart';
+import 'services.dart';
 import 'settings/app_settings.dart';
 
 /// Where the app starts: connect to Firebase, load the saved settings,
@@ -10,15 +14,24 @@ import 'settings/app_settings.dart';
 Future<void> main() async {
   // Needed before using plugins (like shared_preferences) ahead of runApp.
   WidgetsFlutterBinding.ensureInitialized();
-  await _startFirebase();
+  final firebaseReady = await _startFirebase();
   final settings = await AppSettings.load();
-  runApp(TemiscamingApp(settings: settings));
+  final services = AppServices(
+    // Without Firebase the alert screens say they can't load, rather than
+    // showing an empty list that looks like "no alerts" (principle 3).
+    alerts: firebaseReady
+        ? FirestoreAlertsRepository(FirebaseFirestore.instance)
+        : UnavailableAlertsRepository(),
+    push: FcmPushService(),
+  );
+  // Keeps the push subscription matching the language and settings.
+  if (firebaseReady) PushSync(settings, services.push);
+  runApp(TemiscamingApp(settings: settings, services: services));
 }
 
-/// Connects to the Firebase project. Nothing reads from it yet (Milestone 1
-/// will), and the first-launch screens don't need it, so if it fails the
-/// problem is logged and the app carries on.
-Future<void> _startFirebase() async {
+/// Connects to the Firebase project. If it fails, the problem is logged and
+/// the app carries on: first-launch screens and settings don't need it.
+Future<bool> _startFirebase() async {
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -26,7 +39,9 @@ Future<void> _startFirebase() async {
     debugPrint(
       'Firebase initialized (project: ${Firebase.app().options.projectId})',
     );
+    return true;
   } catch (error) {
     debugPrint('Firebase failed to initialize: $error');
+    return false;
   }
 }

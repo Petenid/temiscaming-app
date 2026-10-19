@@ -1,44 +1,63 @@
 import 'package:flutter/material.dart';
 
+import '../alerts/alert_detail_screen.dart';
+import '../alerts/alert_widgets.dart';
+import '../alerts/alerts_repository.dart';
 import '../l10n/app_localizations.dart';
 import '../settings/app_settings.dart';
-import '../settings_screen.dart';
-import '../widgets/centered_scroll_column.dart';
 
-/// Home screen. A placeholder until Milestone 1 adds real content.
+/// Home screen. For now: the boil-water banner when one is in effect, a
+/// warning if the Town's alerts can't be checked, and a placeholder for the
+/// features still to come (bin day, weather, events — DESIGN §7).
 class TodayScreen extends StatelessWidget {
-  const TodayScreen({super.key, required this.settings});
+  const TodayScreen({
+    super.key,
+    required this.settings,
+    required this.repository,
+    required this.appBarActions,
+  });
 
   final AppSettings settings;
+  final AlertsRepository repository;
+  final List<Widget> appBarActions;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final language = settings.language ?? AppLanguage.fr;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.todayTitle),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            // The tooltip doubles as the screen-reader label.
-            tooltip: l10n.settingsTitle,
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => SettingsScreen(settings: settings),
-              ),
-            ),
-          ),
-        ],
-      ),
+      appBar: AppBar(title: Text(l10n.todayTitle), actions: appBarActions),
       body: SafeArea(
-        child: CenteredScrollColumn(
-          children: [
-            Text(
-              l10n.todayComingSoon,
-              style: Theme.of(context).textTheme.bodyLarge,
-              textAlign: TextAlign.center,
-            ),
-          ],
+        child: ListenableBuilder(
+          listenable: repository,
+          builder: (context, _) {
+            final now = DateTime.now();
+            final boil = repository.alerts
+                .where((a) => a.isBoilWaterInEffect(now))
+                .firstOrNull;
+            return ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                if (boil != null) ...[
+                  BoilWaterBanner(
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => AlertDetailScreen(alert: boil, language: language),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+                SourceHealthLine(repository: repository, onlyWhenStale: true),
+                const SizedBox(height: 24),
+                Text(
+                  l10n.todayComingSoon,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

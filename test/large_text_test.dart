@@ -1,9 +1,11 @@
 // Every screen must work at 200% system text size on a small phone
 // (DESIGN.md §7). A layout overflow makes the test fail.
+import 'package:community/alerts/town_alert.dart';
 import 'package:community/settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'fakes.dart';
 import 'helpers.dart';
 
 void main() {
@@ -18,17 +20,48 @@ void main() {
       addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
 
       final strings = stringsFor(language);
+      final alerts = FakeAlertsRepository(
+        alerts: [
+          SampleAlerts.boilWater(),
+          SampleAlerts.liftingNotice(),
+          SampleAlerts.frenchOnly(),
+        ],
+        health: SourceHealth(
+          lastSuccessAt: DateTime.now().subtract(const Duration(days: 2)),
+          lastAttemptAt: DateTime.now(),
+        ),
+      );
+      // A phone, so the notifications step appears too.
+      final push = FakePushService(isSupported: true);
 
-      await pumpApp(tester);
+      await pumpApp(tester, const {}, alerts, push);
       expect(tester.takeException(), isNull, reason: 'language screen');
 
       await scrollAndTap(tester, find.text(strings.languageName));
       expect(tester.takeException(), isNull, reason: 'sector screen');
 
       await scrollAndTap(tester, find.text(strings.sectorTownName));
-      expect(tester.takeException(), isNull, reason: 'Today screen');
+      expect(tester.takeException(), isNull, reason: 'notifications screen');
 
-      await tester.tap(find.byTooltip(strings.settingsTitle));
+      await scrollAndTap(tester, find.text(strings.notificationsAllow));
+      expect(tester.takeException(), isNull, reason: 'Today screen with banner');
+
+      await tester.tap(find.text(strings.bannerBoilTitle));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull, reason: 'alert detail');
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.widgetWithText(NavigationDestination, strings.alertsTitle));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull, reason: 'Alerts screen');
+
+      await scrollAndTap(tester, find.text(SampleAlerts.frenchOnly().titleFr));
+      expect(tester.takeException(), isNull, reason: 'French-only alert detail');
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byTooltip(strings.settingsTitle).hitTestable());
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull, reason: 'Settings screen');
     });

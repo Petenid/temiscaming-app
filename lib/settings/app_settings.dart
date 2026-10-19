@@ -19,14 +19,21 @@ enum AppLanguage {
 /// [notifyListeners], and any widget listening (the whole app, here) rebuilds.
 /// That's how changing the language in Settings takes effect immediately.
 class AppSettings extends ChangeNotifier {
-  AppSettings._(this._prefs, this._language, this._sector);
+  AppSettings._(
+    this._prefs,
+    this._language,
+    this._sector,
+    this._waterAlerts,
+  );
 
   static const _languageKey = 'language';
   static const _sectorKey = 'sector';
+  static const _waterAlertsKey = 'water_alerts';
 
   final SharedPreferences _prefs;
   AppLanguage? _language;
   Sector? _sector;
+  bool? _waterAlerts;
 
   /// Loads saved choices from the device. Called once at startup.
   static Future<AppSettings> load() async {
@@ -35,6 +42,7 @@ class AppSettings extends ChangeNotifier {
       prefs,
       AppLanguage.fromId(prefs.getString(_languageKey)),
       Sector.fromId(prefs.getString(_sectorKey)),
+      prefs.getBool(_waterAlertsKey),
     );
   }
 
@@ -47,10 +55,23 @@ class AppSettings extends ChangeNotifier {
   /// First launch is over once both choices are saved.
   bool get isOnboarded => _language != null && _sector != null;
 
+  /// Whether the user has answered the notifications question (once, after
+  /// first launch; existing users see it once after updating).
+  bool get notificationsAsked => _waterAlerts != null;
+
+  /// Push notifications for water advisories (spec §6, Settings).
+  bool get waterAlertsEnabled => _waterAlerts ?? false;
+
   Future<void> setLanguage(AppLanguage language) async {
     _language = language;
     notifyListeners();
     await _prefs.setString(_languageKey, language.name);
+  }
+
+  Future<void> setWaterAlerts(bool enabled) async {
+    _waterAlerts = enabled;
+    notifyListeners();
+    await _prefs.setBool(_waterAlertsKey, enabled);
   }
 
   Future<void> setSector(Sector sector) async {

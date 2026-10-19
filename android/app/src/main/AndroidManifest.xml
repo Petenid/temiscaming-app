@@ -1,4 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Android 13+ asks the user before an app may show notifications
+         (water advisories). The app asks only after explaining why. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <application
         android:label="community"
         android:name="${applicationName}"
