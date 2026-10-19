@@ -1,6 +1,6 @@
 # Spec — Milestone 0: Foundation
 
-Status: **approved by owner; built** · 2026-10-19 · Owner develops on Windows (see §10)
+Status: **complete** · 2026-10-19 · Owner develops on Windows (see §10)
 Reads with: `DESIGN.md` (§4 stack, §5 language rules, §7 app structure, §9 milestones)
 
 ---
@@ -174,4 +174,10 @@ The owner develops on Windows. iOS and macOS builds require Xcode, which only ru
 - Firebase project `temiscaming-app`; Firestore Standard in `northamerica-northeast1`; Analytics off. `firebase_core` pinned to ^4.15 (5.0 was four days old with breaking changes; revisit in Milestone 1).
 - Code is written in a cloud workspace without the Flutter toolkit, so GitHub Actions is the build and test machine. Failures surface as annotations on the run; screenshots are published to the `screenshots` branch on every push to `main`.
 - Platform folders were generated once by `flutter create` in CI (workflow since removed).
-- Verified: analyze + 18 tests + iOS unsigned build green on CI; app runs on the owner's Android emulator. Windows run and Firebase log line: owner to confirm.
+- Verified (all §9 items):
+  - `flutter analyze` clean; 18 tests pass; iOS unsigned build passes (CI, with Firebase).
+  - Screenshots of every screen in FR and EN, including 200% text, reviewed from the `screenshots` branch.
+  - Runs on the owner's Android emulator and as a Windows app; Windows log shows `Firebase initialized (project: temiscaming-app)`.
+  - Firestore rules deployed (deny all client access).
+- Windows setup issues hit and fixed (details in README): Android NDK not auto-installed by the new Android CLI; PowerShell script policy; `flutterfire` not on PATH.
+- Not done here, by design: notification permission screen (Milestone 1), app name/icon/visual identity (placeholder; see research §5b).
