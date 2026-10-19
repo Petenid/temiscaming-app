@@ -6,6 +6,7 @@ library;
 
 import 'dart:io';
 
+import 'package:community/alerts/alert_widgets.dart';
 import 'package:community/alerts/town_alert.dart';
 import 'package:community/settings/app_settings.dart';
 import 'package:flutter/material.dart';
@@ -101,10 +102,13 @@ void main() {
       await tester.pumpAndSettle();
       await _capture('${code}_8_alerts');
 
-      await scrollAndTap(tester, find.text(SampleAlerts.frenchOnly().titleFr));
+      final frenchOnly = find.text(SampleAlerts.frenchOnly().titleFr);
+      await tester.scrollUntilVisible(frenchOnly, 200, scrollable: find.byType(Scrollable).hitTestable().first);
+      await scrollAndTap(tester, frenchOnly);
       await _capture('${code}_9_alert_detail_french_only');
-      await tester.pageBack();
+      await tester.binding.handlePopRoute();
       await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(find.byType(SourceHealthLine), -200, scrollable: find.byType(Scrollable).hitTestable().first);
 
       alerts.set(health: SourceHealth(
         lastSuccessAt: DateTime(2026, 10, 19, 14, 20),
