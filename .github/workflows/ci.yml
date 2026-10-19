@@ -79,3 +79,27 @@ jobs:
       # can't be installed; that comes later via TestFlight (spec §10).
       - name: Build iOS app (unsigned)
         run: flutter build ios --no-codesign
+
+  functions:
+    name: Backend (functions) build and test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: functions
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: functions/package-lock.json
+
+      - name: Install packages
+        run: npm ci
+
+      - name: Compile TypeScript
+        run: npm run build
+
+      - name: Run tests
+        run: npx vitest run --reporter=default --reporter=github-actions
