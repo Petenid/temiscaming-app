@@ -1,0 +1,11 @@
+# Rules for `flutter analyze`, which checks the code for mistakes and style issues.
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+    - macos/**
+    - windows/**
+    - lib/l10n/app_localizations*.dart

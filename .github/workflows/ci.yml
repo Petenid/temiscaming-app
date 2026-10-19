@@ -1,0 +1,60 @@
+# Runs on GitHub's computers every time code is pushed.
+# Results: the "Actions" tab of the repository.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    name: Analyze and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install packages
+        run: flutter pub get
+
+      - name: Generate translations from ARB files
+        run: flutter gen-l10n
+
+      - name: Check code for problems
+        run: flutter analyze
+
+      - name: Run tests
+        run: flutter test --exclude-tags screenshots
+
+      - name: Take screenshots
+        run: |
+          export FLUTTER_ROOT="$(dirname "$(dirname "$(which flutter)")")"
+          flutter test --tags screenshots --update-goldens
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: test/screenshots/
+
+  ios:
+    name: iOS compile check
+    needs: test
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      # Proves the iPhone app still compiles. No signing, so the result
+      # can't be installed; that comes later via TestFlight (spec §10).
+      - name: Build iOS app (unsigned)
+        if: hashFiles('ios/Runner.xcodeproj/project.pbxproj') != ''
+        run: flutter build ios --no-codesign

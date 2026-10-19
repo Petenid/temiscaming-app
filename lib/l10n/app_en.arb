@@ -1,0 +1,48 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "Témiscaming",
+  "@appTitle": { "description": "App name shown by the operating system (placeholder until the app is named)." },
+
+  "chooseLanguage": "Choose your language",
+  "@chooseLanguage": { "description": "First-launch heading. Shown in both languages at once, before a language is chosen." },
+
+  "languageName": "English",
+  "@languageName": { "description": "This language's name, written in itself. Used on the language buttons." },
+
+  "sectorTitle": "Collection sector",
+  "@sectorTitle": { "description": "App bar title on the first-launch sector screen." },
+
+  "sectorPrompt": "Where do you live?",
+  "@sectorPrompt": { "description": "Heading on the sector screen." },
+
+  "sectorExplanation": "We use this to show the right bin day. You can change it later in Settings.",
+  "@sectorExplanation": { "description": "Why the app asks for the sector." },
+
+  "sectorTownName": "Témiscaming town, Lac Tee and cottage roads",
+  "@sectorTownName": { "description": "Name of the town collection sector." },
+
+  "sectorTownDay": "Collection on Tuesdays",
+  "@sectorTownDay": { "description": "Collection day for the town sector." },
+
+  "sectorLumsdenName": "Lumsden and Letang",
+  "@sectorLumsdenName": { "description": "Name of the Lumsden/Letang collection sector." },
+
+  "sectorLumsdenDay": "Collection on Wednesdays",
+  "@sectorLumsdenDay": { "description": "Collection day for the Lumsden/Letang sector." },
+
+  "todayTitle": "Today",
+  "@todayTitle": { "description": "Title of the home screen." },
+
+  "todayComingSoon": "Town alerts, bin day, events and more will appear here soon.",
+  "@todayComingSoon": { "description": "Placeholder on the home screen until features are built." },
+
+  "settingsTitle": "Settings",
+  "@settingsTitle": { "description": "Settings screen title and the settings button label." },
+
+  "settingsLanguage": "Language",
+  "@settingsLanguage": { "description": "Settings section heading for the language choice." },
+
+  "settingsSector": "Collection sector",
+  "@settingsSector": { "description": "Settings section heading for the sector choice." }
+}

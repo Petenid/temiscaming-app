@@ -1,0 +1,20 @@
+# Build output and tool caches (regenerated, never committed)
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+*.iml
+.idea/
+.vscode/
+*.log
+.DS_Store
+
+# Generated from the ARB files on every build
+lib/l10n/app_localizations*.dart
+
+# Screenshots produced by CI (downloaded from the GitHub Actions run instead)
+test/screenshots/
+test/failures/

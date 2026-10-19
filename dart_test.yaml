@@ -1,0 +1,4 @@
+# Test tags. "screenshots" tests render each screen to a PNG; CI runs them
+# separately and uploads the images.
+tags:
+  screenshots:

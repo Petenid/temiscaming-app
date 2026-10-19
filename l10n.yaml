@@ -1,0 +1,7 @@
+# Settings for Flutter's localization generator (gen-l10n).
+# Every user-facing string lives in the ARB files in lib/l10n/.
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+# Lets code write `AppLocalizations.of(context).todayTitle` without `!`.
+nullable-getter: false

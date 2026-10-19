@@ -1,0 +1,22 @@
+{
+  "@@locale": "fr",
+
+  "appTitle": "Témiscaming",
+  "chooseLanguage": "Choisissez votre langue",
+  "languageName": "Français",
+
+  "sectorTitle": "Secteur de collecte",
+  "sectorPrompt": "Où habitez-vous?",
+  "sectorExplanation": "Nous l’utilisons pour afficher le bon jour de collecte. Vous pourrez le changer plus tard dans les Paramètres.",
+  "sectorTownName": "Ville de Témiscaming, lac Tee et chemins de chalets",
+  "sectorTownDay": "Collecte le mardi",
+  "sectorLumsdenName": "Lumsden et Letang",
+  "sectorLumsdenDay": "Collecte le mercredi",
+
+  "todayTitle": "Aujourd’hui",
+  "todayComingSoon": "Les alertes municipales, le jour de collecte, les événements et plus encore s’afficheront ici bientôt.",
+
+  "settingsTitle": "Paramètres",
+  "settingsLanguage": "Langue",
+  "settingsSector": "Secteur de collecte"
+}

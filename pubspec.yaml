@@ -1,0 +1,31 @@
+# The project's "manifest": its name, version, and the packages it depends on.
+name: community
+description: "Independent community information app for Témiscaming, Quebec."
+publish_to: 'none'
+
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # Flutter's own translations for built-in widgets (back button tooltip, etc.).
+  flutter_localizations:
+    sdk: flutter
+  # Date/number formatting; required by the generated localization code.
+  intl: any
+  # Saves the language and sector choices on the device.
+  shared_preferences: ^2.5.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  # Recommended code-style checks, run by `flutter analyze`.
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  # Turns lib/l10n/*.arb into Dart code (lib/l10n/app_localizations*.dart).
+  generate: true

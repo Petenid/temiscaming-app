@@ -1,0 +1,35 @@
+# One-time setup: generates the android/, ios/, macos/ and windows/ folders
+# with `flutter create` and commits them. Removed once it has run.
+name: Create platform folders
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      # Existing files (lib/, pubspec.yaml, …) are left untouched; only
+      # missing ones are created.
+      - name: Generate platform folders
+        run: |
+          flutter create --org ca.temiscaming --project-name community \
+            --platforms android,ios,macos,windows --no-pub .
+          rm -f test/widget_test.dart
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Generate Android, iOS, macOS and Windows platform folders"
+          git push
