@@ -178,6 +178,6 @@ The owner develops on Windows. iOS and macOS builds require Xcode, which only ru
   - `flutter analyze` clean; 18 tests pass; iOS unsigned build passes (CI, with Firebase).
   - Screenshots of every screen in FR and EN, including 200% text, reviewed from the `screenshots` branch.
   - Runs on the owner's Android emulator and as a Windows app; Windows log shows `Firebase initialized (project: temiscaming-app)`.
-  - Live Firestore created in production mode (deny all client access), matching `firestore.rules`.
+  - `firestore.rules` deployed to the live database (deny all client access).
 - Windows setup issues hit and fixed (details in README): Android NDK not auto-installed by the new Android CLI; PowerShell script policy; `flutterfire` not on PATH.
 - Not done here, by design: notification permission screen (Milestone 1), app name/icon/visual identity (placeholder; see research §5b).
