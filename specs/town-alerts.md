@@ -1,6 +1,6 @@
 # Spec — Milestone 1: Town alerts + urgent water push
 
-Status: **built — awaiting deploy + on-phone check (§8.4)** · 2026-10-19 (owner confirmed D1 Blaze + budget alert, D4 quieter lift push, D6 firebase_core 5)
+Status: **complete** · 2026-10-19. Verified on the Android emulator: backend deployed and polling (94 alerts), Alerts list matches the Town's site, French push from topic `water-fr` received. English push (`water-en`) covered by automated tests, not yet checked on a device. · 2026-10-19 (owner confirmed D1 Blaze + budget alert, D4 quieter lift push, D6 firebase_core 5)
 Reads with: `DESIGN.md` (§2 principles, §4 architecture, §5 language, §6.1 town alerts, §7 app structure)
 
 ---
