@@ -18,6 +18,8 @@ dependencies:
   intl: any
   # Saves the language and sector choices on the device.
   shared_preferences: ^2.5.3
+  # Connects the app to the Firebase project (lib/firebase_options.dart).
+  firebase_core: ^4.15.0
 
 dev_dependencies:
   flutter_test:

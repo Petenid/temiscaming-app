@@ -1,0 +1,13 @@
+// Who may read and write the Firestore database from the app.
+// Deploy with: firebase deploy --only firestore:rules
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Milestone 0: nothing is readable or writable from the app.
+    // Milestone 1 will allow reading published alerts. The app never writes;
+    // only the backend (Cloud Functions) does, and it isn't bound by these rules.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

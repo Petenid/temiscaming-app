@@ -1,1 +1,27 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"temiscaming-app","appId":"1:719244729975:android:b20a31b202974daa98b072","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"temiscaming-app","configurations":{"android":"1:719244729975:android:b20a31b202974daa98b072","ios":"1:719244729975:ios:8cf46a77c041009b98b072","macos":"1:719244729975:ios:8cf46a77c041009b98b072","windows":"1:719244729975:web:990342e458f13ace98b072"}}}}}}
+{
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "temiscaming-app",
+          "appId": "1:719244729975:android:b20a31b202974daa98b072",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "temiscaming-app",
+          "configurations": {
+            "android": "1:719244729975:android:b20a31b202974daa98b072",
+            "ios": "1:719244729975:ios:8cf46a77c041009b98b072",
+            "macos": "1:719244729975:ios:8cf46a77c041009b98b072",
+            "windows": "1:719244729975:web:990342e458f13ace98b072"
+          }
+        }
+      }
+    }
+  }
+}
