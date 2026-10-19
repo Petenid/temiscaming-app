@@ -34,7 +34,7 @@
   "todayTitle": "Today",
   "@todayTitle": {"description": "Title of the home screen."},
 
-  "todayComingSoon": "Town alerts, bin day, events and more will appear here soon.",
+  "todayComingSoon": "Bin day, events, weather and more will appear here soon.",
   "@todayComingSoon": {"description": "Placeholder on the home screen until features are built."},
 
   "settingsTitle": "Settings",

@@ -1,6 +1,6 @@
 # Spec — Milestone 1: Town alerts + urgent water push
 
-Status: **agreed** · 2026-10-19 (owner confirmed D1 Blaze + budget alert, D4 quieter lift push, D6 firebase_core 5)
+Status: **built — awaiting deploy + on-phone check (§8.4)** · 2026-10-19 (owner confirmed D1 Blaze + budget alert, D4 quieter lift push, D6 firebase_core 5)
 Reads with: `DESIGN.md` (§2 principles, §4 architecture, §5 language, §6.1 town alerts, §7 app structure)
 
 ---
@@ -161,7 +161,7 @@ Tapping opens that alert in the app.
 - The Town's "Work Info" pages on `temiscaming.net` (road disruptions) — move to Milestone 7 (Roads).
 - Pushes for non-water categories (they show in-app only).
 - Desktop notifications (DESIGN §4).
-- Installing on an iPhone (needs the Apple Developer Program). iOS push code compiles in CI but is untested until then; **Milestone 1 is verified on Android**.
+- Installing on an iPhone (needs the Apple Developer Program). iOS push code compiles in CI, but the iOS *Push Notifications* capability and the APNs key are set up together with the Apple account; **Milestone 1 is verified on Android**.
 - Machine translation of French-only alerts.
 - Applying the visual identity (lake blue palette, Atkinson Hyperlegible) — still waits for the Today screen design.
 
