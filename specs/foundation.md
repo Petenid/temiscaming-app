@@ -1,6 +1,6 @@
 # Spec — Milestone 0: Foundation
 
-Status: **approved by owner** · 2026-10-19 · Owner develops on Windows (see §10)
+Status: **approved by owner; built** · 2026-10-19 · Owner develops on Windows (see §10)
 Reads with: `DESIGN.md` (§4 stack, §5 language rules, §7 app structure, §9 milestones)
 
 ---
@@ -165,3 +165,13 @@ The owner develops on Windows. iOS and macOS builds require Xcode, which only ru
 - `ios/` and `macos/` folders are generated and kept working from day one; all Dart code is shared.
 - CI adds a job on a GitHub macOS runner: `flutter build ios --no-codesign`. It proves the iOS app compiles on every push (it does not produce an installable app).
 - Installing on the owner's iPhone comes later, when the owner chooses: Apple Developer Program account → cloud build (Codemagic or GitHub macOS runner) with signing → TestFlight. Not part of this milestone.
+
+---
+
+## 11. As built (2026-10-19)
+
+- Dart package name `community`; app ID `ca.temiscaming.community` (placeholder, §3).
+- Firebase project `temiscaming-app`; Firestore Standard in `northamerica-northeast1`; Analytics off. `firebase_core` pinned to ^4.15 (5.0 was four days old with breaking changes; revisit in Milestone 1).
+- Code is written in a cloud workspace without the Flutter toolkit, so GitHub Actions is the build and test machine. Failures surface as annotations on the run; screenshots are published to the `screenshots` branch on every push to `main`.
+- Platform folders were generated once by `flutter create` in CI (workflow since removed).
+- Verified: analyze + 18 tests + iOS unsigned build green on CI; app runs on the owner's Android emulator. Windows run and Firebase log line: owner to confirm.
