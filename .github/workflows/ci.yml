@@ -26,8 +26,16 @@ jobs:
       - name: Generate translations from ARB files
         run: flutter gen-l10n
 
+      # Each problem also becomes an annotation on the run's summary page.
       - name: Check code for problems
-        run: flutter analyze
+        run: |
+          set -o pipefail
+          flutter analyze 2>&1 | tee analyze-output.txt || {
+            grep ' • ' analyze-output.txt | sed 's/%/%25/g' | while IFS= read -r line; do
+              echo "::error title=flutter analyze::${line}"
+            done
+            exit 1
+          }
 
       # The "github" reporter turns each failing test into an annotation on
       # the run summary page, so failures are readable without the full log.
