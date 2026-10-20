@@ -53,6 +53,8 @@ jobs:
         run: |
           import re
           lines = [l.rstrip("\n") for l in open("test-output.txt", encoding="utf-8", errors="replace")]
+          # The github reporter folds each test as "::group::✅ name" … "::endgroup::".
+          lines = [l[len("::group::"):] if l.startswith("::group::") else l for l in lines]
           lines = [l for l in lines if not l.startswith("::")]
           noise = re.compile(r"^\s*(#\d+\s|<asynchronous suspension>|\(elided)")
           blocks, current = [], None

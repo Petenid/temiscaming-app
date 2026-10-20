@@ -65,10 +65,16 @@ void main() {
       await _back(tester);
 
       // At 200% the card is far down the list, which only builds rows near
-      // the screen: scroll until it exists, then tap it.
-      await tester.scrollUntilVisible(find.byType(CollectionCard), 200,
+      // the screen, and taller than the space above the bottom bar: scroll
+      // until its title is on screen, then tap the title (a tap in the
+      // card's middle would land on the navigation bar).
+      final cardTitle = find.descendant(
+        of: find.byType(CollectionCard),
+        matching: find.text(strings.collectionCardTitle),
+      );
+      await tester.scrollUntilVisible(cardTitle, 200,
           scrollable: find.byType(Scrollable).hitTestable().first);
-      await scrollAndTap(tester, find.byType(CollectionCard));
+      await scrollAndTap(tester, cardTitle);
       expect(find.byType(CollectionScreen), findsOneWidget);
       expect(tester.takeException(), isNull, reason: 'pickup schedule');
       await _back(tester);
