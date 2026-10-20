@@ -73,9 +73,9 @@
 
   "notificationsTitle": "Notifications",
 
-  "notificationsPrompt": "Recevoir les avis sur l'eau?",
+  "notificationsPrompt": "Recevoir des notifications?",
 
-  "notificationsExplanation": "Nous vous avertirons quand la Ville publie un avis sur l'eau, comme un avis d'ébullition ou une coupure d'eau, et quand il est levé. La météo et les nouvelles générales n'envoient jamais de notification.",
+  "notificationsExplanation": "Nous vous avertirons quand la Ville publie un avis sur l'eau, comme un avis d'ébullition ou une coupure d'eau, et quand il est levé; la veille de votre collecte des bacs; et quand la Ville déplace ou annule une collecte. La météo et les nouvelles générales n'envoient jamais de notification.",
 
   "notificationsReminder": "Cette application ne remplace pas les alertes officielles de la Ville. Nous vous recommandons de vous y inscrire aussi.",
 
@@ -155,5 +155,29 @@
 
   "specialChristmasTrees": "Collecte des sapins de Noël",
 
-  "specialOther": "Collecte spéciale"
+  "specialOther": "Collecte spéciale",
+
+  "channelCollectionName": "Collecte des bacs",
+
+  "channelCollectionDescription": "Rappels la veille et changements de collecte",
+
+  "reminderTitle": "Demain : {bins}",
+
+  "reminderBodyOne": "Sortez-le ce soir.",
+
+  "reminderBodyMany": "Sortez-les ce soir.",
+
+  "settingsBinReminder": "Rappel la veille de la collecte",
+
+  "settingsBinReminderSubtitle": "Fonctionne même sans Internet",
+
+  "settingsReminderTime": "Heure du rappel",
+
+  "settingsCollectionChanges": "Changements de collecte",
+
+  "settingsCollectionChangesSubtitle": "Quand la Ville déplace ou annule une collecte",
+
+  "settingsTestReminder": "Rappel d’essai dans 2 minutes",
+
+  "settingsTestReminderScheduled": "Rappel d’essai prévu dans 2 minutes."
 }

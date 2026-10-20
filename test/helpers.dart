@@ -19,6 +19,7 @@ Future<AppSettings> pumpApp(
   FakeAlertsRepository? alerts,
   FakePushService? push,
   FakeCollectionRepository? collection,
+  FakeReminderService? reminders,
 ]) async {
   SharedPreferences.setMockInitialValues(savedPrefs);
   final settings = await AppSettings.load();
@@ -29,6 +30,7 @@ Future<AppSettings> pumpApp(
         alerts: alerts ?? FakeAlertsRepository(),
         collection: collection ?? FakeCollectionRepository(),
         push: push ?? FakePushService(),
+        reminders: reminders ?? FakeReminderService(),
       ),
     ),
   );

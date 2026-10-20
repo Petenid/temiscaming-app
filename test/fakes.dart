@@ -4,6 +4,7 @@ import 'package:community/alerts/alerts_repository.dart';
 import 'package:community/alerts/town_alert.dart';
 import 'package:community/push/push_service.dart';
 import 'package:community/settings/app_settings.dart';
+import 'package:community/settings/sector.dart';
 
 /// Alerts held in memory; tests set them and the screens update.
 class FakeAlertsRepository extends AlertsRepository {
@@ -52,11 +53,16 @@ class FakePushService implements PushService {
   final bool isSupported;
   bool grantPermission;
   int permissionRequests = 0;
+  /// Water-advisory subscriptions asked for: (language, on).
   final applied = <(AppLanguage, bool)>[];
+
+  /// Pickup-change subscriptions asked for: (sector, on).
+  final appliedCollection = <(Sector?, bool)>[];
   final _opened = StreamController<String>.broadcast();
   String? initialId;
 
-  /// Simulates the user tapping a notification for [alertId].
+  /// Simulates the user tapping a notification for [alertId] (or
+  /// `collectionTarget` for a pickup notice).
   void tapNotification(String alertId) => _opened.add(alertId);
 
   @override
@@ -66,8 +72,14 @@ class FakePushService implements PushService {
   }
 
   @override
-  Future<void> apply({required AppLanguage language, required bool enabled}) async {
+  Future<void> apply({
+    required AppLanguage language,
+    required bool enabled,
+    Sector? sector,
+    bool collectionChanges = false,
+  }) async {
     applied.add((language, enabled));
+    appliedCollection.add((sector, collectionChanges));
   }
 
   @override

@@ -25,7 +25,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     setState(() => _busy = true);
     final granted = await widget.push.requestPermission();
     // Saving the answer moves the app on to the home screen.
-    await widget.settings.setWaterAlerts(granted);
+    await widget.settings.setNotificationsAnswer(granted);
   }
 
   @override
@@ -55,7 +55,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             ),
             const SizedBox(height: 12),
             TextButton(
-              onPressed: _busy ? null : () => widget.settings.setWaterAlerts(false),
+              onPressed: _busy ? null : () => widget.settings.setNotificationsAnswer(false),
               style: TextButton.styleFrom(minimumSize: const Size.fromHeight(48)),
               child: Text(l10n.notificationsNotNow),
             ),

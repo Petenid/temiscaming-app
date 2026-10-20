@@ -6,6 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'alerts/alerts_repository.dart';
 import 'app.dart';
 import 'collection/collection_repository.dart';
+import 'collection/local_reminder_service.dart';
+import 'collection/reminders.dart';
 import 'firebase_options.dart';
 import 'push/push_service.dart';
 import 'services.dart';
@@ -31,9 +33,12 @@ Future<void> main() async {
         ? FirestoreCollectionRepository(FirebaseFirestore.instance, prefs)
         : OfflineCollectionRepository(prefs),
     push: FcmPushService(),
+    reminders: LocalReminderService(),
   );
   // Keeps the push subscription matching the language and settings.
   if (firebaseReady) PushSync(settings, services.push);
+  // Bin reminders are scheduled on the phone, so they don't need Firebase.
+  ReminderSync(settings, services.collection, services.reminders);
   runApp(TemiscamingApp(settings: settings, services: services));
 }
 

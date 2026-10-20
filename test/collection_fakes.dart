@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:community/collection/collection_repository.dart';
 import 'package:community/collection/pickup.dart';
+import 'package:community/collection/reminders.dart';
 import 'package:community/collection/schedule.dart';
+import 'package:community/l10n/app_localizations.dart';
 import 'package:community/settings/sector.dart';
 
 /// Pickups held in memory; tests set them and the screens update.
@@ -90,4 +94,38 @@ class SamplePickups {
       ],
     ];
   }
+}
+
+/// Records what the app scheduled, instead of showing notifications.
+class FakeReminderService implements ReminderService {
+  FakeReminderService({this.isSupported = false});
+
+  @override
+  final bool isSupported;
+
+  /// Every replacement, newest last.
+  final replacements = <List<Reminder>>[];
+  final tests = <Reminder>[];
+  final _tapped = StreamController<void>.broadcast();
+  bool launched = false;
+
+  /// What's currently scheduled.
+  List<Reminder> get scheduled => replacements.isEmpty ? const [] : replacements.last;
+
+  /// Simulates tapping a reminder.
+  void tap() => _tapped.add(null);
+
+  @override
+  Future<void> replaceAll(List<Reminder> reminders, AppLocalizations strings) async {
+    replacements.add(List.of(reminders));
+  }
+
+  @override
+  Future<void> scheduleTest(Reminder reminder, AppLocalizations strings) async => tests.add(reminder);
+
+  @override
+  Stream<void> get tapped => _tapped.stream;
+
+  @override
+  Future<bool> launchedByReminder() async => launched;
 }

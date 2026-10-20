@@ -10,7 +10,8 @@ import io.flutter.plugin.common.MethodChannel
 class MainActivity : FlutterActivity() {
     // Android groups notifications into "channels" that people can silence
     // separately in system settings. The backend sends urgent advisories on
-    // "water_urgent" and "advisory lifted" notices on "water_updates".
+    // "water_urgent" and "advisory lifted" notices on "water_updates"; bin
+    // reminders (scheduled on the phone) and pickup changes use "collection".
     // The names come from the app's translation files (lib/l10n/*.arb), sent
     // over from Dart, so they appear in the user's language.
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
@@ -38,6 +39,13 @@ class MainActivity : FlutterActivity() {
                             call.argument<String>("updatesName"),
                             NotificationManager.IMPORTANCE_DEFAULT,
                         ).apply { description = call.argument<String>("updatesDescription") },
+                    )
+                    manager.createNotificationChannel(
+                        NotificationChannel(
+                            "collection",
+                            call.argument<String>("collectionName"),
+                            NotificationManager.IMPORTANCE_DEFAULT,
+                        ).apply { description = call.argument<String>("collectionDescription") },
                     )
                 }
                 result.success(null)

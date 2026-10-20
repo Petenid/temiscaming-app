@@ -35,6 +35,8 @@ class _HomeShellState extends State<HomeShell> {
             builder: (_) => SettingsScreen(
               settings: widget.settings,
               push: widget.services.push,
+              reminders: widget.services.reminders,
+              collection: widget.services.collection,
             ),
           ),
         ),

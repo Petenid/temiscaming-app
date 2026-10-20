@@ -24,6 +24,10 @@ dependencies:
   cloud_firestore: ^7.0.0
   # Push notifications for water advisories (iPhone and Android).
   firebase_messaging: ^17.0.0
+  # Evening-before bin reminders, scheduled on the phone (works offline).
+  flutter_local_notifications: ^22.3.0
+  # Time zones, so reminders fire at 7 p.m. Témiscaming time.
+  timezone: ^0.11.0
   # Opens the Town's web pages in the browser.
   url_launcher: ^6.3.3
 

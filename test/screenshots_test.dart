@@ -119,6 +119,13 @@ void main() {
       ));
       await tester.pumpAndSettle();
       await _capture('${code}_10_alerts_source_stale');
+
+      // Settings on a phone: the notification switches and reminder time.
+      await tester.tap(find.byTooltip(strings.settingsTitle).hitTestable());
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(find.text(strings.settingsCollectionChanges), 200,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      await _capture('${code}_14_settings_notifications');
     });
 
     testWidgets('collection screens in $code', (tester) async {

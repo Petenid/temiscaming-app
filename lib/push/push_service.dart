@@ -7,11 +7,14 @@ import 'package:flutter/services.dart';
 
 import '../l10n/app_localizations.dart';
 import '../settings/app_settings.dart';
+import '../settings/sector.dart';
 
-/// Push notifications for water advisories (spec §3 D5).
+/// Push notifications for water advisories (Milestone 1, spec §3 D5) and
+/// pickup changes (Milestone 2, spec D6).
 ///
 /// Each phone subscribes to one FCM "topic" matching its language
-/// (`water-fr` or `water-en`). The backend sends one message per topic, so
+/// (`water-fr` or `water-en`), and one matching its sector and language
+/// (`collection-town-fr` …). The backend sends one message per topic, so
 /// every phone gets exactly one notification, in its own language, and we
 /// never need to store anyone's device token.
 abstract class PushService {
@@ -21,18 +24,38 @@ abstract class PushService {
   /// Shows the system "allow notifications?" prompt. True if allowed.
   Future<bool> requestPermission();
 
-  /// Subscribes to the right topic (or none) and, on Android, (re)creates the
-  /// notification channels with names in the user's language.
-  Future<void> apply({required AppLanguage language, required bool enabled});
+  /// Subscribes to the right topics (or none) and, on Android, (re)creates
+  /// the notification channels with names in the user's language.
+  /// [enabled] is for water advisories; [collectionChanges] for pickup
+  /// changes in [sector].
+  Future<void> apply({
+    required AppLanguage language,
+    required bool enabled,
+    Sector? sector,
+    bool collectionChanges = false,
+  });
 
-  /// Alert ids from notifications the user taps while the app is running.
+  /// What the user tapped while the app was running: an alert id, or
+  /// [collectionTarget] for a pickup notice.
   Stream<String> get openedAlertIds;
 
-  /// The alert id of the notification that launched the app, if any.
+  /// The same for the notification that launched the app, if any.
   Future<String?> initialAlertId();
 }
 
 String topicFor(AppLanguage language) => 'water-${language.name}';
+
+/// Pickup-change topic for a sector and language; matches the backend's
+/// `topicFor` in functions/src/collection/sync.ts.
+String collectionTopicFor(Sector sector, AppLanguage language) =>
+    'collection-${sector.name}-${language.name}';
+
+/// Stands for "open the pickup schedule" where an alert id would go.
+const collectionTarget = 'collection';
+
+/// Where a tapped push leads: its alert, or the schedule for pickup notices.
+String? targetOf(Map<String, dynamic> data) =>
+    data['alert_id'] as String? ?? (data['type'] == 'collection' ? collectionTarget : null);
 
 class FcmPushService implements PushService {
   // Talks to MainActivity.kt to create Android notification channels.
@@ -60,6 +83,8 @@ class FcmPushService implements PushService {
   Future<void> apply({
     required AppLanguage language,
     required bool enabled,
+    Sector? sector,
+    bool collectionChanges = false,
   }) async {
     if (!isSupported) return;
     final strings = lookupAppLocalizations(language.locale);
@@ -70,6 +95,8 @@ class FcmPushService implements PushService {
           'urgentDescription': strings.channelUrgentDescription,
           'updatesName': strings.channelUpdatesName,
           'updatesDescription': strings.channelUpdatesDescription,
+          'collectionName': strings.channelCollectionName,
+          'collectionDescription': strings.channelCollectionDescription,
         });
       }
       for (final each in AppLanguage.values) {
@@ -77,6 +104,14 @@ class FcmPushService implements PushService {
           await _messaging.subscribeToTopic(topicFor(each));
         } else {
           await _messaging.unsubscribeFromTopic(topicFor(each));
+        }
+        for (final s in Sector.values) {
+          final topic = collectionTopicFor(s, each);
+          if (collectionChanges && each == language && s == sector) {
+            await _messaging.subscribeToTopic(topic);
+          } else {
+            await _messaging.unsubscribeFromTopic(topic);
+          }
         }
       }
     } catch (error) {
@@ -88,7 +123,7 @@ class FcmPushService implements PushService {
   @override
   Stream<String> get openedAlertIds => isSupported
       ? FirebaseMessaging.onMessageOpenedApp
-            .map((m) => m.data['alert_id'] as String?)
+            .map((m) => targetOf(m.data))
             .where((id) => id != null)
             .cast<String>()
       : const Stream.empty();
@@ -97,12 +132,12 @@ class FcmPushService implements PushService {
   Future<String?> initialAlertId() async {
     if (!isSupported) return null;
     final message = await _messaging.getInitialMessage();
-    return message?.data['alert_id'] as String?;
+    return message == null ? null : targetOf(message.data);
   }
 }
 
-/// Keeps the push subscription in step with the settings: called at start
-/// and whenever the language or the water-alerts switch changes.
+/// Keeps the push subscriptions in step with the settings: called at start
+/// and whenever the language, sector or a notification switch changes.
 class PushSync {
   PushSync(this._settings, this._push) {
     _settings.addListener(_sync);
@@ -111,14 +146,24 @@ class PushSync {
 
   final AppSettings _settings;
   final PushService _push;
-  (AppLanguage, bool)? _applied;
+  (AppLanguage, bool, Sector?, bool)? _applied;
 
   void _sync() {
     final language = _settings.language;
     if (language == null || !_settings.notificationsAsked) return;
-    final wanted = (language, _settings.waterAlertsEnabled);
+    final wanted = (
+      language,
+      _settings.waterAlertsEnabled,
+      _settings.sector,
+      _settings.collectionChangesEnabled,
+    );
     if (wanted == _applied) return;
     _applied = wanted;
-    unawaited(_push.apply(language: language, enabled: wanted.$2));
+    unawaited(_push.apply(
+      language: language,
+      enabled: wanted.$2,
+      sector: wanted.$3,
+      collectionChanges: wanted.$4,
+    ));
   }
 }

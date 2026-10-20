@@ -58,6 +58,8 @@ firebase deploy --only firestore:rules,functions
 
 Logs: Firebase console → Functions → `pollTownAlerts` → Logs. A healthy run ends with `town alerts: ok — 94 alerts …`.
 
+**Bin reminders** are scheduled on the phone itself (flutter_local_notifications), from the schedule copy saved on the phone, so they work offline. To check one arrives: in a debug build, Settings → *Test reminder in 2 minutes*, then turn on airplane mode and wait.
+
 The collection calendar is read by `pollTownCalendar` every 2 hours. A healthy run ends with `calendar: ok — 26 Town pickups …`; lines with `calendar: warning —` are the schedule check (odd entries, or the Town and MRC calendars disagreeing) and are worth a look. Each year, as soon as the MRC publishes its new printed calendar (usually around December), ask Claude to turn it into `functions/data/mrc-<year>.json` (`tools/mrc_calendar.py`) and check the table it prints against the PDF.
 
 **Refreshing the test pages:** GitHub → Actions → *Capture fixtures* → Run workflow, then pick a source. `alerts` saves today's alert pages under `functions/test/fixtures/<date>/`; `calendar` saves every month of the Town calendar (FR + EN) and the MRC collection PDF under `functions/test/fixtures/calendar/<date>/`.

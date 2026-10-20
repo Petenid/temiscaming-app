@@ -109,10 +109,10 @@
   "notificationsTitle": "Notifications",
   "@notificationsTitle": {"description": "App bar title on the notifications step."},
 
-  "notificationsPrompt": "Get water advisories?",
+  "notificationsPrompt": "Get notifications?",
   "@notificationsPrompt": {"description": "Heading on the notifications step."},
 
-  "notificationsExplanation": "We'll notify you when the Town posts a water advisory, like a boil-water notice or a water cut, and when it's lifted. Weather and general news never send notifications.",
+  "notificationsExplanation": "We'll notify you when the Town posts a water advisory, like a boil-water notice or a water cut, and when it's lifted; the evening before your bin pickup; and when the Town moves or cancels a pickup. Weather and general news never send notifications.",
   "@notificationsExplanation": {"description": "What will and won't notify (DESIGN §7)."},
 
   "notificationsReminder": "This app doesn't replace the Town's official alerts. We recommend signing up for those too.",
@@ -233,5 +233,41 @@
   "@specialChristmasTrees": {"description": "Special collection name."},
 
   "specialOther": "Special pickup",
-  "@specialOther": {"description": "Fallback name for an unknown special collection."}
+  "@specialOther": {"description": "Fallback name for an unknown special collection."},
+
+  "channelCollectionName": "Bin pickup",
+  "@channelCollectionName": {"description": "Android notification channel for bin reminders and pickup changes."},
+
+  "channelCollectionDescription": "Evening-before reminders and pickup changes",
+  "@channelCollectionDescription": {"description": "Android notification channel description."},
+
+  "reminderTitle": "Tomorrow: {bins}",
+  "@reminderTitle": {"description": "Bin reminder title, the evening before. bins = e.g. 'blue bin'.", "placeholders": {"bins": {"type": "String"}}},
+
+  "reminderBodyOne": "Put it out tonight.",
+  "@reminderBodyOne": {"description": "Bin reminder text (one bin)."},
+
+  "reminderBodyMany": "Put them out tonight.",
+  "@reminderBodyMany": {"description": "Bin reminder text (two or more bins)."},
+
+  "settingsBinReminder": "Reminder the evening before pickup",
+  "@settingsBinReminder": {"description": "Settings switch for the evening-before bin reminder."},
+
+  "settingsBinReminderSubtitle": "Works even without internet",
+  "@settingsBinReminderSubtitle": {"description": "Explains the bin reminder switch."},
+
+  "settingsReminderTime": "Reminder time",
+  "@settingsReminderTime": {"description": "Settings row to choose the reminder time."},
+
+  "settingsCollectionChanges": "Pickup changes",
+  "@settingsCollectionChanges": {"description": "Settings switch for notices when the Town changes a pickup."},
+
+  "settingsCollectionChangesSubtitle": "When the Town moves or cancels a pickup",
+  "@settingsCollectionChangesSubtitle": {"description": "Explains the pickup changes switch."},
+
+  "settingsTestReminder": "Test reminder in 2 minutes",
+  "@settingsTestReminder": {"description": "Debug builds only: schedules a test bin reminder."},
+
+  "settingsTestReminderScheduled": "Test reminder scheduled in 2 minutes.",
+  "@settingsTestReminderScheduled": {"description": "Confirms the test reminder."}
 }

@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'alerts/alert_detail_screen.dart';
+import 'collection/collection_screen.dart';
 import 'home/home_shell.dart';
 import 'l10n/app_localizations.dart';
 import 'onboarding/notifications_screen.dart';
 import 'onboarding/onboarding_flow.dart';
+import 'push/push_service.dart';
 import 'services.dart';
 import 'settings/app_settings.dart';
 
@@ -25,6 +27,7 @@ class _TemiscamingAppState extends State<TemiscamingApp> {
   // Lets a tapped notification open its alert from outside any screen.
   final _navigator = GlobalKey<NavigatorState>();
   StreamSubscription<String>? _opened;
+  StreamSubscription<void>? _reminderTapped;
 
   AppSettings get settings => widget.settings;
   AppServices get services => widget.services;
@@ -36,9 +39,31 @@ class _TemiscamingAppState extends State<TemiscamingApp> {
     services.push.initialAlertId().then((id) {
       if (id != null) _openAlert(id);
     });
+    // Tapping a bin reminder opens the pickup schedule.
+    _reminderTapped = services.reminders.tapped.listen((_) => _openAlert(collectionTarget));
+    services.reminders.launchedByReminder().then((yes) {
+      if (yes) _openAlert(collectionTarget);
+    });
   }
 
+  /// Opens what a tapped notification is about: an alert, or the schedule.
   void _openAlert(String id) {
+    // When a notification launches the app, this can run before the first
+    // screen exists: try again once it does.
+    if (_navigator.currentState == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_navigator.currentState != null) _openAlert(id);
+      });
+      return;
+    }
+    if (id == collectionTarget) {
+      _navigator.currentState?.push(
+        MaterialPageRoute<void>(
+          builder: (_) => CollectionScreen(settings: settings, repository: services.collection),
+        ),
+      );
+      return;
+    }
     _navigator.currentState?.push(
       MaterialPageRoute<void>(
         builder: (_) => AlertByIdScreen(
@@ -53,6 +78,7 @@ class _TemiscamingAppState extends State<TemiscamingApp> {
   @override
   void dispose() {
     _opened?.cancel();
+    _reminderTapped?.cancel();
     super.dispose();
   }
 
