@@ -27,8 +27,9 @@ abstract class PushService {
   /// Subscribes to the right topics (or none) and, on Android, (re)creates
   /// the notification channels with names in the user's language.
   /// [enabled] is for water advisories; [collectionChanges] for pickup
-  /// changes in [sector].
-  Future<void> apply({
+  /// changes in [sector]. Returns false if it couldn't (typically no
+  /// network), so the caller can try again.
+  Future<bool> apply({
     required AppLanguage language,
     required bool enabled,
     Sector? sector,
@@ -80,13 +81,13 @@ class FcmPushService implements PushService {
   }
 
   @override
-  Future<void> apply({
+  Future<bool> apply({
     required AppLanguage language,
     required bool enabled,
     Sector? sector,
     bool collectionChanges = false,
   }) async {
-    if (!isSupported) return;
+    if (!isSupported) return true;
     final strings = lookupAppLocalizations(language.locale);
     try {
       if (Platform.isAndroid) {
@@ -114,9 +115,11 @@ class FcmPushService implements PushService {
           }
         }
       }
+      return true;
     } catch (error) {
-      // Typically no network. Applied again at every start, so it self-heals.
+      // Typically no network. PushSync tries again shortly.
       debugPrint('Push: could not update topics: $error');
+      return false;
     }
   }
 
@@ -138,14 +141,26 @@ class FcmPushService implements PushService {
 
 /// Keeps the push subscriptions in step with the settings: called at start
 /// and whenever the language, sector or a notification switch changes.
+///
+/// If an update fails (say the sector was changed in airplane mode), it's
+/// tried again after [firstRetry], then after twice as long each time (up to
+/// 15 minutes) while the app is running, and again at the next start.
+/// Otherwise the phone would keep listening to its old sector's topic.
 class PushSync {
-  PushSync(this._settings, this._push) {
+  PushSync(this._settings, this._push, {Duration firstRetry = const Duration(minutes: 1)})
+    : _firstRetry = firstRetry,
+      _nextRetry = firstRetry {
     _settings.addListener(_sync);
     _sync();
   }
 
+  static const _maxRetry = Duration(minutes: 15);
+
   final AppSettings _settings;
   final PushService _push;
+  final Duration _firstRetry;
+  Duration _nextRetry;
+  Timer? _retry;
   (AppLanguage, bool, Sector?, bool)? _applied;
 
   void _sync() {
@@ -159,11 +174,26 @@ class PushSync {
     );
     if (wanted == _applied) return;
     _applied = wanted;
-    unawaited(_push.apply(
-      language: language,
+    _retry?.cancel();
+    unawaited(_apply(wanted));
+  }
+
+  Future<void> _apply((AppLanguage, bool, Sector?, bool) wanted) async {
+    final ok = await _push.apply(
+      language: wanted.$1,
       enabled: wanted.$2,
       sector: wanted.$3,
       collectionChanges: wanted.$4,
-    ));
+    );
+    // A newer change has taken over: it does its own retrying.
+    if (wanted != _applied) return;
+    if (ok) {
+      _nextRetry = _firstRetry;
+      return;
+    }
+    _applied = null;
+    _retry = Timer(_nextRetry, _sync);
+    final doubled = _nextRetry * 2;
+    _nextRetry = doubled > _maxRetry ? _maxRetry : doubled;
   }
 }

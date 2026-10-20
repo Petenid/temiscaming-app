@@ -1,6 +1,6 @@
 # Spec — Milestone 2: Collection day, local reminders, change notices
 
-Status: **agreed** · 2026-10-19 (owner agreed D1–D10; D4 revised and D11 added after the fixture check, same day)
+Status: **complete** · 2026-10-20. Verified on the Android emulator: backend deployed and polling (first run: 26 Town pickups, no notices), the bin card and schedule match the Town's calendar (Lumsden: black bin Wed 21 Oct, blue bin Wed 28 Oct), the test reminder arrived in airplane mode, and a change notice sent to the sector's topic arrived in French and in English. Bin notices use the default-importance "collection" channel (sound and notification shade, no pop-up banner), as D10 intended. Found during the check and fixed: a sector or language change made offline was not retried until the app restarted. · 2026-10-19 (owner agreed D1–D10; D4 revised and D11 added after the fixture check, same day)
 Reads with: `DESIGN.md` (§2 principles, §4 architecture incl. "Reminders vs. changes", §5 language, §6.2 collection day, §7 app structure)
 
 ---

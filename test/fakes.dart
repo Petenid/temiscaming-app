@@ -71,8 +71,11 @@ class FakePushService implements PushService {
     return grantPermission;
   }
 
+  /// Set to false to simulate having no network.
+  bool applySucceeds = true;
+
   @override
-  Future<void> apply({
+  Future<bool> apply({
     required AppLanguage language,
     required bool enabled,
     Sector? sector,
@@ -80,6 +83,7 @@ class FakePushService implements PushService {
   }) async {
     applied.add((language, enabled));
     appliedCollection.add((sector, collectionChanges));
+    return applySucceeds;
   }
 
   @override

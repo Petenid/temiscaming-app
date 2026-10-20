@@ -170,6 +170,24 @@ void main() {
       expect(push.appliedCollection, [(Sector.town, true), (Sector.lumsden, true), (Sector.lumsden, false)]);
     });
 
+    test('a change made offline is retried until it works, then left alone', () async {
+      SharedPreferences.setMockInitialValues({'language': 'fr', 'sector': 'town', 'water_alerts': true});
+      final settings = await AppSettings.load();
+      final push = FakePushService(isSupported: true)..applySucceeds = false;
+      PushSync(settings, push, firstRetry: const Duration(milliseconds: 20));
+      await settings.setSector(Sector.lumsden); // in airplane mode, say
+      expect(push.appliedCollection.last, (Sector.lumsden, true));
+      final attempts = push.appliedCollection.length;
+      await Future<void>.delayed(const Duration(milliseconds: 60));
+      expect(push.appliedCollection.length, greaterThan(attempts)); // retried
+      push.applySucceeds = true; // back online
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+      final settled = push.appliedCollection.length;
+      expect(push.appliedCollection.last, (Sector.lumsden, true));
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+      expect(push.appliedCollection.length, settled); // no more retries
+    });
+
     test('a tapped push for a pickup leads to the schedule', () {
       expect(targetOf({'type': 'collection', 'pickup_id': '2026-10-22_lumsden_garbage'}), collectionTarget);
       expect(targetOf({'alert_id': '8344'}), '8344');
