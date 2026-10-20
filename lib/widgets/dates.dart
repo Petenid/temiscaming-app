@@ -23,3 +23,16 @@ String formatWhen(BuildContext context, DateTime when, {DateTime? now}) {
       ? formatTime(context, local)
       : '${formatDate(context, local)} ${formatTime(context, local)}';
 }
+
+/// Pickup days (dates, no time), in the user's language:
+/// "mardi" / "Tuesday".
+String formatWeekday(BuildContext context, DateTime day) =>
+    DateFormat.EEEE(_localeOf(context)).format(day);
+
+/// "mar. 27 oct." / "Tue, Oct 27".
+String formatShortDay(BuildContext context, DateTime day) =>
+    DateFormat.MMMEd(_localeOf(context)).format(day);
+
+/// "mardi 27 octobre" / "Tuesday, October 27".
+String formatLongDay(BuildContext context, DateTime day) =>
+    DateFormat.MMMMEEEEd(_localeOf(context)).format(day);

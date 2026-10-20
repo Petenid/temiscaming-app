@@ -8,11 +8,14 @@ import 'dart:io';
 
 import 'package:community/alerts/alert_widgets.dart';
 import 'package:community/alerts/town_alert.dart';
+import 'package:community/collection/collection_card.dart';
+import 'package:community/collection/pickup.dart';
 import 'package:community/settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'collection_fakes.dart';
 import 'fakes.dart';
 import 'helpers.dart';
 
@@ -116,6 +119,29 @@ void main() {
       ));
       await tester.pumpAndSettle();
       await _capture('${code}_10_alerts_source_stale');
+    });
+
+    testWidgets('collection screens in $code', (tester) async {
+      phone(tester);
+      final collection = FakeCollectionRepository(pickups: SamplePickups.aroundToday());
+      await pumpApp(tester, {'language': code, 'sector': 'town'}, null, null, collection);
+      await _capture('${code}_11_today_collection');
+
+      await scrollAndTap(tester, find.byType(CollectionCard));
+      await _capture('${code}_12_schedule');
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      // Nothing posted beyond tomorrow, and the calendar not checked for hours.
+      collection.set(
+        pickups: SamplePickups.aroundToday().take(1).toList(),
+        health: CollectionHealth(
+          lastSuccessAt: DateTime.now().subtract(const Duration(hours: 9)),
+          knownThrough: DateTime.now().add(const Duration(days: 1)),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await _capture('${code}_13_today_collection_stale');
     });
 
     testWidgets('sector screen at 200% text in $code', (tester) async {

@@ -5,6 +5,7 @@ import 'package:community/settings/app_settings.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'collection_fakes.dart';
 import 'fakes.dart';
 
 /// Starts the app as if on a device whose saved settings are [savedPrefs]
@@ -17,6 +18,7 @@ Future<AppSettings> pumpApp(
   Map<String, Object> savedPrefs = const {},
   FakeAlertsRepository? alerts,
   FakePushService? push,
+  FakeCollectionRepository? collection,
 ]) async {
   SharedPreferences.setMockInitialValues(savedPrefs);
   final settings = await AppSettings.load();
@@ -25,6 +27,7 @@ Future<AppSettings> pumpApp(
       settings: settings,
       services: AppServices(
         alerts: alerts ?? FakeAlertsRepository(),
+        collection: collection ?? FakeCollectionRepository(),
         push: push ?? FakePushService(),
       ),
     ),

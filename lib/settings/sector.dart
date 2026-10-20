@@ -16,7 +16,8 @@ enum Sector {
   const Sector(this.collectionWeekday);
 
   /// Day of the week bins are collected, using Dart's numbering
-  /// (`DateTime.monday` = 1 … `DateTime.sunday` = 7). Used from Milestone 2.
+  /// (`DateTime.monday` = 1 … `DateTime.sunday` = 7). The real dates come
+  /// from the Town's calendar; this is the usual day, for labels.
   final int collectionWeekday;
 
   /// Reads a saved ID back into a sector; `null` if missing or unknown.

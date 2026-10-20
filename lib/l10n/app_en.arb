@@ -34,7 +34,7 @@
   "todayTitle": "Today",
   "@todayTitle": {"description": "Title of the home screen."},
 
-  "todayComingSoon": "Bin day, events, weather and more will appear here soon.",
+  "todayComingSoon": "Events, weather and more will appear here soon.",
   "@todayComingSoon": {"description": "Placeholder on the home screen until features are built."},
 
   "settingsTitle": "Settings",
@@ -146,5 +146,92 @@
   "@channelUpdatesName": {"description": "Android notification channel name for 'advisory lifted' notices."},
 
   "channelUpdatesDescription": "When the Town lifts a water advisory",
-  "@channelUpdatesDescription": {"description": "Android notification channel description."}
+  "@channelUpdatesDescription": {"description": "Android notification channel description."},
+
+  "collectionCardTitle": "Bin pickup",
+  "@collectionCardTitle": {"description": "Title of the bin card on Today."},
+
+  "collectionToday": "Today: {bins}",
+  "@collectionToday": {"description": "Today card when the pickup is today. bins = e.g. 'blue bin'.", "placeholders": {"bins": {"type": "String"}}},
+
+  "collectionThisWeek": "This week: {bins}, {day}",
+  "@collectionThisWeek": {"description": "Today card. day = weekday name, e.g. 'Tuesday'.", "placeholders": {"bins": {"type": "String"}, "day": {"type": "String"}}},
+
+  "collectionNextWeek": "Next week: {bins}, {day}",
+  "@collectionNextWeek": {"description": "Today card when the next pickup is next week.", "placeholders": {"bins": {"type": "String"}, "day": {"type": "String"}}},
+
+  "collectionOnDate": "{date}: {bins}",
+  "@collectionOnDate": {"description": "Today card when the next pickup is later. date = short date.", "placeholders": {"bins": {"type": "String"}, "date": {"type": "String"}}},
+
+  "collectionThen": "Then: {bins}, {date}",
+  "@collectionThen": {"description": "The pickup after the next one.", "placeholders": {"bins": {"type": "String"}, "date": {"type": "String"}}},
+
+  "collectionAlsoThisWeek": "Also this week: {name}, {date}",
+  "@collectionAlsoThisWeek": {"description": "A special collection (e.g. Christmas trees) this week.", "placeholders": {"name": {"type": "String"}, "date": {"type": "String"}}},
+
+  "collectionNoPickupThisWeek": "No pickup this week (cancelled by the Town)",
+  "@collectionNoPickupThisWeek": {"description": "Shown only when the Town cancelled this week's pickup."},
+
+  "collectionNothingPosted": "Upcoming pickups aren't posted yet.",
+  "@collectionNothingPosted": {"description": "No pickup is known at all (never shown as 'no pickup')."},
+
+  "collectionNotPostedAfter": "Pickups after {date} aren't posted yet.",
+  "@collectionNotPostedAfter": {"description": "Pickups are only known up to date (long date).", "placeholders": {"date": {"type": "String"}}},
+
+  "collectionMoved": "Moved (instead of {date})",
+  "@collectionMoved": {"description": "Label on a pickup the Town moved. date = old short date.", "placeholders": {"date": {"type": "String"}}},
+
+  "collectionCancelled": "Cancelled",
+  "@collectionCancelled": {"description": "Label on a pickup the Town cancelled."},
+
+  "collectionFromMrc": "From the MRC calendar",
+  "@collectionFromMrc": {"description": "Label on a pickup taken from the MRC's printed calendar."},
+
+  "collectionScheduleTitle": "Pickup schedule",
+  "@collectionScheduleTitle": {"description": "Title of the schedule screen."},
+
+  "collectionTownCalendarLink": "Town calendar",
+  "@collectionTownCalendarLink": {"description": "Button opening the Town's events calendar."},
+
+  "collectionMrcCalendarLink": "MRC calendar (PDF)",
+  "@collectionMrcCalendarLink": {"description": "Button opening the MRC's printed collection calendar."},
+
+  "collectionLastChecked": "Calendar checked {time}",
+  "@collectionLastChecked": {"description": "When the Town's calendar was last read successfully.", "placeholders": {"time": {"type": "String"}}},
+
+  "collectionCheckFailedSince": "Couldn't check the Town's calendar since {time}",
+  "@collectionCheckFailedSince": {"description": "Shown in red when the calendar hasn't been read for over 5 hours.", "placeholders": {"time": {"type": "String"}}},
+
+  "collectionNeverChecked": "The Town's calendar hasn't been checked yet.",
+  "@collectionNeverChecked": {"description": "Shown when the backend has never read the calendar."},
+
+  "collectionLoadFailed": "Couldn't load the pickup schedule.",
+  "@collectionLoadFailed": {"description": "Shown when no schedule could be loaded at all."},
+
+  "binCompost": "Green bin (compost)",
+  "@binCompost": {"description": "Full bin name in lists."},
+
+  "binRecycling": "Blue bin (recycling)",
+  "@binRecycling": {"description": "Full bin name in lists."},
+
+  "binGarbage": "Black bin (garbage)",
+  "@binGarbage": {"description": "Full bin name in lists."},
+
+  "binCompostShort": "green bin",
+  "@binCompostShort": {"description": "Bin name inside a sentence (lower case)."},
+
+  "binRecyclingShort": "blue bin",
+  "@binRecyclingShort": {"description": "Bin name inside a sentence (lower case)."},
+
+  "binGarbageShort": "black bin",
+  "@binGarbageShort": {"description": "Bin name inside a sentence (lower case)."},
+
+  "listAnd": "{first} and {last}",
+  "@listAnd": {"description": "Joins the last two items of a list, e.g. 'green bin and blue bin'.", "placeholders": {"first": {"type": "String"}, "last": {"type": "String"}}},
+
+  "specialChristmasTrees": "Christmas tree pickup",
+  "@specialChristmasTrees": {"description": "Special collection name."},
+
+  "specialOther": "Special pickup",
+  "@specialOther": {"description": "Fallback name for an unknown special collection."}
 }

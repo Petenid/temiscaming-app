@@ -23,7 +23,7 @@
 
   "todayTitle": "Aujourd’hui",
 
-  "todayComingSoon": "Le jour de collecte, les événements, la météo et plus encore s’afficheront ici bientôt.",
+  "todayComingSoon": "Les événements, la météo et plus encore s’afficheront ici bientôt.",
 
   "settingsTitle": "Paramètres",
 
@@ -97,5 +97,63 @@
 
   "channelUpdatesName": "Avis levés",
 
-  "channelUpdatesDescription": "Quand la Ville lève un avis sur l'eau"
+  "channelUpdatesDescription": "Quand la Ville lève un avis sur l'eau",
+
+  "collectionCardTitle": "Collecte des bacs",
+
+  "collectionToday": "Aujourd’hui : {bins}",
+
+  "collectionThisWeek": "Cette semaine : {bins}, {day}",
+
+  "collectionNextWeek": "La semaine prochaine : {bins}, {day}",
+
+  "collectionOnDate": "Le {date} : {bins}",
+
+  "collectionThen": "Ensuite : {bins}, {date}",
+
+  "collectionAlsoThisWeek": "Aussi cette semaine : {name}, {date}",
+
+  "collectionNoPickupThisWeek": "Pas de collecte cette semaine (annulée par la Ville)",
+
+  "collectionNothingPosted": "Les collectes à venir ne sont pas encore publiées.",
+
+  "collectionNotPostedAfter": "Les collectes après le {date} ne sont pas encore publiées.",
+
+  "collectionMoved": "Déplacée (au lieu du {date})",
+
+  "collectionCancelled": "Annulée",
+
+  "collectionFromMrc": "D’après le calendrier de la MRC",
+
+  "collectionScheduleTitle": "Calendrier des collectes",
+
+  "collectionTownCalendarLink": "Calendrier de la Ville",
+
+  "collectionMrcCalendarLink": "Calendrier de la MRC (PDF)",
+
+  "collectionLastChecked": "Calendrier vérifié : {time}",
+
+  "collectionCheckFailedSince": "Impossible de vérifier le calendrier de la Ville depuis {time}",
+
+  "collectionNeverChecked": "Le calendrier de la Ville n’a pas encore été vérifié.",
+
+  "collectionLoadFailed": "Impossible de charger le calendrier des collectes.",
+
+  "binCompost": "Bac vert (compost)",
+
+  "binRecycling": "Bac bleu (recyclage)",
+
+  "binGarbage": "Bac noir (ordures)",
+
+  "binCompostShort": "bac vert",
+
+  "binRecyclingShort": "bac bleu",
+
+  "binGarbageShort": "bac noir",
+
+  "listAnd": "{first} et {last}",
+
+  "specialChristmasTrees": "Collecte des sapins de Noël",
+
+  "specialOther": "Collecte spéciale"
 }

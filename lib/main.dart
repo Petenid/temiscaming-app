@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'alerts/alerts_repository.dart';
 import 'app.dart';
+import 'collection/collection_repository.dart';
 import 'firebase_options.dart';
 import 'push/push_service.dart';
 import 'services.dart';
@@ -16,12 +18,18 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final firebaseReady = await _startFirebase();
   final settings = await AppSettings.load();
+  final prefs = await SharedPreferences.getInstance();
   final services = AppServices(
     // Without Firebase the alert screens say they can't load, rather than
     // showing an empty list that looks like "no alerts" (principle 3).
     alerts: firebaseReady
         ? FirestoreAlertsRepository(FirebaseFirestore.instance)
         : UnavailableAlertsRepository(),
+    // The pickup schedule also keeps its own copy on the phone, for offline
+    // use and reminders (spec D1).
+    collection: firebaseReady
+        ? FirestoreCollectionRepository(FirebaseFirestore.instance, prefs)
+        : OfflineCollectionRepository(prefs),
     push: FcmPushService(),
   );
   // Keeps the push subscription matching the language and settings.

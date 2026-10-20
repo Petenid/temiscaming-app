@@ -151,7 +151,7 @@ Bin names: *bac vert (compost) / bac bleu (recyclage) / bac noir (ordures)* · *
 
 ### App
 - **Today card:** "Cette semaine : bac bleu, mardi" / "This week: blue bin, Tuesday" (bin icon + name), then "Ensuite : bac noir, mardi 27 oct." After the pickup day passes, shows next week's. Moved pickups show "déplacée / moved" next to the date. Cancelled: "Pas de collecte cette semaine" only when the Town actually cancelled it. Pickups from the MRC data carry a small "From the MRC calendar" label. Unknown future → the D4 "not posted yet" line. Tap → schedule screen.
-- **Schedule screen:** next 8 weeks for the user's sector, grouped by week, special collections included; health line ("Dernière vérification 16:40" or red "Impossible de vérifier le calendrier depuis 14:20"); "Voir le calendrier de la Ville" and "Calendrier de la MRC (PDF)" links.
+- **Schedule screen:** next 8 weeks for the user's sector, grouped by day, special collections included; health line ("Calendrier vérifié : 16:40" or red "Impossible de vérifier le calendrier de la Ville depuis 14:20" — red after **5 hours**, i.e. two missed 2-hourly runs, rather than the alerts' 30 minutes); "Voir le calendrier de la Ville" and "Calendrier de la MRC (PDF)" links.
 - **Settings:** the three controls (D8). Turning the reminder off cancels scheduled ones immediately.
 - **Onboarding step 3:** adds "the evening before your pickup, and when a pickup changes".
 - **Offline:** everything above works from the on-phone copy, with "last updated" time.

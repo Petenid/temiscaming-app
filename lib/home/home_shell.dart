@@ -48,6 +48,7 @@ class _HomeShellState extends State<HomeShell> {
           TodayScreen(
             settings: widget.settings,
             repository: widget.services.alerts,
+            collection: widget.services.collection,
             appBarActions: actions,
           ),
           AlertsScreen(

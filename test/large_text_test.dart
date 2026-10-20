@@ -3,10 +3,13 @@
 import 'package:community/alerts/alert_detail_screen.dart';
 import 'package:community/alerts/alert_widgets.dart';
 import 'package:community/alerts/town_alert.dart';
+import 'package:community/collection/collection_card.dart';
+import 'package:community/collection/collection_screen.dart';
 import 'package:community/settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'collection_fakes.dart';
 import 'fakes.dart';
 import 'helpers.dart';
 
@@ -42,7 +45,8 @@ void main() {
       // A phone, so the notifications step appears too.
       final push = FakePushService(isSupported: true);
 
-      await pumpApp(tester, const {}, alerts, push);
+      final collection = FakeCollectionRepository(pickups: SamplePickups.aroundToday());
+      await pumpApp(tester, const {}, alerts, push, collection);
       expect(tester.takeException(), isNull, reason: 'language screen');
 
       await scrollAndTap(tester, find.text(strings.languageName));
@@ -58,6 +62,11 @@ void main() {
       await scrollAndTap(tester, find.byType(BoilWaterBanner));
       expect(find.byType(AlertDetailScreen), findsOneWidget);
       expect(tester.takeException(), isNull, reason: 'alert detail');
+      await _back(tester);
+
+      await scrollAndTap(tester, find.byType(CollectionCard));
+      expect(find.byType(CollectionScreen), findsOneWidget);
+      expect(tester.takeException(), isNull, reason: 'pickup schedule');
       await _back(tester);
 
       await tester.tap(find.widgetWithText(NavigationDestination, strings.alertsTitle));

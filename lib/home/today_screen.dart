@@ -3,22 +3,27 @@ import 'package:flutter/material.dart';
 import '../alerts/alert_detail_screen.dart';
 import '../alerts/alert_widgets.dart';
 import '../alerts/alerts_repository.dart';
+import '../collection/collection_card.dart';
+import '../collection/collection_repository.dart';
+import '../collection/collection_screen.dart';
 import '../l10n/app_localizations.dart';
 import '../settings/app_settings.dart';
 
-/// Home screen. For now: the boil-water banner when one is in effect, a
-/// warning if the Town's alerts can't be checked, and a placeholder for the
-/// features still to come (bin day, weather, events — DESIGN §7).
+/// Home screen: the boil-water banner when one is in effect, a warning if
+/// the Town's alerts can't be checked, this week's bin, and a placeholder for
+/// the features still to come (weather, events — DESIGN §7).
 class TodayScreen extends StatelessWidget {
   const TodayScreen({
     super.key,
     required this.settings,
     required this.repository,
+    required this.collection,
     required this.appBarActions,
   });
 
   final AppSettings settings;
   final AlertsRepository repository;
+  final CollectionRepository collection;
   final List<Widget> appBarActions;
 
   @override
@@ -49,6 +54,16 @@ class TodayScreen extends StatelessWidget {
                   const SizedBox(height: 16),
                 ],
                 SourceHealthLine(repository: repository, onlyWhenStale: true),
+                const SizedBox(height: 8),
+                CollectionCard(
+                  settings: settings,
+                  repository: collection,
+                  onOpenSchedule: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => CollectionScreen(settings: settings, repository: collection),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 24),
                 Text(
                   l10n.todayComingSoon,
