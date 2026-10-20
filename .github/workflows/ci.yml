@@ -44,12 +44,34 @@ jobs:
           set -o pipefail
           flutter test --exclude-tags screenshots --reporter github 2>&1 | tee test-output.txt
 
+      # One annotation per failing test, with the error but without the long
+      # stack trace, so it fits GitHub's annotation size limit (about 4 KB).
+      # If no test failed (say, the code didn't compile), the end of the log.
       - name: Report test failure details
         if: failure()
+        shell: python3 {0}
         run: |
-          # Annotations can't contain newlines; GitHub decodes %0A back.
-          details=$(grep -v '^::' test-output.txt | tail -n 120 | sed 's/%/%25/g' | sed ':a;N;$!ba;s/\n/%0A/g')
-          echo "::error title=Test output (last 120 lines)::${details}"
+          import re
+          lines = [l.rstrip("\n") for l in open("test-output.txt", encoding="utf-8", errors="replace")]
+          lines = [l for l in lines if not l.startswith("::")]
+          noise = re.compile(r"^\s*(#\d+\s|<asynchronous suspension>|\(elided)")
+          blocks, current = [], None
+          for l in lines:
+              if l.startswith(("❌", "✅", "Error:")):
+                  if current: blocks.append(current)
+                  current = [l] if l.startswith("❌") else None
+              elif current is not None and not noise.match(l):
+                  current.append(l)
+          if current: blocks.append(current)
+          def emit(title, body):
+              body = body[:3500].replace("%", "%25").replace("\r", "").replace("\n", "%0A")
+              title = title.replace("%", "%25").replace(":", "%3A").replace(",", "%2C")
+              print(f"::error title={title}::{body}")
+          for b in blocks:
+              name = b[0].split(": ", 1)[-1].replace(" (failed)", "")
+              emit(f"Failed: {name}"[:200], "\n".join(b[1:]))
+          if not blocks:
+              emit("Test output (end)", "\n".join(lines[-60:]))
 
       - name: Take screenshots
         run: |

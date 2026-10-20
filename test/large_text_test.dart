@@ -64,6 +64,10 @@ void main() {
       expect(tester.takeException(), isNull, reason: 'alert detail');
       await _back(tester);
 
+      // At 200% the card is far down the list, which only builds rows near
+      // the screen: scroll until it exists, then tap it.
+      await tester.scrollUntilVisible(find.byType(CollectionCard), 200,
+          scrollable: find.byType(Scrollable).hitTestable().first);
       await scrollAndTap(tester, find.byType(CollectionCard));
       expect(find.byType(CollectionScreen), findsOneWidget);
       expect(tester.takeException(), isNull, reason: 'pickup schedule');
