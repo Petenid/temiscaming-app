@@ -11,7 +11,7 @@ const townCalendarUrlFr = 'https://www.temiscaming.net/fr/calendrier';
 const townCalendarUrlEn = 'https://www.temiscaming.net/en/calendar';
 
 /// The MRC's printed calendar for the current year. Update each year
-/// together with functions/data/mrc-<year>.json (README).
+/// together with `functions/data/mrc-<year>.json` (README).
 const mrcCalendarUrl = 'https://www.temiscaming.net/file-24778';
 
 /// "Calendar checked 16:40", or in red "Couldn't check the Town's calendar
