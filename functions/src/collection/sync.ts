@@ -95,6 +95,15 @@ export interface CollectionDeps {
   log?: (message: string) => void;
 }
 
+/** The calendar pages one run downloaded, parsed; the events step reuses them. */
+export interface CalendarDownload {
+  fr: CalendarEntry[];
+  en: CalendarEntry[];
+  /** First and last day of the months fetched. */
+  from: string;
+  to: string;
+}
+
 export interface CollectionRunResult {
   ok: boolean;
   error?: string;
@@ -104,6 +113,8 @@ export interface CollectionRunResult {
   /** One line per notice sent, e.g. "moved lumsden 2026-06-25". */
   pushed: string[];
   warnings: string[];
+  /** Set whenever the pages downloaded, even if a later pickup check failed (events spec D1). */
+  download?: CalendarDownload;
 }
 
 const pad = (n: number) => String(n).padStart(2, "0");
@@ -144,6 +155,7 @@ export async function runCollectionPoll(deps: CollectionDeps): Promise<Collectio
   const health = await store.loadHealth();
   const firstRun = !health?.last_success_at;
 
+  let download: CalendarDownload | undefined;
   const fail = async (error: string): Promise<CollectionRunResult> => {
     log(`calendar: FAILED — ${error}`);
     await store.saveHealth({
@@ -152,7 +164,7 @@ export async function runCollectionPoll(deps: CollectionDeps): Promise<Collectio
       last_success_at: health?.last_success_at ?? null,
       last_error: error.slice(0, 300),
     });
-    return { ok: false, error, townCount: 0, written: 0, deleted: 0, pushed: [], warnings: [] };
+    return { ok: false, error, townCount: 0, written: 0, deleted: 0, pushed: [], warnings: [], download };
   };
 
   // 1. Download and parse the months, French and English.
@@ -170,6 +182,7 @@ export async function runCollectionPoll(deps: CollectionDeps): Promise<Collectio
   } catch (e) {
     return fail(`download: ${(e as Error).message}`);
   }
+  download = { fr, en, from, to };
   const { pickups: town, warnings: checkWarnings } = buildPickups(fr, en);
 
   // 2. Silence must never look like safety: nothing at all, or a month that
@@ -334,7 +347,7 @@ export async function runCollectionPoll(deps: CollectionDeps): Promise<Collectio
     warnings: warnings.slice(0, 20),
   });
   log(`calendar: ok — ${townCount} Town pickups, ${merged.length} after merge, ${toSave.length} saved, ${toDelete.length} deleted, ${pushed.length} notices${firstRun ? " (first run: no notices)" : ""}`);
-  return { ok: true, townCount, written: toSave.length, deleted: toDelete.length, pushed, warnings };
+  return { ok: true, townCount, written: toSave.length, deleted: toDelete.length, pushed, warnings, download };
 }
 
 function emptyHealth(): CalendarHealth {

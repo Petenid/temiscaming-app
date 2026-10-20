@@ -10,6 +10,7 @@ import {
 import {
   CalendarHealth, CollectionStore, SOURCE_ID as CALENDAR_SOURCE_ID, StoredPickup,
 } from "./collection/sync";
+import { EVENTS_SOURCE_ID, EventsHealth, EventsStore, StoredEvent } from "./events/sync";
 
 const USER_AGENT =
   "AlloTemis/1.0 (independent community app for Témiscaming; https://github.com/Petenid/temiscaming-app)";
@@ -145,6 +146,41 @@ export function firestoreCollectionStore(db: Firestore): CollectionStore {
     async loadHealth() {
       const snap = await health.get();
       return snap.exists ? toDates<CalendarHealth>(snap.data()!) : null;
+    },
+    async saveHealth(h) {
+      await health.set(h);
+    },
+  };
+}
+
+// --- Events calendar (Milestone 3): Firestore `events` + `sources/town-events` ---
+
+export function firestoreEventsStore(db: Firestore): EventsStore {
+  const events = db.collection("events");
+  const health = db.collection("sources").doc(EVENTS_SOURCE_ID);
+  return {
+    async loadEvents() {
+      // The backend keeps only upcoming events: a few dozen documents.
+      const snap = await events.get();
+      return snap.docs.map((d) => toDates<StoredEvent>(d.data()));
+    },
+    async saveEvents(docs) {
+      for (let i = 0; i < docs.length; i += 400) {
+        const batch = db.batch();
+        for (const doc of docs.slice(i, i + 400)) batch.set(events.doc(doc.id), doc);
+        await batch.commit();
+      }
+    },
+    async deleteEvents(ids) {
+      for (let i = 0; i < ids.length; i += 400) {
+        const batch = db.batch();
+        for (const id of ids.slice(i, i + 400)) batch.delete(events.doc(id));
+        await batch.commit();
+      }
+    },
+    async loadHealth() {
+      const snap = await health.get();
+      return snap.exists ? toDates<EventsHealth>(snap.data()!) : null;
     },
     async saveHealth(h) {
       await health.set(h);

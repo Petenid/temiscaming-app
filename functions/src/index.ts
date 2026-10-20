@@ -7,10 +7,13 @@ import { onSchedule } from "firebase-functions/v2/scheduler";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
-import { fcmMessenger, firestoreCollectionStore, firestoreStore, webFetcher } from "./adapters";
+import {
+  fcmMessenger, firestoreCollectionStore, firestoreEventsStore, firestoreStore, webFetcher,
+} from "./adapters";
 import { runPoll } from "./alerts/sync";
 import { MrcCalendar } from "./collection/merge";
-import { runCollectionPoll } from "./collection/sync";
+import { CalendarDownload, runCollectionPoll } from "./collection/sync";
+import { runEventsPoll } from "./events/sync";
 
 initializeApp();
 
@@ -45,7 +48,11 @@ function loadMrcCalendars(): MrcCalendar[] {
     .map((f) => JSON.parse(readFileSync(join(dir, f), "utf-8")) as MrcCalendar);
 }
 
-/** Reads the Town's calendar every 2 hours for collection pickups (Milestone 2, spec D2). */
+/**
+ * Reads the Town's calendar every 2 hours: bin pickups (Milestone 2, spec D2),
+ * then events from the same pages (Milestone 3, events spec D1). Each step
+ * records its own health, and a problem in one never stops the other.
+ */
 export const pollTownCalendar = onSchedule(
   {
     schedule: "every 2 hours",
@@ -57,14 +64,27 @@ export const pollTownCalendar = onSchedule(
     maxInstances: 1,
   },
   async () => {
-    const result = await runCollectionPoll({
-      store: firestoreCollectionStore(getFirestore()),
-      fetcher: webFetcher,
-      messenger: fcmMessenger(getMessaging()),
-      mrc: loadMrcCalendars(),
-      now: () => new Date(),
-      log: (message) => logger.info(message),
-    });
-    if (!result.ok) logger.warn("calendar poll failed", { error: result.error });
+    const log = (message: string) => logger.info(message);
+    let download: CalendarDownload | { error: string } = { error: "calendar run stopped before downloading" };
+    try {
+      const result = await runCollectionPoll({
+        store: firestoreCollectionStore(getFirestore()),
+        fetcher: webFetcher,
+        messenger: fcmMessenger(getMessaging()),
+        mrc: loadMrcCalendars(),
+        now: () => new Date(),
+        log,
+      });
+      if (!result.ok) logger.warn("calendar poll failed", { error: result.error });
+      download = result.download ?? { error: result.error ?? "download failed" };
+    } catch (e) {
+      logger.error("calendar poll crashed", { error: (e as Error).message });
+    }
+    try {
+      const events = await runEventsPoll({ store: firestoreEventsStore(getFirestore()), now: () => new Date(), log }, download);
+      if (!events.ok) logger.warn("events step failed", { error: events.error });
+    } catch (e) {
+      logger.error("events step crashed", { error: (e as Error).message });
+    }
   },
 );

@@ -35,6 +35,8 @@ describe("month pages", () => {
       url: "https://www.temiscaming.net/fr/evenements/2026/10/6/141942/collecte-des-matieres-compostables-temiscaming-lac-tee-et-chemins-des-chalets",
       icon: "pm-compost-bin-a",
       title: "COLLECTE DES MATIÈRES COMPOSTABLES -- TÉMISCAMING, LAC TEE ET CHEMINS DES CHALETS",
+      place: "",
+      linkDate: "2026-10-06",
     });
   });
 

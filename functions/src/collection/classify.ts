@@ -54,6 +54,15 @@ function titleSectors(title: string): { sectors: SectorId[]; area: string | null
 }
 
 /**
+ * True for the icons that mark a pickup (a bin, or the fir for Christmas
+ * trees). Everything else on the calendar is an event (Milestone 3): this one
+ * test decides which side of the app an entry goes to.
+ */
+export function isPickupIcon(icon: string | null): boolean {
+  return icon === "pm-fir" || /^pm-.+-bin(?:-[ab])?$/.test(icon ?? "");
+}
+
+/**
  * Classifies one entry. Returns null when it isn't a pickup at all (council
  * meetings, shows…). Pickups are recognised by their bin or fir icon, not by
  * words in the title: a "waste management conference" is not a pickup.
@@ -67,11 +76,11 @@ export function classify(entry: { icon: string | null; title: string; date: stri
   let special: Special | null = null;
   let variant: "a" | "b" | null = null;
 
+  if (!isPickupIcon(icon)) return null;
   if (icon === "pm-fir") {
     special = "christmas-trees";
   } else {
-    const bin = icon.match(/^pm-(.+-bin)(?:-([ab]))?$/);
-    if (!bin) return null;
+    const bin = icon.match(/^pm-(.+-bin)(?:-([ab]))?$/)!;
     material = ICON_MATERIAL[bin[1]] ?? null;
     variant = (bin[2] as "a" | "b" | undefined) ?? null;
     if (!material) {

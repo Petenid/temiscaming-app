@@ -20,6 +20,10 @@ export interface CalendarEntry {
   /** Icon class, e.g. "pm-recycling-bin-a"; null if the event has none. */
   icon: string | null;
   title: string;
+  /** Place shown under the title ("Le Centre - Salle Dottori"); "" if none. */
+  place: string;
+  /** The day the link points to: an event's first day, even when listed under later days. */
+  linkDate: string;
 }
 
 const clean = (s: string) => s.replace(/\s+/g, " ").trim();
@@ -49,12 +53,14 @@ export function parseMonth(html: string, year: number, month: number): CalendarE
     $(heading).parent().find("a.calendar-widget__item").each((_, link) => {
       const href = $(link).attr("href") ?? "";
       // /fr/evenements/2026/10/6/141942/slug — the numeric part before the slug.
-      const eventId = href.match(/\/\d{4}\/\d{1,2}\/\d{1,2}\/(\d+)\//)?.[1];
-      if (!eventId) return; // month-level "banner" items have no day: not ours
+      const parts = href.match(/\/(\d{4})\/(\d{1,2})\/(\d{1,2})\/(\d+)\//);
+      if (!parts) return; // month-level "banner" items have no day: not ours
+      const eventId = parts[4];
       const icon = ($(link).find("i").first().attr("class") ?? "")
         .split(/\s+/).find((c) => c.startsWith("pm-") && c !== "pm") ?? null;
-      // The subtitle may hold a place name in a small <span>; keep only the title.
+      // The subtitle may hold a place name in a small <span>: keep it apart.
       const subtitle = $(link).find(".calendar-widget__subtitle").first().clone();
+      const place = clean(subtitle.find("span").text());
       subtitle.find("span").remove();
       entries.push({
         date,
@@ -62,6 +68,8 @@ export function parseMonth(html: string, year: number, month: number): CalendarE
         url: href.startsWith("http") ? href : CALENDAR_SITE + href,
         icon,
         title: clean(subtitle.text()),
+        place,
+        linkDate: `${parts[1]}-${pad(+parts[2])}-${pad(+parts[3])}`,
       });
     });
   });
