@@ -65,6 +65,11 @@ export function firestoreStore(db: Firestore): Store {
     async saveHealth(h) {
       await health.set(h);
     },
+    async loadOverrides() {
+      // Written by hand in the Firebase console (spec §5c); a handful at most.
+      const snap = await db.collection("overrides").get();
+      return new Map(snap.docs.map((d) => [d.id, d.data()]));
+    },
   };
 }
 

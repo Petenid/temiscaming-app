@@ -50,7 +50,7 @@
   "@alertsTitle": {"description": "Title of the Alerts tab and screen."},
 
   "alertStatusInEffect": "In effect",
-  "@alertStatusInEffect": {"description": "Label on an advisory the Town hasn't lifted (posted in the last 30 days)."},
+  "@alertStatusInEffect": {"description": "Label on an alert the Town hasn't lifted and that hasn't run out: water advisories up to 30 days, other notices until the last date they mention (or 7 days)."},
 
   "alertStatusLifted": "Lifted",
   "@alertStatusLifted": {"description": "Label on an advisory the Town has lifted."},

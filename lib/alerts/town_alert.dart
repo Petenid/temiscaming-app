@@ -3,10 +3,16 @@ import '../settings/app_settings.dart';
 /// How long an advisory the Town never marked "lifted" still counts as
 /// current (spec §5). The real data has 2025 boil-water advisories that were
 /// never marked lifted; without this cap they'd show as "in effect" forever.
+/// Only a fallback now: the backend stores each alert's own end
+/// (`in_effect_until`, spec §5b) — 30 days for water advisories, less for
+/// general notices.
 const currentAdvisoryWindow = Duration(days: 30);
 
 /// The Town's own status for an alert.
 enum AlertStatus { active, lifted, expired }
+
+/// A manual correction made in the Firebase console (spec §5c).
+enum AlertOverride { over, inEffect }
 
 /// A town alert, as stored in Firestore `alerts/{id}` by the backend
 /// (functions/src/alerts/sync.ts). Plain data: no Firebase types, so tests
@@ -25,6 +31,8 @@ class TownAlert {
     required this.sourceUrlFr,
     required this.sourceUrlEn,
     required this.publishedAt,
+    this.inEffectUntil,
+    this.manualOverride,
   });
 
   final String id;
@@ -47,6 +55,13 @@ class TownAlert {
   final String sourceUrlEn;
   final DateTime publishedAt;
 
+  /// When it stops counting as in effect if the Town never marks it lifted
+  /// (spec §5b). Null on alerts saved before the backend computed it.
+  final DateTime? inEffectUntil;
+
+  /// A manual correction; wins over everything else (spec §5c).
+  final AlertOverride? manualOverride;
+
   static const _waterCategories = {
     'boil-water',
     'water-interruption',
@@ -57,11 +72,18 @@ class TownAlert {
 
   bool get isWater => _waterCategories.contains(category);
 
-  /// An advisory the Town hasn't lifted, posted recently enough to trust.
-  bool isInEffect(DateTime now) =>
-      !isLiftingNotice &&
-      status == AlertStatus.active &&
-      now.difference(publishedAt) < currentAdvisoryWindow;
+  /// An advisory the Town hasn't lifted and that hasn't run out (its own
+  /// end date, or 30 days), unless someone corrected it by hand.
+  bool isInEffect(DateTime now) {
+    if (isLiftingNotice) return false;
+    return switch (manualOverride) {
+      AlertOverride.over => false,
+      AlertOverride.inEffect => true,
+      null =>
+        status == AlertStatus.active &&
+            now.isBefore(inEffectUntil ?? publishedAt.add(currentAdvisoryWindow)),
+    };
+  }
 
   /// Drives the red banner on Today.
   bool isBoilWaterInEffect(DateTime now) =>
@@ -105,6 +127,12 @@ class TownAlert {
       sourceUrlFr: text('source_url_fr'),
       sourceUrlEn: text('source_url_en'),
       publishedAt: data['published_at'] as DateTime,
+      inEffectUntil: data['in_effect_until'] as DateTime?,
+      manualOverride: switch (data['override']) {
+        'over' => AlertOverride.over,
+        'in-effect' => AlertOverride.inEffect,
+        _ => null,
+      },
     );
   }
 }

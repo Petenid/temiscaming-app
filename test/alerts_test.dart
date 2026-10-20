@@ -62,6 +62,64 @@ void main() {
     expect(find.text('Boil-water advisory in effect'), findsNothing);
   });
 
+  group('in effect until the notice runs out (spec §5b)', () {
+    testWidgets('a one-day notice past its date is listed without "In effect"', (tester) async {
+      await pumpApp(tester, _onboarded, FakeAlertsRepository(alerts: [SampleAlerts.lowPressure()]));
+      await _openAlertsTab(tester, AppLanguage.en);
+      expect(find.text(SampleAlerts.lowPressure().titleEn), findsOneWidget);
+      expect(find.text('In effect'), findsNothing);
+    });
+
+    testWidgets('the same notice before its date says "In effect" (${AppLanguage.fr.name})', (tester) async {
+      await pumpApp(tester, _onboardedFr, FakeAlertsRepository(
+        alerts: [SampleAlerts.lowPressure(endsIn: const Duration(hours: 5))],
+      ));
+      await _openAlertsTab(tester, AppLanguage.fr);
+      expect(find.text('En vigueur'), findsOneWidget);
+    });
+
+    test('alerts saved before the backend stored an end fall back to 30 days', () {
+      final now = DateTime.now();
+      expect(SampleAlerts.boilWater(age: const Duration(days: 29)).isInEffect(now), isTrue);
+      expect(SampleAlerts.boilWater(age: const Duration(days: 31)).isInEffect(now), isFalse);
+    });
+
+    test('reads in_effect_until and override from Firestore', () {
+      final until = DateTime(2026, 9, 22);
+      final alert = TownAlert.fromMap('8274', {
+        'category': 'other', 'kind': 'advisory', 'status': 'active',
+        'published_at': DateTime(2026, 9, 20, 15), 'in_effect_until': until, 'override': 'in-effect',
+      });
+      expect(alert.inEffectUntil, until);
+      expect(alert.manualOverride, AlertOverride.inEffect);
+      expect(TownAlert.fromMap('1', {'published_at': until, 'override': 'over'}).manualOverride, AlertOverride.over);
+      expect(TownAlert.fromMap('1', {'published_at': until, 'override': 'typo'}).manualOverride, isNull);
+      expect(TownAlert.fromMap('1', {'published_at': until}).inEffectUntil, isNull);
+    });
+  });
+
+  group('manual overrides (spec §5c)', () {
+    testWidgets('"over" removes "In effect" and the boil-water banner', (tester) async {
+      await pumpApp(tester, _onboarded, FakeAlertsRepository(
+        alerts: [SampleAlerts.boilWater(override: AlertOverride.over)],
+      ));
+      expect(find.text('Boil-water advisory in effect'), findsNothing);
+      await _openAlertsTab(tester, AppLanguage.en);
+      expect(find.text('In effect'), findsNothing);
+    });
+
+    testWidgets('"in-effect" keeps a notice in effect past its date, even if marked lifted', (tester) async {
+      await pumpApp(tester, _onboarded, FakeAlertsRepository(alerts: [
+        SampleAlerts.lowPressure(override: AlertOverride.inEffect),
+        SampleAlerts.boilWater(status: AlertStatus.lifted, override: AlertOverride.inEffect),
+      ]));
+      expect(find.text('Boil-water advisory in effect'), findsOneWidget);
+      await _openAlertsTab(tester, AppLanguage.en);
+      expect(find.text('In effect'), findsNWidgets(2));
+      expect(find.text('Lifted'), findsNothing);
+    });
+  });
+
   group('source health — silence must never look like safety', () {
     testWidgets('stale source shows a red warning on Alerts and Today', (tester) async {
       final repo = FakeAlertsRepository(

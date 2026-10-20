@@ -101,6 +101,7 @@ class SampleAlerts {
     String id = '8344',
     AlertStatus status = AlertStatus.active,
     Duration age = const Duration(hours: 2),
+    AlertOverride? override,
   }) => TownAlert(
     id: id,
     category: 'boil-water',
@@ -114,6 +115,30 @@ class SampleAlerts {
     sourceUrlFr: 'https://temiscaming.alertesmunicipales.com/alertes/2026/10/12/avis-d-ebullition-preventif',
     sourceUrlEn: 'https://temiscaming.alertesmunicipales.com/alerts/2026/10/12/precautionary-boil-water-advisory',
     publishedAt: ago(age),
+    manualOverride: override,
+  );
+
+  /// The Town's real one-day notice of 20 September 2026 (alert 8274), which
+  /// the Town never marked lifted. [endsIn] is how long until the end the
+  /// backend read from its text (negative: already past).
+  static TownAlert lowPressure({
+    Duration endsIn = const Duration(days: -28),
+    AlertOverride? override,
+  }) => TownAlert(
+    id: '8274',
+    category: 'other',
+    isLiftingNotice: false,
+    status: AlertStatus.active,
+    titleFr: "BAISSE DE PRESSION D'EAU - LUNDI 21 SEPTEMBRE.",
+    titleEn: 'LOW WATER PRESSURE - MONDAY, SEPTEMBER 21.',
+    bodyFr: "Des travaux seront effectués lundi matin, le 21 septembre, à la station de surpression du parc Adrien-Pharand.",
+    bodyEn: 'Work will be done Monday morning, September 21, at the Adrien-Pharand Park booster station.',
+    bodyIsExcerpt: true,
+    sourceUrlFr: 'https://temiscaming.alertesmunicipales.com/alertes/2026/09/20/baisse-de-pression-d-eau-lundi-21-septembre',
+    sourceUrlEn: 'https://temiscaming.alertesmunicipales.com/alerts/2026/09/20/low-water-pressure-monday-september-21',
+    publishedAt: DateTime.now().add(endsIn).subtract(const Duration(hours: 33)),
+    inEffectUntil: DateTime.now().add(endsIn),
+    manualOverride: override,
   );
 
   static TownAlert liftingNotice() => TownAlert(

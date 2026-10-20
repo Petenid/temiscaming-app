@@ -19,6 +19,12 @@ service cloud.firestore {
       allow read: if true;
       allow write: if false;
     }
+    // Manual corrections to alerts (spec town-alerts §5c): edited by hand in
+    // the Firebase console, which isn't bound by these rules. The backend
+    // copies them onto each alert, so the app never needs to read them.
+    match /overrides/{alertId} {
+      allow read, write: if false;
+    }
     // Everything else stays closed.
     match /{document=**} {
       allow read, write: if false;

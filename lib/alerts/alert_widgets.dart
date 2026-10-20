@@ -62,12 +62,15 @@ class SourceHealthLine extends StatelessWidget {
 }
 
 /// "In effect" / "Lifted" / "Expired", or nothing (lifting notices, and
-/// old advisories the Town never marked lifted).
+/// notices that have run out without the Town marking them lifted).
 String? statusLabel(BuildContext context, TownAlert alert, DateTime now) {
   final l10n = AppLocalizations.of(context);
   if (alert.isLiftingNotice) return null;
+  // Checked first so a manual "in-effect" correction shows even on an alert
+  // the Town marked lifted.
+  if (alert.isInEffect(now)) return l10n.alertStatusInEffect;
   return switch (alert.status) {
-    AlertStatus.active => alert.isInEffect(now) ? l10n.alertStatusInEffect : null,
+    AlertStatus.active => null,
     AlertStatus.lifted => l10n.alertStatusLifted,
     AlertStatus.expired => l10n.alertStatusExpired,
   };

@@ -44,6 +44,12 @@ class FakeStore implements Store {
   async releasePush(id: string) { this.alerts.get(id)!.pushed_at = null; }
   async loadHealth() { return this.health && { ...this.health }; }
   async saveHealth(h: SourceHealth) { this.health = { ...h }; }
+  overrides = new Map<string, Record<string, unknown>>();
+  failOverrides = false;
+  async loadOverrides() {
+    if (this.failOverrides) throw new Error("Firestore unavailable");
+    return new Map(this.overrides);
+  }
 }
 
 let store: FakeStore;
@@ -239,5 +245,80 @@ describe("old alerts", () => {
     const r = await runPoll(deps("2026-10-14T12:00:00Z")); // ~2 days late
     expect(r.pushed).toEqual([]);
     expect(store.alerts.get("8344")!.push_skipped).toBe("too-old");
+  });
+});
+
+describe("until when an alert is in effect (spec §5b)", () => {
+  it("stores the end of the low-pressure notice: midnight after Monday 21 September", async () => {
+    site();
+    await runPoll(deps("2026-10-19T18:05:00Z"));
+    expect(store.alerts.get("8274")).toMatchObject({
+      in_effect_rule: "dated",
+      in_effect_until: new Date("2026-09-22T04:00:00Z"), // 00:00 on the 22nd, Témiscaming time
+      override: null,
+    });
+    expect(store.alerts.get("8344")).toMatchObject({ in_effect_rule: "lifted-only" });
+  });
+
+  it("fills in the new fields on alerts saved before this change", async () => {
+    site();
+    await runPoll(deps("2026-10-19T18:05:00Z"));
+    for (const d of store.alerts.values()) {
+      const old = d as Partial<StoredAlert>;
+      delete old.in_effect_rule; delete old.in_effect_until; delete old.override;
+    }
+    const r = await runPoll(deps("2026-10-19T18:15:00Z"));
+    expect(r.written).toBe(94);
+    expect([...store.alerts.values()].every((d) => d.in_effect_until instanceof Date)).toBe(true);
+    expect((await runPoll(deps("2026-10-19T18:25:00Z"))).written).toBe(0);
+  });
+});
+
+describe("manual overrides (spec §5c)", () => {
+  const logs: string[] = [];
+  const run = (at: string) => runPoll({ ...deps(at), log: (m) => logs.push(m) });
+  beforeEach(async () => {
+    logs.length = 0;
+    site();
+    await run("2026-10-19T18:05:00Z");
+  });
+
+  it("copies an override onto its alert, and clears it when the override is deleted", async () => {
+    store.overrides.set("8274", { status: "over", note: "Only on 21 September" });
+    store.overrides.set("8344", { status: " In-Effect " });
+    await run("2026-10-19T18:15:00Z");
+    expect(store.alerts.get("8274")!.override).toBe("over");
+    expect(store.alerts.get("8344")!.override).toBe("in-effect");
+
+    store.overrides.clear();
+    await run("2026-10-19T18:25:00Z");
+    expect(store.alerts.get("8274")!.override).toBeNull();
+    expect(store.alerts.get("8344")!.override).toBeNull();
+  });
+
+  it("never sends a push because of an override", async () => {
+    sent = [];
+    store.overrides.set("8344", { status: "over" });
+    await run("2026-10-19T18:15:00Z");
+    expect(sent).toEqual([]);
+  });
+
+  it("ignores typos and unknown ids, says why in the log, and keeps polling", async () => {
+    store.overrides.set("8274", { status: "done" });
+    store.overrides.set("99999", { status: "over" });
+    const r = await run("2026-10-19T18:15:00Z");
+    expect(r.ok).toBe(true);
+    expect(store.alerts.get("8274")!.override).toBeNull();
+    expect(logs.join("\n")).toMatch(/override 8274 ignored — status must be "over" or "in-effect"/);
+    expect(logs.join("\n")).toMatch(/override 99999 ignored — no alert with that id/);
+  });
+
+  it("keeps the saved overrides if the overrides can't be read", async () => {
+    store.overrides.set("8274", { status: "over" });
+    await run("2026-10-19T18:15:00Z");
+    store.failOverrides = true;
+    const r = await run("2026-10-19T18:25:00Z");
+    expect(r.ok).toBe(true);
+    expect(store.alerts.get("8274")!.override).toBe("over");
   });
 });

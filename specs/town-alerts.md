@@ -114,12 +114,25 @@ source_url_fr, source_url_en
 published_at       timestamp (America/Toronto → UTC)
 updated_at         when we last saw a change
 pushed_at          when we sent its push (missing = never pushed)
+in_effect_rule     "lifted-only" | "dated" | "undated"   (§5b)
+in_effect_until    timestamp: stops counting as in effect here (§5b)
+override           "over" | "in-effect" | null           (§5c)
 ```
 
 **Firestore `sources/alertes-municipales`** — source health (DESIGN §4):
 `last_attempt_at`, `last_success_at`, `last_item_count`, `last_error` (short text, or empty).
 
-**Derived on the device, not stored:** "is a boil-water advisory active?" = any `boil-water` advisory (not a lifting notice) with `status: active` published in the last 30 days. (The 30-day cap matters: the real data has two 2025 boil-water advisories the Town never marked lifted.) The same rule drives the list label: an *active* alert older than 30 days shows only its date, never "Active".
+**Derived on the device:** "in effect" = not a lifting notice, and either `override` says so, or (no override) `status: active` and now is before `in_effect_until` (30 days after posting on documents saved before §5b). The boil-water banner = a `boil-water` advisory in effect. An alert that isn't in effect shows only its date (or *Lifted* / *Expired*), never "In effect".
+
+### 5b. Until when an alert is in effect (added 2026-10-20)
+The Town almost never closes general notices: a one-day low-pressure notice (alert 8274, 21 Sept 2026) showed "In effect" for 30 days. The backend (`functions/src/alerts/effect.ts`) now stores an end for each alert, by the safest rule that applies:
+- **lifted-only (30 days)** — water categories, any text mentioning boil water (*ébullition, bouillir, boil*), and anything "jusqu'à nouvel avis / nouvel ordre / avis contraire" / "until further notice". Only the Town can end these. Dates in their text are **never** used: the March 2025 boil advisory says "Mise à jour | 21 mars 2025" while still in effect, so reading it would have been a false all-clear (DESIGN principle 3).
+- **dated** — other notices naming a date (FR or EN, ranges like "du 8 au 11 septembre" / "September 8 to 11", ISO dates): in effect until midnight after the last date mentioned, Témiscaming time. Dates before the posting day are background and ignored; a year is inferred from the posting date when missing.
+- **undated** — other notices with no usable date: 7 days.
+Checked against all 94 fixture alerts (`test/effect.test.ts`). Display only: no push is ever sent or withheld because of it.
+
+### 5c. Manual overrides (added 2026-10-20)
+A safety valve for when the rules get it wrong. Firestore `overrides/{alertId}`, created by hand in the Firebase console: `status` = `"over"` or `"in-effect"`, optional `note` (for you; not shown). Each poll (≤10 min) copies it onto the alert's `override` field; deleting the document removes it. It wins over the Town's status and over §5b, including for the boil-water banner — so only mark a water advisory "over" once the Town has confirmed it. Typos and unknown ids are ignored and logged; overrides never send pushes. Rules keep `overrides` closed to the app. How-to: README "Fixing an alert by hand".
 
 **On the device (`shared_preferences`):** `water_alerts_enabled` (default true), `notifications_asked` (onboarding done).
 

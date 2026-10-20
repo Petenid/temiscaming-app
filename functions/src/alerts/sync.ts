@@ -4,6 +4,7 @@
 // Network, database and push are passed in as small interfaces ("ports"),
 // so the tests can swap in fakes and run the whole thing against fixtures.
 import { WATER_CATEGORIES, mentionsWater } from "./classify";
+import { EffectRule, effectOf } from "./effect";
 import { Alert, Kind, Status, pairItems } from "./pair";
 import { decodePage, parseDetail, parseList } from "./parse";
 import { Lang, TemplateKey, pushText } from "../push/templates";
@@ -48,7 +49,16 @@ export interface StoredAlert {
   updated_at: Date;
   pushed_at?: Date | null;
   push_skipped?: string | null;
+  /** Which "in effect" rule applies (spec §5b): lifted-only, dated or undated. */
+  in_effect_rule: EffectRule;
+  /** If the Town never marks it lifted, it stops being "in effect" at this moment. */
+  in_effect_until: Date;
+  /** A manual correction copied from `overrides/{id}` (spec §5c); wins over everything. */
+  override: Override | null;
 }
+
+/** A manual correction: "over" (not in effect) or "in-effect" (still in effect). */
+export type Override = "over" | "in-effect";
 
 /** Firestore `sources/alertes-municipales` (DESIGN §4 source health). */
 export interface SourceHealth {
@@ -68,6 +78,8 @@ export interface Store {
   releasePush(id: string): Promise<void>;
   loadHealth(): Promise<SourceHealth | null>;
   saveHealth(h: SourceHealth): Promise<void>;
+  /** Firestore `overrides`, as written by hand in the Firebase console: id → document. */
+  loadOverrides(): Promise<Map<string, Record<string, unknown>>>;
 }
 
 export interface Fetcher {
@@ -189,7 +201,28 @@ export async function runPoll(deps: Deps): Promise<RunResult> {
     bodies.set(alert.id, got);
   }
 
-  // 5. Build the stored documents and save the ones that changed.
+  // 5. Manual corrections (spec §5c). A typo shouldn't stop the poll, so bad
+  //    entries are logged and ignored.
+  const overrides = new Map<string, Override>();
+  try {
+    const known = new Set(matched.map(({ alert }) => alert.id));
+    for (const [id, data] of await store.loadOverrides()) {
+      const status = typeof data.status === "string" ? data.status.trim().toLowerCase() : "";
+      if (status !== "over" && status !== "in-effect") {
+        log(`town alerts: override ${id} ignored — status must be "over" or "in-effect", got ${JSON.stringify(data.status)}`);
+      } else if (!known.has(id)) {
+        log(`town alerts: override ${id} ignored — no alert with that id`);
+      } else {
+        overrides.set(id, status);
+      }
+    }
+  } catch (e) {
+    // Keep the overrides already saved on each alert rather than drop them.
+    log(`town alerts: could not read overrides: ${(e as Error).message}`);
+    for (const d of existing) if (d.override) overrides.set(d.id, d.override);
+  }
+
+  // 6. Build the stored documents and save the ones that changed.
   const toSave: StoredAlert[] = [];
   const all: StoredAlert[] = [];
   for (const { alert, prev } of matched) {
@@ -223,7 +256,13 @@ export async function runPoll(deps: Deps): Promise<RunResult> {
       updated_at: prev?.updated_at ?? startedAt,
       pushed_at: prev?.pushed_at ?? null,
       push_skipped: prev?.push_skipped ?? null,
+      in_effect_rule: "undated",
+      in_effect_until: alert.publishedAt,
+      override: overrides.get(alert.id) ?? null,
     };
+    const effect = effectOf(doc);
+    doc.in_effect_rule = effect.rule;
+    doc.in_effect_until = effect.until;
     all.push(doc);
     if (!prev) {
       toSave.push(doc);
@@ -233,7 +272,7 @@ export async function runPoll(deps: Deps): Promise<RunResult> {
     }
   }
 
-  // 6. Decide pushes. Every alert ends up either sent (pushed_at) or with a
+  // 7. Decide pushes. Every alert ends up either sent (pushed_at) or with a
   //    reason it wasn't (push_skipped). One with neither is still owed a push
   //    (say the last attempt failed) and is retried while it's fresh.
   const lastPushAt: Partial<Record<TemplateKey, Date>> = { ...(health?.last_push_at ?? {}) };
@@ -259,7 +298,7 @@ export async function runPoll(deps: Deps): Promise<RunResult> {
 
   if (toSave.length) await store.saveAlerts(toSave);
 
-  // 7. Send. The claim stops two overlapping runs from pushing the same alert twice.
+  // 8. Send. The claim stops two overlapping runs from pushing the same alert twice.
   const pushed: string[] = [];
   for (const { doc, key, previous } of toSend) {
     if (!(await store.claimPush(doc.id, startedAt))) continue;
@@ -305,9 +344,13 @@ export function templateFor(doc: Pick<StoredAlert, "kind" | "category" | "title_
 const COMPARED: (keyof StoredAlert)[] = [
   "kind", "category", "status", "severity", "title_fr", "title_en", "body_fr", "body_en",
   "body_is_excerpt", "detail_fetched", "original_language", "source_url_fr", "source_url_en", "match_key",
+  "in_effect_rule", "override",
 ];
 
 function contentChanged(a: StoredAlert, b: StoredAlert): boolean {
-  return COMPARED.some((k) => a[k] !== b[k]) ||
-    a.published_at.getTime() !== b.published_at.getTime();
+  // Missing on documents saved before spec §5b/§5c: undefined ≠ value, so
+  // the first poll after deploying fills them in.
+  return COMPARED.some((k) => (a[k] ?? null) !== (b[k] ?? null)) ||
+    a.published_at.getTime() !== b.published_at.getTime() ||
+    a.in_effect_until?.getTime() !== b.in_effect_until.getTime();
 }
