@@ -3,10 +3,15 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Town alerts and the health of each source are public information:
+    // Town alerts, pickups and the health of each source are public information:
     // anyone may read them. Nobody may write from the app; only the backend
     // (Cloud Functions) writes, and it isn't bound by these rules.
     match /alerts/{alertId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    // Collection pickups (Milestone 2): public schedule, read-only.
+    match /collections/{pickupId} {
       allow read: if true;
       allow write: if false;
     }

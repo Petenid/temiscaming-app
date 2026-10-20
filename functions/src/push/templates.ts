@@ -50,3 +50,63 @@ export function pushText(key: TemplateKey, category: Category, lang: Lang): Push
         : { title: "Advisory lifted", body: "The water advisory has been lifted. Tap for details." };
   }
 }
+
+// --- Collection change notices (Milestone 2, spec §6) ---
+
+export type CollectionChange = "moved" | "cancelled" | "added";
+export type BinMaterial = "compost" | "recycling" | "garbage";
+
+const BIN_NAME: Record<Lang, Record<BinMaterial, string>> = {
+  fr: { compost: "bac vert", recycling: "bac bleu", garbage: "bac noir" },
+  en: { compost: "green bin", recycling: "blue bin", garbage: "black bin" },
+};
+
+/** "jeudi 25 juin" / "Thursday, June 25" for a "YYYY-MM-DD" date. */
+export function formatPickupDate(date: string, lang: Lang): string {
+  const [y, m, d] = date.split("-").map(Number);
+  return new Intl.DateTimeFormat(lang === "fr" ? "fr-CA" : "en-CA", {
+    weekday: "long", month: "long", day: "numeric", timeZone: "UTC",
+  }).format(new Date(Date.UTC(y, m - 1, d)));
+}
+
+/** "Bac bleu", "Bac bleu et bac vert" / "Blue bin", "Blue and green bins". */
+export function binsLabel(materials: BinMaterial[], lang: Lang): string {
+  // Always the same order: green, blue, black (like the bins themselves).
+  const order: BinMaterial[] = ["compost", "recycling", "garbage"];
+  const names = order.filter((m) => materials.includes(m)).map((m) => BIN_NAME[lang][m]);
+  let label: string;
+  if (lang === "fr") {
+    label = names.length > 1 ? `${names.slice(0, -1).join(", ")} et ${names.at(-1)}` : names[0];
+  } else {
+    const colours = names.map((n) => n.replace(" bin", ""));
+    label = names.length > 1
+      ? `${colours.slice(0, -1).join(", ")} and ${colours.at(-1)} bins`
+      : names[0];
+  }
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
+export function collectionChangeText(
+  change: CollectionChange, materials: BinMaterial[], date: string,
+  previousDate: string | null, lang: Lang,
+): PushText {
+  const bins = binsLabel(materials, lang);
+  const when = formatPickupDate(date, lang);
+  const fr = lang === "fr";
+  switch (change) {
+    case "moved": {
+      const before = previousDate ? formatPickupDate(previousDate, lang) : "";
+      return fr
+        ? { title: "Collecte déplacée", body: `${bins} : ${when} (au lieu du ${before}).` }
+        : { title: "Pickup moved", body: `${bins}: ${when} (instead of ${before}).` };
+    }
+    case "cancelled":
+      return fr
+        ? { title: "Collecte annulée", body: `${bins} du ${when}. Touchez pour les détails.` }
+        : { title: "Pickup cancelled", body: `${bins} on ${when}. Tap for details.` };
+    case "added":
+      return fr
+        ? { title: "Collecte ajoutée", body: `${bins} : ${when}.` }
+        : { title: "Pickup added", body: `${bins}: ${when}.` };
+  }
+}

@@ -79,8 +79,13 @@ export interface PushMessage {
   topic: string;
   title: string;
   body: string;
-  alertId: string;
+  /** The alert to open on tap (water alerts). */
+  alertId?: string;
   urgent: boolean;
+  /** Android channel; defaults to the water channels (urgent / updates). */
+  channel?: string;
+  /** Data the app reads on tap; defaults to { alert_id }. */
+  data?: Record<string, string>;
 }
 
 export interface Messenger {

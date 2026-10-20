@@ -7,6 +7,9 @@ import { Messaging } from "firebase-admin/messaging";
 import {
   Fetcher, Messenger, SOURCE_ID, SourceHealth, Store, StoredAlert,
 } from "./alerts/sync";
+import {
+  CalendarHealth, CollectionStore, SOURCE_ID as CALENDAR_SOURCE_ID, StoredPickup,
+} from "./collection/sync";
 
 const USER_AGENT =
   "AlloTemis/1.0 (independent community app for Témiscaming; https://github.com/Petenid/temiscaming-app)";
@@ -83,13 +86,63 @@ export function fcmMessenger(messaging: Messaging): Messenger {
       await messaging.send({
         topic: m.topic,
         notification: { title: m.title, body: m.body },
-        data: { alert_id: m.alertId },
+        data: m.data ?? { alert_id: m.alertId ?? "" },
         android: {
           priority: "high",
-          notification: { channelId: m.urgent ? "water_urgent" : "water_updates" },
+          notification: { channelId: m.channel ?? (m.urgent ? "water_urgent" : "water_updates") },
         },
         apns: { payload: { aps: { sound: "default" } } },
       });
+    },
+  };
+}
+
+// --- Collection day (Milestone 2): Firestore `collections` + `sources/town-calendar` ---
+
+export function firestoreCollectionStore(db: Firestore): CollectionStore {
+  const pickups = db.collection("collections");
+  const health = db.collection("sources").doc(CALENDAR_SOURCE_ID);
+  return {
+    async loadPickups(fromDate) {
+      const snap = await pickups.where("date", ">=", fromDate).get();
+      return snap.docs.map((d) => toDates<StoredPickup>(d.data()));
+    },
+    async savePickups(docs) {
+      for (let i = 0; i < docs.length; i += 400) {
+        const batch = db.batch();
+        for (const doc of docs.slice(i, i + 400)) {
+          // pushed_at belongs to claimPush; only a new change resets it to null.
+          const { pushed_at, ...rest } = doc;
+          batch.set(pickups.doc(doc.id), pushed_at === null ? { ...rest, pushed_at: null } : rest, { merge: true });
+        }
+        await batch.commit();
+      }
+    },
+    async deletePickups(ids) {
+      for (let i = 0; i < ids.length; i += 400) {
+        const batch = db.batch();
+        for (const id of ids.slice(i, i + 400)) batch.delete(pickups.doc(id));
+        await batch.commit();
+      }
+    },
+    async claimPush(id, at) {
+      return db.runTransaction(async (tx) => {
+        const ref = pickups.doc(id);
+        const snap = await tx.get(ref);
+        if (!snap.exists || snap.get("pushed_at")) return false;
+        tx.update(ref, { pushed_at: at });
+        return true;
+      });
+    },
+    async releasePush(id) {
+      await pickups.doc(id).update({ pushed_at: null });
+    },
+    async loadHealth() {
+      const snap = await health.get();
+      return snap.exists ? toDates<CalendarHealth>(snap.data()!) : null;
+    },
+    async saveHealth(h) {
+      await health.set(h);
     },
   };
 }
