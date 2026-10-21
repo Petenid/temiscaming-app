@@ -76,7 +76,11 @@ void main() {
       expect(tester.takeException(), isNull, reason: 'alert detail');
       await _back(tester);
 
-      expect(find.byType(WeatherAlertBanner), findsOneWidget);
+      // At 200% the boil-water banner fills the screen, and the list only
+      // builds rows near the screen: scroll to the weather banner first.
+      await tester.scrollUntilVisible(find.byType(WeatherAlertBanner), 200,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      expect(tester.takeException(), isNull, reason: 'Today weather alert banner');
       await scrollAndTap(tester, find.byType(WeatherAlertBanner));
       expect(find.byType(WeatherScreen), findsOneWidget);
       expect(tester.takeException(), isNull, reason: 'Weather screen');
