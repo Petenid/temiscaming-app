@@ -1,0 +1,7 @@
+{
+"type": "FeatureCollection",
+"name": "msp_interdiction_feu_ciel_ouvert_ifco",
+"features": [
+{"type": "Feature", "id": 1, "properties": {"mes_prev": "Interdiction de faire des feux à ciel ouvert en forêt ou à proximité", "date_eff": "2026-10-22", "heure_eff": "8h"}, "geometry": {"type": "Polygon", "coordinates": [[[-79.52, 46.3], [-77.95, 46.3], [-77.95, 48.05], [-79.52, 48.05], [-79.52, 46.3]]]}}
+]
+}

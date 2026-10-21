@@ -54,3 +54,55 @@ export function contains(geometry: Geometry | null | undefined, p: Point): boole
 export function coversTown(geometry: Geometry | null | undefined): boolean {
   return TOWN_POINTS.some(({ point }) => contains(geometry, point));
 }
+
+// --- Distance (fire bans spec D2) ---
+// The forest access ban covers public forest land and may leave the town
+// itself out, so for it we ask "how close does the area come?" instead.
+
+/** Kilometres per degree of latitude (the Earth's mean radius × π / 180). */
+const KM_PER_DEG = 6371.0088 * (Math.PI / 180);
+
+/**
+ * Shortest distance (km) from `p` to the segment a–b, on a flat map centred on
+ * `p`. Degrees of longitude are shrunk by cos(latitude): accurate to well under
+ * 1% at the distances we care about (up to ~150 km).
+ */
+function segmentKm([px, py]: Point, a: number[], b: number[]): number {
+  const kx = KM_PER_DEG * Math.cos((py * Math.PI) / 180);
+  const ky = KM_PER_DEG;
+  const ax = (a[0] - px) * kx, ay = (a[1] - py) * ky;
+  const bx = (b[0] - px) * kx, by = (b[1] - py) * ky;
+  const dx = bx - ax, dy = by - ay;
+  const len2 = dx * dx + dy * dy;
+  // Where along a–b the closest point is (0 = a, 1 = b), kept on the segment.
+  const t = len2 === 0 ? 0 : Math.max(0, Math.min(1, -(ax * dx + ay * dy) / len2));
+  return Math.hypot(ax + t * dx, ay + t * dy);
+}
+
+function polygonsOf(geometry: Geometry | null | undefined): Ring[][] {
+  if (!geometry || !Array.isArray(geometry.coordinates)) return [];
+  if (geometry.type === "Polygon") return [geometry.coordinates as Ring[]];
+  if (geometry.type === "MultiPolygon") return geometry.coordinates as Ring[][];
+  return [];
+}
+
+/**
+ * Distance (km) from `p` to an area: 0 if inside, otherwise to its nearest
+ * edge (holes count as edges, so a point in a hole gets the distance to the
+ * hole's border). Infinity for anything that isn't a Polygon/MultiPolygon.
+ */
+export function distanceKm(geometry: Geometry | null | undefined, p: Point): number {
+  if (contains(geometry, p)) return 0;
+  let best = Infinity;
+  for (const rings of polygonsOf(geometry)) {
+    for (const ring of rings) {
+      for (let i = 1; i < ring.length; i++) best = Math.min(best, segmentKm(p, ring[i - 1], ring[i]));
+    }
+  }
+  return best;
+}
+
+/** Distance (km) from the nearer of the town centre and Lumsden. */
+export function distanceFromTownKm(geometry: Geometry | null | undefined): number {
+  return Math.min(...TOWN_POINTS.map(({ point }) => distanceKm(geometry, point)));
+}

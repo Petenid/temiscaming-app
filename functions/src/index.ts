@@ -8,13 +8,14 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 import {
-  fcmMessenger, firestoreCollectionStore, firestoreEventsStore, firestoreStore,
+  fcmMessenger, firestoreCollectionStore, firestoreEventsStore, firestoreFireStore, firestoreStore,
   firestoreWeatherStore, webFetcher,
 } from "./adapters";
 import { runPoll } from "./alerts/sync";
 import { MrcCalendar } from "./collection/merge";
 import { CalendarDownload, runCollectionPoll } from "./collection/sync";
 import { runEventsPoll } from "./events/sync";
+import { runFireBanPoll } from "./fire/sync";
 import { runForecastPoll, runWeatherPoll } from "./weather/sync";
 
 initializeApp();
@@ -137,5 +138,33 @@ export const pollForecast = onSchedule(
       log: (message) => logger.info(message),
     });
     if (!r.ok) logger.warn("forecast failed", { error: r.error });
+  },
+);
+
+/**
+ * Quebec's open-fire ban (IFCO) and forest access ban (ICAF), every 30 minutes
+ * (fire-bans spec D4). Pushes when a ban starts, is announced or lifts for
+ * Témiscaming (D5). Each layer records its own health.
+ */
+export const pollFireBans = onSchedule(
+  {
+    schedule: "every 30 minutes",
+    timeZone: "America/Toronto",
+    region: "northamerica-northeast1",
+    timeoutSeconds: 120,
+    memory: "256MiB",
+    retryCount: 0,
+    maxInstances: 1,
+  },
+  async () => {
+    const r = await runFireBanPoll({
+      store: firestoreFireStore(getFirestore()),
+      fetcher: webFetcher,
+      messenger: fcmMessenger(getMessaging()),
+      now: () => new Date(),
+      log: (message) => logger.info(message),
+    });
+    if (!r.ifco.ok) logger.warn("fire ban (IFCO) failed", { error: r.ifco.error });
+    if (!r.icaf.ok) logger.warn("forest access ban (ICAF) failed", { error: r.icaf.error });
   },
 );

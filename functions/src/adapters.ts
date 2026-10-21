@@ -11,6 +11,7 @@ import {
   CalendarHealth, CollectionStore, SOURCE_ID as CALENDAR_SOURCE_ID, StoredPickup,
 } from "./collection/sync";
 import { EVENTS_SOURCE_ID, EventsHealth, EventsStore, StoredEvent } from "./events/sync";
+import { FIRE_LINKS, FIRE_SOURCE_ID, FireHealth, FireStore, StoredLayer } from "./fire/sync";
 import { WeatherHealth, WeatherStore } from "./weather/sync";
 
 const USER_AGENT =
@@ -206,6 +207,38 @@ export function firestoreWeatherStore(db: Firestore): WeatherStore {
     },
     async saveHealth(id, h) {
       await sources.doc(id).set(h);
+    },
+  };
+}
+
+// --- Fire bans (Milestone 6): Firestore `fire/temiscaming` + `sources/msi-ifco`, `sources/msi-icaf` ---
+
+export function firestoreFireStore(db: Firestore): FireStore {
+  const doc = db.collection("fire").doc("temiscaming");
+  const sources = db.collection("sources");
+  return {
+    async loadFire() {
+      const snap = await doc.get();
+      if (!snap.exists) return {};
+      const data = snap.data()!;
+      const out: { ifco?: StoredLayer; icaf?: StoredLayer } = {};
+      for (const layer of ["ifco", "icaf"] as const) {
+        if (data[layer]) out[layer] = toDates<StoredLayer>(data[layer]);
+      }
+      return out;
+    },
+    async saveLayer(layer, fields) {
+      // mergeFields replaces this layer's whole map (nothing stale survives
+      // inside it) and leaves the other layer alone (spec D11).
+      const links = Object.keys(FIRE_LINKS);
+      await doc.set({ [layer]: fields, ...FIRE_LINKS }, { mergeFields: [layer, ...links] });
+    },
+    async loadHealth(layer) {
+      const snap = await sources.doc(FIRE_SOURCE_ID[layer]).get();
+      return snap.exists ? toDates<FireHealth>(snap.data()!) : null;
+    },
+    async saveHealth(layer, h) {
+      await sources.doc(FIRE_SOURCE_ID[layer]).set(h);
     },
   };
 }

@@ -1,0 +1,7 @@
+{
+"type": "FeatureCollection",
+"name": "msp_interdiction_feu_ciel_ouvert_ifco",
+"features": [
+{"type": "Feature", "id": 1, "properties": {"mes_prev": "AUCUNE - Interdiction de faire des feux à ciel ouvert en forêt ou à proximité", "date_eff": "2026-07-20", "heure_eff": "12h"}, "geometry": {"type": "Polygon", "coordinates": [[[-73.95097188575971, 50.52300464171394], [-73.95097265905957, 50.52301110098907], [-73.95098713435277, 50.523010611748056], [-73.95098636073794, 50.52300413797001], [-73.95097188575971, 50.52300464171394]]]}}
+]
+}

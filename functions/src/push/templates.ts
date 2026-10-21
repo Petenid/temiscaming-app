@@ -110,3 +110,63 @@ export function collectionChangeText(
         : { title: "Pickup added", body: `${bins}: ${when}.` };
   }
 }
+
+// --- Fire bans (Milestone 6, spec fire-bans D6) ---
+
+export type FireLayer = "ifco" | "icaf";
+export type FirePushKind = "announced" | "started" | "lifted";
+
+/** "jeudi 22 octobre à 8 h" / "Thursday, October 22 at 8 a.m." (Témiscaming time). */
+export function formatFireStart(at: Date, lang: Lang): string {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Toronto", hourCycle: "h23", hour: "2-digit", minute: "2-digit",
+  }).formatToParts(at);
+  const h = +parts.find((p) => p.type === "hour")!.value;
+  const m = +parts.find((p) => p.type === "minute")!.value;
+  const day = new Intl.DateTimeFormat(lang === "fr" ? "fr-CA" : "en-CA", {
+    timeZone: "America/Toronto", weekday: "long", month: "long", day: "numeric",
+  }).format(at);
+  if (lang === "fr") return `${day} à ${h} h${m ? ` ${String(m).padStart(2, "0")}` : ""}`;
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  const clock = m ? `${h12}:${String(m).padStart(2, "0")}` : `${h12}`;
+  return `${day} at ${clock} ${h < 12 ? "a.m." : "p.m."}`;
+}
+
+const FIRE_TITLE: Record<Lang, Record<FireLayer, string>> = {
+  fr: { ifco: "Interdiction de faire des feux à ciel ouvert", icaf: "Interdiction d'accès en forêt" },
+  en: { ifco: "Open-fire ban", icaf: "Forest access ban" },
+};
+
+const FIRE_LIFTED_FR: Record<FireLayer, string> = {
+  ifco: "Fin de l'interdiction de feux à ciel ouvert",
+  icaf: "Fin de l'interdiction d'accès en forêt",
+};
+
+export function firePushText(layer: FireLayer, kind: FirePushKind, startsAt: Date | null, lang: Lang): PushText {
+  const fr = lang === "fr";
+  const title = FIRE_TITLE[lang][layer];
+  const where = layer === "ifco"
+    ? (fr ? "à Témiscaming" : "for Témiscaming")
+    : (fr ? "autour de Témiscaming" : "around Témiscaming");
+  const tap = fr ? "Touchez pour les détails." : "Tap for details.";
+  switch (kind) {
+    case "announced": {
+      const when = startsAt ? formatFireStart(startsAt, lang) : "";
+      return fr
+        ? { title, body: `En vigueur ${where} à partir de ${when}. ${tap}` }
+        : { title, body: `In effect ${where} starting ${when}${when.endsWith(".") ? "" : "."} ${tap}` };
+    }
+    case "started": {
+      const what = layer === "ifco"
+        ? (fr ? "Pas de feux de camp ni de brûlage." : "No campfires or brush burning.")
+        : (fr ? "N'allez pas en forêt." : "Stay out of the forest.");
+      return fr
+        ? { title, body: `En vigueur ${where}. ${what} ${tap}` }
+        : { title, body: `Now in effect ${where}. ${what} ${tap}` };
+    }
+    case "lifted":
+      return fr
+        ? { title: FIRE_LIFTED_FR[layer], body: `L'interdiction est levée ${where}. ${tap}` }
+        : { title: `${title} lifted`, body: `The ban ${where} has been lifted. ${tap}` };
+  }
+}

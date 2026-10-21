@@ -130,3 +130,14 @@ Fire danger index in-app (needs SOPFEU's permission), RTF, maps drawn in the app
 
 ## 9. DESIGN.md changes on approval
 §6.6 source details (WFS layers, AUCUNE placeholder, ICAF "around" rule, Town notices stay in Alerts); §4 stack (`pollFireBans`, `fire` collection, `fire-fr/en` topics, `fire_urgent`/`fire_updates` channels); §7 Settings (Fire bans toggle); §8 lesson: "a publisher's description of its data may not match what it serves — check the live file".
+
+---
+
+## 10. Implementation notes (2026-10-21, backend)
+- **"Elsewhere in the region" is 150 km, not 50 km** (D2). §8 step 1 asks for the July-2026 ban (Rouyn-Noranda + Abitibi) to show as `region`, but Rouyn-Noranda is ~130 km away. 150 km covers it and the rest of the MRC de Témiscamingue (Ville-Marie ~90 km).
+- **The 6-hour re-ban rule (D5) was dropped.** If a ban lifts and comes back within 6 hours, the last push people got would say "lifted" while a ban is in effect. Instead, each layer remembers the last thing pushed (`pushed.kind`); a push goes out only when what's true now disagrees with it. That alone gives "announced then started = one push", "amendment = no push", and a failed push retried next run only if it's still true.
+- **First run records, doesn't push**, so deploying never sends a surprise.
+- **`pushed` lives inside each layer** (`ifco.pushed`, `icaf.pushed`) rather than a top-level map, so each layer's write is self-contained. It's in a public document; it holds only a kind and a time.
+- **Partial push failure:** if one language's push fails and the other goes out, it's recorded as sent (resending the other language every 30 min would be worse); the failure is logged.
+- **Links:** the Québec.ca measures page exists in French only (the app labels it, DESIGN §5). SOPFEU: English regional page confirmed; the French address (`/situation-actuelle/abitibi-temiscamingue/`) still to be opened once in a browser before the app milestone.
+- **Fixtures:** `fixtures/fire/2026-10-21/` was copied from the live service through a web reader, not downloaded byte for byte; run *Capture fixtures* → `fire` once to replace it with the exact files (tests should still pass).
