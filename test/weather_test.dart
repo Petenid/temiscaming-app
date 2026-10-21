@@ -121,8 +121,8 @@ void main() {
       expect(_inCard(find.textContaining(language == AppLanguage.en ? 'Temiskaming Dam station' : 'Station Barrage Témiscaming')),
           findsOneWidget);
       expect(_inCard(find.text(language == AppLanguage.en
-          ? 'Today: Cloudy, High 16° · Low −1°'
-          : 'Aujourd’hui : Nuageux, Max 16° · Min −1°')), findsOneWidget);
+          ? 'Today: Cloudy, High\u00a016° · Low\u00a0−1°'
+          : 'Aujourd’hui : Nuageux, Max\u00a016° · Min\u00a0−1°')), findsOneWidget);
       // No alerts and all fresh: no banner, no warning line.
       expect(find.byType(WeatherAlertBanner), findsNothing);
       expect(_inCard(find.byType(WeatherStatusLine)), findsNothing);

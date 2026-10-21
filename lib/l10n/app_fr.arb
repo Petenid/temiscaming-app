@@ -249,7 +249,7 @@
 
   "weatherDayLine": "{day} : {condition}, {highLow}",
 
-  "weatherHighLow": "Max {high}° · Min {low}°",
+  "weatherHighLow": "Max {high}° · Min {low}°",
 
   "weatherRain": "Pluie {amount} mm",
 

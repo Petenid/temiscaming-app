@@ -395,8 +395,8 @@
   "weatherDayLine": "{day}: {condition}, {highLow}",
   "@weatherDayLine": {"description": "Today's forecast on the Today card. day = Today; condition = our label; highLow = 'High 16° · Low −1°'.", "placeholders": {"day": {"type": "String"}, "condition": {"type": "String"}, "highLow": {"type": "String"}}},
 
-  "weatherHighLow": "High {high}° · Low {low}°",
-  "@weatherHighLow": {"description": "Forecast high and low temperatures for a day.", "placeholders": {"high": {"type": "String"}, "low": {"type": "String"}}},
+  "weatherHighLow": "High {high}° · Low {low}°",
+  "@weatherHighLow": {"description": "Forecast high and low temperatures for a day. The spaces after High and Low are non-breaking, so a number never wraps away from its label.", "placeholders": {"high": {"type": "String"}, "low": {"type": "String"}}},
 
   "weatherRain": "Rain {amount} mm",
   "@weatherRain": {"description": "Forecast rain amount for a day.", "placeholders": {"amount": {"type": "String"}}},
