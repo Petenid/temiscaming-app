@@ -10,7 +10,7 @@ on:
       source:
         description: "Which source to save"
         type: choice
-        options: [alerts, calendar]
+        options: [alerts, calendar, weather]
         default: alerts
       detail_paths:
         description: "alerts only: extra detail pages to save (space-separated paths, e.g. /alertes/2026/10/12/avis-d-ebullition-preventif)"
@@ -85,6 +85,41 @@ jobs:
           # MRC de Témiscamingue 2026 collection calendar (research §1).
           get /file-24778 "mrc-calendar.pdf"
 
+      # Weather (Milestone 4, specs/weather.md §2): Environment Canada's city
+      # page and alerts, ECCC's forecast-zone polygons around town, and the
+      # Open-Meteo forecast for Témiscaming. Saved per capture time, since
+      # weather changes: run it again whenever an alert covers the area.
+      - name: Download weather data
+        if: inputs.source == 'weather'
+        env:
+          ECCC: https://api.weather.gc.ca/collections
+          OPEN_METEO: https://api.open-meteo.com/v1/gem
+        run: |
+          set -euo pipefail
+          stamp=$(TZ=America/Toronto date +%F-%H%M)
+          out="functions/test/fixtures/weather/$stamp"
+          mkdir -p "$out"
+          ua="AlloTemis-fixture-capture/1.0 (+https://github.com/${GITHUB_REPOSITORY})"
+          get() { # $1 = full URL, $2 = file name
+            curl -sSfL --max-time 60 -A "$ua" "$1" -o "$out/$2"
+            echo "saved $1 → $out/$2 ($(wc -c < "$out/$2") bytes)"
+            sleep 2
+          }
+          # City page "Témiscamingue": conditions at the Barrage Témiscaming station.
+          get "$ECCC/citypageweather-realtime/items/qc-139?f=json" qc-139.json
+          # Alerts near town (what the backend will ask for), along the
+          # Ontario border (to test that North Bay alerts are left out), and
+          # every current Quebec alert (real polygons and texts as samples).
+          get "$ECCC/weather-alerts/items?f=json&bbox=-79.20,46.65,-78.95,46.80&limit=100" alerts-town.json
+          get "$ECCC/weather-alerts/items?f=json&bbox=-80.60,45.80,-78.60,47.00&limit=200" alerts-border.json
+          get "$ECCC/weather-alerts/items?f=json&province=QC&limit=500" alerts-qc.json
+          # Forecast zones touching town (Témiscamingue + North Bay) for the
+          # point-in-polygon tests.
+          get "$ECCC/public-standard-forecast-zones/items?f=json&bbox=-79.20,46.65,-78.95,46.80&limit=20" zones-town.json
+          # Open-Meteo forecast for Témiscaming (spec D1).
+          daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,rain_sum,snowfall_sum,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant,sunrise,sunset
+          get "$OPEN_METEO?latitude=46.7213&longitude=-79.0975&timezone=America%2FToronto&forecast_days=7&daily=$daily" forecast.json
+
       - name: Commit
         env:
           SOURCE: ${{ inputs.source }}
@@ -93,5 +128,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add functions/test/fixtures
           git diff --cached --quiet && { echo "nothing new"; exit 0; }
-          git commit -m "Fixtures: capture $SOURCE pages $(TZ=America/Toronto date +%F)"
+          git commit -m "Fixtures: capture $SOURCE data $(TZ=America/Toronto date +%F)"
           git push
