@@ -11,6 +11,7 @@ import {
   CalendarHealth, CollectionStore, SOURCE_ID as CALENDAR_SOURCE_ID, StoredPickup,
 } from "./collection/sync";
 import { EVENTS_SOURCE_ID, EventsHealth, EventsStore, StoredEvent } from "./events/sync";
+import { WeatherHealth, WeatherStore } from "./weather/sync";
 
 const USER_AGENT =
   "AlloTemis/1.0 (independent community app for Témiscaming; https://github.com/Petenid/temiscaming-app)";
@@ -184,6 +185,27 @@ export function firestoreEventsStore(db: Firestore): EventsStore {
     },
     async saveHealth(h) {
       await health.set(h);
+    },
+  };
+}
+
+// --- Weather (Milestone 4): Firestore `weather/temiscaming` + three `sources/…` ---
+
+export function firestoreWeatherStore(db: Firestore): WeatherStore {
+  const doc = db.collection("weather").doc("temiscaming");
+  const sources = db.collection("sources");
+  return {
+    async saveWeather(fields) {
+      // merge: each step writes only its own fields (spec D9). Every field it
+      // owns is always written (null when absent), so nothing stale survives.
+      await doc.set(fields, { merge: true });
+    },
+    async loadHealth(id) {
+      const snap = await sources.doc(id).get();
+      return snap.exists ? toDates<WeatherHealth>(snap.data()!) : null;
+    },
+    async saveHealth(id, h) {
+      await sources.doc(id).set(h);
     },
   };
 }

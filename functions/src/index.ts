@@ -8,12 +8,14 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 import {
-  fcmMessenger, firestoreCollectionStore, firestoreEventsStore, firestoreStore, webFetcher,
+  fcmMessenger, firestoreCollectionStore, firestoreEventsStore, firestoreStore,
+  firestoreWeatherStore, webFetcher,
 } from "./adapters";
 import { runPoll } from "./alerts/sync";
 import { MrcCalendar } from "./collection/merge";
 import { CalendarDownload, runCollectionPoll } from "./collection/sync";
 import { runEventsPoll } from "./events/sync";
+import { runForecastPoll, runWeatherPoll } from "./weather/sync";
 
 initializeApp();
 
@@ -86,5 +88,54 @@ export const pollTownCalendar = onSchedule(
     } catch (e) {
       logger.error("events step crashed", { error: (e as Error).message });
     }
+  },
+);
+
+/**
+ * Environment Canada every 15 minutes (weather spec D3): conditions at the
+ * Barrage Témiscaming station, then weather alerts covering the town. Each
+ * step records its own health; one failing never stops the other.
+ */
+export const pollWeather = onSchedule(
+  {
+    schedule: "every 15 minutes",
+    timeZone: "America/Toronto",
+    region: "northamerica-northeast1",
+    timeoutSeconds: 120,
+    memory: "256MiB",
+    retryCount: 0,
+    maxInstances: 1,
+  },
+  async () => {
+    const r = await runWeatherPoll({
+      store: firestoreWeatherStore(getFirestore()),
+      fetcher: webFetcher,
+      now: () => new Date(),
+      log: (message) => logger.info(message),
+    });
+    if (!r.conditions.ok) logger.warn("weather conditions failed", { error: r.conditions.error });
+    if (!r.alerts.ok) logger.warn("weather alerts failed", { error: r.alerts.error });
+  },
+);
+
+/** The Open-Meteo forecast for Témiscaming, every hour (weather spec D1, D3). */
+export const pollForecast = onSchedule(
+  {
+    schedule: "every 1 hours",
+    timeZone: "America/Toronto",
+    region: "northamerica-northeast1",
+    timeoutSeconds: 60,
+    memory: "256MiB",
+    retryCount: 0,
+    maxInstances: 1,
+  },
+  async () => {
+    const r = await runForecastPoll({
+      store: firestoreWeatherStore(getFirestore()),
+      fetcher: webFetcher,
+      now: () => new Date(),
+      log: (message) => logger.info(message),
+    });
+    if (!r.ok) logger.warn("forecast failed", { error: r.error });
   },
 );
