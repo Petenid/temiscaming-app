@@ -53,7 +53,9 @@ class EventsScreen extends StatelessWidget {
                   padding: EdgeInsets.all(32),
                   child: Center(child: CircularProgressIndicator()),
                 )
-              else if (days.isEmpty && !repository.failed)
+              // "Nothing coming up" only once the calendar has actually been
+              // read; before that, the health line explains (principle 3).
+              else if (days.isEmpty && !repository.failed && repository.health?.lastSuccessAt != null)
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: Text(l10n.eventsEmpty, style: textTheme.bodyLarge),

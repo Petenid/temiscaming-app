@@ -36,6 +36,9 @@ class EventsCard extends StatelessWidget {
         final today = now ?? DateTime.now();
         final next = nextEvents(repository.events, today);
         final waiting = repository.loading && repository.events.isEmpty;
+        // "Nothing coming up" only once the calendar has actually been read;
+        // before that, the health line explains (principle 3).
+        final checked = repository.health?.lastSuccessAt != null;
         return Card(
           margin: EdgeInsets.zero,
           clipBehavior: Clip.antiAlias,
@@ -59,7 +62,7 @@ class EventsCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   if (waiting) const LinearProgressIndicator(),
-                  if (!waiting && !repository.failed && next.isEmpty)
+                  if (!waiting && !repository.failed && checked && next.isEmpty)
                     Text(l10n.eventsCardNone, style: textTheme.bodyLarge),
                   for (final event in next)
                     Padding(

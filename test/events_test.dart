@@ -232,6 +232,20 @@ void main() {
       expect(find.text(stringsFor(AppLanguage.en).eventsEmpty), findsNothing);
     });
 
+    testWidgets('never checked: says so, never "no events posted"', (tester) async {
+      await _pumpEvents(tester, _en, events: FakeEventsRepository(
+        health: const EventsHealth(lastSuccessAt: null),
+      ));
+      final strings = stringsFor(AppLanguage.en);
+      await _scrollTo(tester, find.byType(EventsCard));
+      expect(find.descendant(of: find.byType(EventsCard), matching: find.text(strings.collectionNeverChecked)),
+          findsOneWidget);
+      expect(find.text(strings.eventsCardNone), findsNothing);
+      await _openEventsTab(tester, AppLanguage.en);
+      expect(find.text(strings.collectionNeverChecked), findsOneWidget);
+      expect(find.text(strings.eventsEmpty), findsNothing);
+    });
+
     testWidgets('nothing upcoming, calendar fine: says the calendar has nothing', (tester) async {
       await _pumpEvents(tester, _en, events: FakeEventsRepository(events: [SampleEvents.past()]));
       await _openEventsTab(tester, AppLanguage.en);
