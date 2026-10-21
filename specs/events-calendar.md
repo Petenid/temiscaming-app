@@ -1,6 +1,6 @@
 # Spec — Milestone 3: Events calendar
 
-Status: **agreed** · 2026-10-20 (owner agreed D1, D3, D6, D10 explicitly and the rest by default; D6: iOS and Android must both work, desktop doesn't matter). Backend built: 94 backend tests green (17 new).
+Status: **complete** · 2026-10-20. Verified: 94 backend tests (17 new) on the 2026 fixtures; app analyze + tests + iOS build green on CI; screenshots reviewed in both languages (fixed: untitled events said their category twice); on the Android emulator, backend deployed and the calendar run logging `events: ok`, the Events tab matching the Town's calendar, and "Add to my calendar" working. Found on the emulator and fixed: before the first events run, Today said "No events posted" next to "hasn't been checked yet" (principle 3) — "no events" now appears only once the calendar has been read. Still to do on a real iPhone: §8 step 5. · 2026-10-20 (owner agreed D1, D3, D6, D10 explicitly and the rest by default; D6: iOS and Android must both work, desktop doesn't matter)
 Reads with: `DESIGN.md` (§2 principles, §4 architecture, §5 language, §6.3 events, §7 app structure), `specs/collection-day.md` (§2 source findings, the month parser)
 
 ---

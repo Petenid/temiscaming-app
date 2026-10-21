@@ -9,7 +9,8 @@ Built with Flutter for iOS, Android, Windows and macOS. Design and decisions: `D
 - **Milestone 0 — Foundation: complete (2026-10-19).** First-launch language and collection-sector screens, a placeholder Today screen, Settings, Firebase connected, CI. Verified on CI (analyze, 18 tests, iOS build), the Windows app and the Android emulator.
 - **Milestone 1 — Town alerts + urgent water push: complete (2026-10-19).** Spec: `specs/town-alerts.md`. Backend in `functions/` reads the Town's alert site every 10 minutes; the app has an Alerts tab, a boil-water banner on Today, and push notifications in the user's language. Verified on the Android emulator (English push tested in code only).
 - **Milestone 2 — Collection day + local reminders + change notices: complete (2026-10-20).** Spec: `specs/collection-day.md`.
-- **Milestone 3 — Events calendar: in progress.** Spec: `specs/events-calendar.md`. Events tab, event detail with "Add to my calendar" (phones), and a "Coming up" card on Today, read from the same Town calendar pages as the bins.
+- **Milestone 3 — Events calendar: complete (2026-10-20).** Spec: `specs/events-calendar.md`. Events tab, event detail with "Add to my calendar" (phones), and a "Coming up" card on Today, read from the same Town calendar pages as the bins. Verified on the Android emulator.
+- **Next: Milestone 4 — weather.**
 
 Full plan and milestones: `DESIGN.md` in the project docs.
 
