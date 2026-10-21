@@ -8,6 +8,8 @@ import 'app.dart';
 import 'collection/collection_repository.dart';
 import 'collection/local_reminder_service.dart';
 import 'collection/reminders.dart';
+import 'events/calendar_adder.dart';
+import 'events/events_repository.dart';
 import 'firebase_options.dart';
 import 'push/push_service.dart';
 import 'services.dart';
@@ -34,6 +36,10 @@ Future<void> main() async {
         : OfflineCollectionRepository(prefs),
     push: FcmPushService(),
     reminders: LocalReminderService(),
+    events: firebaseReady
+        ? FirestoreEventsRepository(FirebaseFirestore.instance)
+        : UnavailableEventsRepository(),
+    calendar: DeviceCalendarAdder(),
   );
   // Keeps the push subscription matching the language and settings.
   if (firebaseReady) PushSync(settings, services.push);

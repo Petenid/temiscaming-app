@@ -24,6 +24,14 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<!-- "Add to my calendar" (events spec D6). iOS 17+ shows Apple's own
+	     "new event" sheet without asking; iOS 15-16 ask once for calendar
+	     access, and the sheet's place field can need contacts. French first,
+	     then English, as one string (DESIGN §5). -->
+	<key>NSCalendarsUsageDescription</key>
+	<string>Pour ajouter un événement de la Ville à votre calendrier. / To add a Town event to your calendar.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Le calendrier peut suggérer des lieux à partir de vos contacts lorsque vous ajoutez un événement. / The calendar can suggest places from your contacts when you add an event.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>

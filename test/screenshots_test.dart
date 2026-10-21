@@ -10,12 +10,15 @@ import 'package:community/alerts/alert_widgets.dart';
 import 'package:community/alerts/town_alert.dart';
 import 'package:community/collection/collection_card.dart';
 import 'package:community/collection/pickup.dart';
+import 'package:community/events/event_widgets.dart';
+import 'package:community/events/town_event.dart';
 import 'package:community/settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'collection_fakes.dart';
+import 'events_fakes.dart';
 import 'fakes.dart';
 import 'helpers.dart';
 
@@ -149,6 +152,40 @@ void main() {
       );
       await tester.pumpAndSettle();
       await _capture('${code}_13_today_collection_stale');
+    });
+
+    testWidgets('event screens in $code', (tester) async {
+      phone(tester);
+      final strings = stringsFor(language);
+      final events = FakeEventsRepository(events: SampleEvents.all());
+      final collection = FakeCollectionRepository(pickups: SamplePickups.aroundToday());
+      await pumpApp(tester, {'language': code, 'sector': 'town'}, null, null, collection, null, events);
+      await tester.scrollUntilVisible(find.text(strings.eventsCardTitle), 200,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      await _capture('${code}_15_today_events');
+
+      await tester.tap(find.widgetWithText(NavigationDestination, strings.eventsTitle));
+      await tester.pumpAndSettle();
+      await _capture('${code}_16_events');
+
+      final show = SampleEvents.show();
+      await scrollAndTap(tester, find.text(language == AppLanguage.fr ? show.titleFr : show.titleEn));
+      await _capture('${code}_17_event_detail');
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      final untitled = find.text(strings.eventCategoryCouncil);
+      await tester.scrollUntilVisible(untitled, 200, scrollable: find.byType(Scrollable).hitTestable().first);
+      await scrollAndTap(tester, untitled);
+      await _capture('${code}_18_event_detail_untitled');
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      events.set(health: EventsHealth(lastSuccessAt: DateTime.now().subtract(const Duration(hours: 9))));
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(find.byType(EventsHealthLine), -200,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      await _capture('${code}_19_events_stale');
     });
 
     testWidgets('sector screen at 200% text in $code', (tester) async {

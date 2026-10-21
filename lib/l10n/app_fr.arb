@@ -23,7 +23,7 @@
 
   "todayTitle": "Aujourd’hui",
 
-  "todayComingSoon": "Les événements, la météo et plus encore s’afficheront ici bientôt.",
+  "todayComingSoon": "La météo et plus encore s’afficheront ici bientôt.",
 
   "settingsTitle": "Paramètres",
 
@@ -179,5 +179,49 @@
 
   "settingsTestReminder": "Rappel d’essai dans 2 minutes",
 
-  "settingsTestReminderScheduled": "Rappel d’essai prévu dans 2 minutes."
+  "settingsTestReminderScheduled": "Rappel d’essai prévu dans 2 minutes.",
+
+  "eventsTitle": "Événements",
+
+  "eventsEmpty": "Aucun événement à venir n’est publié au calendrier de la Ville.",
+
+  "eventsNotPostedAfter": "Les événements après le {date} ne sont pas encore publiés.",
+
+  "eventsLoadFailed": "Impossible de charger les événements.",
+
+  "eventsSourceNote": "D’après le calendrier de la Ville de Témiscaming.",
+
+  "eventCategoryCouncil": "Conseil municipal",
+
+  "eventCategoryClosure": "Fermeture",
+
+  "eventCategoryServiceCanada": "Service Canada",
+
+  "eventCategoryCulture": "Spectacles et culture",
+
+  "eventCategoryCommunity": "Communauté",
+
+  "eventsCardTitle": "À venir",
+
+  "eventsCardNone": "Aucun événement publié pour les prochaines semaines.",
+
+  "eventToday": "Aujourd’hui",
+
+  "eventTomorrow": "Demain",
+
+  "eventUntil": "{when} – jusqu’au {end}",
+
+  "eventDateRange": "Du {start} au {end}",
+
+  "eventNoTimesNote": "Le calendrier de la Ville n’indique pas les heures. Consultez sa page pour les détails.",
+
+  "eventAddToCalendar": "Ajouter à mon calendrier",
+
+  "eventNoCalendarApp": "Aucune application de calendrier trouvée sur ce téléphone.",
+
+  "eventCalendarNotes": "D’après le calendrier de la Ville de Témiscaming : {url}",
+
+  "eventLocation": "{place}, Témiscaming",
+
+  "eventLocationTown": "Témiscaming"
 }

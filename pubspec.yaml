@@ -30,6 +30,9 @@ dependencies:
   timezone: ^0.11.0
   # Opens the Town's web pages in the browser.
   url_launcher: ^6.3.3
+  # "Add to my calendar": opens the phone's own calendar app pre-filled, and
+  # the user confirms there (events spec D6). Android and iOS only.
+  add_2_calendar: ^3.1.1
 
 dev_dependencies:
   flutter_test:

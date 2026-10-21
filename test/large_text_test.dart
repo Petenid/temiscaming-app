@@ -5,11 +5,14 @@ import 'package:community/alerts/alert_widgets.dart';
 import 'package:community/alerts/town_alert.dart';
 import 'package:community/collection/collection_card.dart';
 import 'package:community/collection/collection_screen.dart';
+import 'package:community/events/event_detail_screen.dart';
+import 'package:community/events/events_card.dart';
 import 'package:community/settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'collection_fakes.dart';
+import 'events_fakes.dart';
 import 'fakes.dart';
 import 'helpers.dart';
 
@@ -46,7 +49,8 @@ void main() {
       final push = FakePushService(isSupported: true);
 
       final collection = FakeCollectionRepository(pickups: SamplePickups.aroundToday());
-      await pumpApp(tester, const {}, alerts, push, collection);
+      final events = FakeEventsRepository(events: SampleEvents.all());
+      await pumpApp(tester, const {}, alerts, push, collection, null, events);
       expect(tester.takeException(), isNull, reason: 'language screen');
 
       await scrollAndTap(tester, find.text(strings.languageName));
@@ -77,6 +81,29 @@ void main() {
       await scrollAndTap(tester, cardTitle);
       expect(find.byType(CollectionScreen), findsOneWidget);
       expect(tester.takeException(), isNull, reason: 'pickup schedule');
+      await _back(tester);
+
+      // The "Coming up" card, then on to the Events tab by tapping it.
+      final eventsTitle = find.descendant(
+        of: find.byType(EventsCard),
+        matching: find.text(strings.eventsCardTitle),
+      );
+      await tester.scrollUntilVisible(eventsTitle, 200,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      expect(tester.takeException(), isNull, reason: 'Today events card');
+      await scrollAndTap(tester, eventsTitle);
+      expect(tester.takeException(), isNull, reason: 'Events screen');
+
+      // A multi-day closure with the longest dates, and the untitled meeting.
+      final closed = SampleEvents.townHallClosed();
+      await scrollAndTap(tester, find.text(language == AppLanguage.fr ? closed.titleFr : closed.titleEn).hitTestable());
+      expect(find.byType(EventDetailScreen), findsOneWidget);
+      expect(tester.takeException(), isNull, reason: 'event detail (multi-day)');
+      await _back(tester);
+      final untitled = find.text(strings.eventCategoryCouncil);
+      await tester.scrollUntilVisible(untitled, 200, scrollable: find.byType(Scrollable).hitTestable().first);
+      await scrollAndTap(tester, untitled);
+      expect(tester.takeException(), isNull, reason: 'event detail (untitled)');
       await _back(tester);
 
       await tester.tap(find.widgetWithText(NavigationDestination, strings.alertsTitle));

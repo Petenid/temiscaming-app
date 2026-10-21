@@ -6,24 +6,32 @@ import '../alerts/alerts_repository.dart';
 import '../collection/collection_card.dart';
 import '../collection/collection_repository.dart';
 import '../collection/collection_screen.dart';
+import '../events/events_card.dart';
+import '../events/events_repository.dart';
 import '../l10n/app_localizations.dart';
 import '../settings/app_settings.dart';
 
 /// Home screen: the boil-water banner when one is in effect, a warning if
-/// the Town's alerts can't be checked, this week's bin, and a placeholder for
-/// the features still to come (weather, events — DESIGN §7).
+/// the Town's alerts can't be checked, this week's bin, the next few events,
+/// and a placeholder for the features still to come (weather — DESIGN §7).
 class TodayScreen extends StatelessWidget {
   const TodayScreen({
     super.key,
     required this.settings,
     required this.repository,
     required this.collection,
+    required this.events,
+    required this.onOpenEvents,
     required this.appBarActions,
   });
 
   final AppSettings settings;
   final AlertsRepository repository;
   final CollectionRepository collection;
+  final EventsRepository events;
+
+  /// Switches to the Events tab.
+  final VoidCallback onOpenEvents;
   final List<Widget> appBarActions;
 
   @override
@@ -64,6 +72,8 @@ class TodayScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+                const SizedBox(height: 16),
+                EventsCard(settings: settings, repository: events, onOpenEvents: onOpenEvents),
                 const SizedBox(height: 24),
                 Text(
                   l10n.todayComingSoon,

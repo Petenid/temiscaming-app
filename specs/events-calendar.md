@@ -71,13 +71,15 @@ lib/
   events/events_screen.dart      NEW — Events tab: grouped by date, horizon line, health line
   events/event_detail_screen.dart NEW — detail, Town link, add to calendar (phones only)
   events/events_card.dart        NEW — Today "Coming up" card
-  events/category_icon.dart      NEW — category icon + label (never icon alone)
+  events/event_widgets.dart      NEW — category icon + name (never icon alone), title (italic when untitled), date ranges, health line
+  events/calendar_adder.dart     NEW — "Add to my calendar" behind an interface; platform all-day dates (pure, tested)
   home/home_shell.dart           + Events tab
   home/today_screen.dart         + events card (replaces that part of the placeholder)
   services.dart                  + events repository; calendar adder behind an interface (fake in tests)
   l10n/app_fr.arb, app_en.arb    + every new string
-test/                            + list, detail, card; FR + EN; 200% text; offline; empty title; one-language title
-README.md                        + fold in the deploy-timeout and `git am --quit` notes (DESIGN §10 to-do)
+test/events_test.dart, events_fakes.dart  NEW — date logic, list, detail, card, add to calendar; FR + EN; empty and one-language titles; stale/failed source
+test/large_text_test.dart, screenshots_test.dart  + the event screens
+README.md                        + events notes; the deploy-timeout and `git am --quit` tips (DESIGN §10 to-do)
 DESIGN.md                        status lines (§6.3, §7, §9) when done
 ```
 
@@ -139,4 +141,5 @@ Nothing new stored on the phone beyond Firestore's own cache.
 1. **Backend tests (shown in chat):** every 2026 month in both languages → exactly the events in §2 (73 events: 24 closures, 16 council, 12 Service Canada, 10 culture, 11 community, every one paired FR/EN, **no pickup ever an event and no event ever a pickup**: the two steps together account for every entry on every page); multi-day spans correct (23–25 Jan, 10–13 Aug, 21–25 Dec, 28–31 Dec); the 11 Mar empty title → category title + warning; places in both languages; Jan 2027 → zero events, not a failure.
 2. **Sync tests (fake store):** first run writes; same pages again → no changes; an event removed from a page → deleted; past events deleted; 3 months with zero events but pickups present → failure recorded, data untouched; an exception in the events step → pickups still saved.
 3. **App tests:** Events tab, detail and Today card in FR and EN at 200% text, including multi-day, empty title, one-language title, stale source, horizon line; add-to-calendar called with an all-day event (fake), button absent on desktop. Screenshots on the `screenshots` branch.
-4. **End to end (owner, Android emulator, VS Code):** deploy rules + functions; the Events tab matches the Town's calendar for the rest of October and November in both languages; "Add to my calendar" opens the emulator's calendar pre-filled with an all-day event.
+4. **End to end (owner, Android emulator, VS Code):** deploy rules + functions; the Events tab matches the Town's calendar for the rest of October and November in both languages; "Add to my calendar" opens the emulator's calendar pre-filled with an all-day event on the right day(s) (an emulator image without a calendar app shows "No calendar app found on this phone" instead — install Google Calendar from the Play Store image, or check it on a real Android phone).
+5. **Later, on a real iPhone (with the TestFlight build, Milestone 9):** "Add to my calendar" shows Apple's "New Event" sheet with the right all-day date. The iOS build is checked on every push by CI; the sheet itself can only be seen on a device. (The app uses the iOS scene lifecycle; the package finds the screen through an older API that should still work — this is the check that proves it.)

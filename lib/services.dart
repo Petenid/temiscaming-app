@@ -1,6 +1,8 @@
 import 'alerts/alerts_repository.dart';
 import 'collection/collection_repository.dart';
 import 'collection/reminders.dart';
+import 'events/calendar_adder.dart';
+import 'events/events_repository.dart';
 import 'push/push_service.dart';
 
 /// The app's connections to the outside world, created once in main.dart.
@@ -11,10 +13,16 @@ class AppServices {
     required this.collection,
     required this.push,
     required this.reminders,
+    required this.events,
+    required this.calendar,
   });
 
   final AlertsRepository alerts;
   final CollectionRepository collection;
   final ReminderService reminders;
   final PushService push;
+  final EventsRepository events;
+
+  /// "Add to my calendar" (events spec D6).
+  final CalendarAdder calendar;
 }

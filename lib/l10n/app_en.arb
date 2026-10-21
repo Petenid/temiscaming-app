@@ -34,7 +34,7 @@
   "todayTitle": "Today",
   "@todayTitle": {"description": "Title of the home screen."},
 
-  "todayComingSoon": "Events, weather and more will appear here soon.",
+  "todayComingSoon": "Weather and more will appear here soon.",
   "@todayComingSoon": {"description": "Placeholder on the home screen until features are built."},
 
   "settingsTitle": "Settings",
@@ -269,5 +269,93 @@
   "@settingsTestReminder": {"description": "Debug builds only: schedules a test bin reminder."},
 
   "settingsTestReminderScheduled": "Test reminder scheduled in 2 minutes.",
-  "@settingsTestReminderScheduled": {"description": "Confirms the test reminder."}
+  "@settingsTestReminderScheduled": {"description": "Confirms the test reminder."},
+
+  "eventsTitle": "Events",
+
+  "@eventsTitle": {"description": "Events tab and screen title."},
+
+  "eventsEmpty": "No upcoming events are posted on the Town's calendar.",
+
+  "@eventsEmpty": {"description": "Events list when nothing is coming up."},
+
+  "eventsNotPostedAfter": "Events after {date} aren't posted yet.",
+
+  "@eventsNotPostedAfter": {"description": "End of the events list: we only read the Town's calendar up to date (long date).", "placeholders": {"date": {"type": "String"}}},
+
+  "eventsLoadFailed": "Couldn't load the events.",
+
+  "@eventsLoadFailed": {"description": "Shown when no events could be loaded at all."},
+
+  "eventsSourceNote": "From the Town of Témiscaming's calendar.",
+
+  "@eventsSourceNote": {"description": "Source line under the events list."},
+
+  "eventCategoryCouncil": "Town council",
+
+  "@eventCategoryCouncil": {"description": "Event category: council meetings."},
+
+  "eventCategoryClosure": "Closure",
+
+  "@eventCategoryClosure": {"description": "Event category: Town hall, Ecocentre or library closed."},
+
+  "eventCategoryServiceCanada": "Service Canada",
+
+  "@eventCategoryServiceCanada": {"description": "Event category: Service Canada visits."},
+
+  "eventCategoryCulture": "Shows and culture",
+
+  "@eventCategoryCulture": {"description": "Event category: shows, museum."},
+
+  "eventCategoryCommunity": "Community",
+
+  "@eventCategoryCommunity": {"description": "Event category: community events."},
+
+  "eventsCardTitle": "Coming up",
+
+  "@eventsCardTitle": {"description": "Title of the events card on Today."},
+
+  "eventsCardNone": "No events posted for the coming weeks.",
+
+  "@eventsCardNone": {"description": "Today's events card when nothing is coming up."},
+
+  "eventToday": "Today",
+
+  "@eventToday": {"description": "An event happening today."},
+
+  "eventTomorrow": "Tomorrow",
+
+  "@eventTomorrow": {"description": "An event happening tomorrow."},
+
+  "eventUntil": "{when} – until {end}",
+
+  "@eventUntil": {"description": "A multi-day event on Today's card. when = Today/Tomorrow/short date; end = short date.", "placeholders": {"when": {"type": "String"}, "end": {"type": "String"}}},
+
+  "eventDateRange": "{start} to {end}",
+
+  "@eventDateRange": {"description": "Dates of a multi-day event (long dates).", "placeholders": {"start": {"type": "String"}, "end": {"type": "String"}}},
+
+  "eventNoTimesNote": "The Town's calendar doesn't give times. See its page for details.",
+
+  "@eventNoTimesNote": {"description": "Event detail: the source gives dates only."},
+
+  "eventAddToCalendar": "Add to my calendar",
+
+  "@eventAddToCalendar": {"description": "Button that opens the phone's calendar with the event filled in."},
+
+  "eventNoCalendarApp": "No calendar app found on this phone.",
+
+  "@eventNoCalendarApp": {"description": "Android: no app can take a new calendar event."},
+
+  "eventCalendarNotes": "From the Town of Témiscaming's calendar: {url}",
+
+  "@eventCalendarNotes": {"description": "Notes of an event added to the phone's calendar. url = Town's event page.", "placeholders": {"url": {"type": "String"}}},
+
+  "eventLocation": "{place}, Témiscaming",
+
+  "@eventLocation": {"description": "Location of an event added to the phone's calendar.", "placeholders": {"place": {"type": "String"}}},
+
+  "eventLocationTown": "Témiscaming",
+
+  "@eventLocationTown": {"description": "Location of an event added to the phone's calendar when the Town gives no place."}
 }

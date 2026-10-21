@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
 import '../alerts/alerts_screen.dart';
+import '../events/events_screen.dart';
 import '../l10n/app_localizations.dart';
 import '../services.dart';
 import '../settings/app_settings.dart';
 import '../settings_screen.dart';
 import 'today_screen.dart';
 
-/// The main app after first launch: a bottom bar with Today and Alerts
-/// (Events and More arrive with their milestones, DESIGN §7).
+/// The main app after first launch: a bottom bar with Today, Alerts and
+/// Events (More arrives with its milestones, DESIGN §7).
 class HomeShell extends StatefulWidget {
   const HomeShell({super.key, required this.settings, required this.services});
 
@@ -21,6 +22,8 @@ class HomeShell extends StatefulWidget {
 
 class _HomeShellState extends State<HomeShell> {
   int _tab = 0;
+
+  static const _eventsTab = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -51,11 +54,19 @@ class _HomeShellState extends State<HomeShell> {
             settings: widget.settings,
             repository: widget.services.alerts,
             collection: widget.services.collection,
+            events: widget.services.events,
+            onOpenEvents: () => setState(() => _tab = _eventsTab),
             appBarActions: actions,
           ),
           AlertsScreen(
             settings: widget.settings,
             repository: widget.services.alerts,
+            appBarActions: actions,
+          ),
+          EventsScreen(
+            settings: widget.settings,
+            repository: widget.services.events,
+            calendar: widget.services.calendar,
             appBarActions: actions,
           ),
         ],
@@ -73,6 +84,11 @@ class _HomeShellState extends State<HomeShell> {
             icon: const Icon(Icons.campaign_outlined),
             selectedIcon: const Icon(Icons.campaign),
             label: l10n.alertsTitle,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.event_outlined),
+            selectedIcon: const Icon(Icons.event),
+            label: l10n.eventsTitle,
           ),
         ],
       ),
