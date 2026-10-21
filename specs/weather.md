@@ -138,3 +138,11 @@ Hourly forecast, radar/maps, air quality, UV, displaying ECCC's regional text fo
 
 ## 9. DESIGN.md changes on approval
 §6.4 source and behaviour; §4 stack (two weather functions, `weather` collection); §10 open question: Open-Meteo's non-commercial terms if the app ever earns money or the Town takes it over commercially.
+
+---
+
+## 10. Implementation notes (2026-10-21)
+- **Station conditions have no icon** (simplifies D6): ECCC's own condition text is shown when the station sends it; overnight it often sends none, and then only the numbers show. Only forecast days get our icons and labels (WMO codes).
+- **No `forecast_model_run_at`:** Open-Meteo's response doesn't say when its model ran; `forecast_checked_at` is the forecast's time.
+- **Alert links** point to ECCC's Témiscaming page (alerts carry no URL of their own). The Weather screen's "official forecast" link goes to the same page, not to `qc-139`'s own link (which is centred on the Ville-Marie area).
+- First live run, 2026-10-21 01:07: conditions ok (1 °C, wind chill −4), alerts ok (0), forecast ok (7 days).

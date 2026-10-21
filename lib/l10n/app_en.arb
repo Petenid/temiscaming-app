@@ -34,7 +34,7 @@
   "todayTitle": "Today",
   "@todayTitle": {"description": "Title of the home screen."},
 
-  "todayComingSoon": "Weather and more will appear here soon.",
+  "todayComingSoon": "Fire bans, roads and power outages will appear here soon.",
   "@todayComingSoon": {"description": "Placeholder on the home screen until features are built."},
 
   "settingsTitle": "Settings",
@@ -357,5 +357,206 @@
 
   "eventLocationTown": "Témiscaming",
 
-  "@eventLocationTown": {"description": "Location of an event added to the phone's calendar when the Town gives no place."}
+  "@eventLocationTown": {"description": "Location of an event added to the phone's calendar when the Town gives no place."},
+
+  "weatherTitle": "Weather",
+  "@weatherTitle": {"description": "Weather card on Today and the Weather screen title."},
+
+  "weatherTemperature": "{value}°C",
+  "@weatherTemperature": {"description": "A temperature in Celsius. value is a whole number with a minus sign if needed.", "placeholders": {"value": {"type": "String"}}},
+
+  "weatherStationAt": "{station} station, {time}",
+  "@weatherStationAt": {"description": "Where and when the current reading was taken. station = ECCC's station name (e.g. Barrage Témiscaming / Temiskaming Dam).", "placeholders": {"station": {"type": "String"}, "time": {"type": "String"}}},
+
+  "weatherNoRecentReading": "No recent reading from the station.",
+  "@weatherNoRecentReading": {"description": "Shown instead of the temperature when the station's reading is over 3 hours old."},
+
+  "weatherWindChill": "Wind chill {value}",
+  "@weatherWindChill": {"description": "ECCC's wind chill index (no unit).", "placeholders": {"value": {"type": "String"}}},
+
+  "weatherHumidex": "Humidex {value}",
+  "@weatherHumidex": {"description": "ECCC's humidex (no unit).", "placeholders": {"value": {"type": "String"}}},
+
+  "weatherHumidity": "Humidity {value}%",
+  "@weatherHumidity": {"description": "Relative humidity.", "placeholders": {"value": {"type": "String"}}},
+
+  "weatherWind": "Wind {dir} {speed} km/h",
+  "@weatherWind": {"description": "Current wind. dir = compass letters (SE, NO…) or 'variable'.", "placeholders": {"dir": {"type": "String"}, "speed": {"type": "String"}}},
+
+  "weatherWindGusts": "{wind}, gusts {gust} km/h",
+  "@weatherWindGusts": {"description": "Current wind followed by gusts. wind = the whole wind text.", "placeholders": {"wind": {"type": "String"}, "gust": {"type": "String"}}},
+
+  "weatherWindCalm": "Wind calm",
+  "@weatherWindCalm": {"description": "Current wind when it is 0 km/h."},
+
+  "weatherWindVariable": "variable",
+  "@weatherWindVariable": {"description": "Wind direction when ECCC says it is variable."},
+
+  "weatherDayLine": "{day}: {condition}, {highLow}",
+  "@weatherDayLine": {"description": "Today's forecast on the Today card. day = Today; condition = our label; highLow = 'High 16° · Low −1°'.", "placeholders": {"day": {"type": "String"}, "condition": {"type": "String"}, "highLow": {"type": "String"}}},
+
+  "weatherHighLow": "High {high}° · Low {low}°",
+  "@weatherHighLow": {"description": "Forecast high and low temperatures for a day.", "placeholders": {"high": {"type": "String"}, "low": {"type": "String"}}},
+
+  "weatherRain": "Rain {amount} mm",
+  "@weatherRain": {"description": "Forecast rain amount for a day.", "placeholders": {"amount": {"type": "String"}}},
+
+  "weatherSnow": "Snow {amount} cm",
+  "@weatherSnow": {"description": "Forecast snowfall for a day.", "placeholders": {"amount": {"type": "String"}}},
+
+  "weatherGustsUpTo": "Gusts up to {speed} km/h",
+  "@weatherGustsUpTo": {"description": "Forecast strongest gusts for a day (shown from 40 km/h).", "placeholders": {"speed": {"type": "String"}}},
+
+  "weatherNowHeading": "Now",
+  "@weatherNowHeading": {"description": "Weather screen: current conditions section."},
+
+  "weatherForecastHeading": "Next 7 days",
+  "@weatherForecastHeading": {"description": "Weather screen: forecast section."},
+
+  "weatherForecastNote": "Computer forecast for Témiscaming",
+  "@weatherForecastNote": {"description": "Under the forecast heading: says plainly it isn't written by a meteorologist (spec D1)."},
+
+  "weatherForecastUnavailable": "No forecast available yet.",
+  "@weatherForecastUnavailable": {"description": "Weather screen when there are no forecast days."},
+
+  "weatherForecastUpdated": "Forecast updated: {time}",
+  "@weatherForecastUpdated": {"description": "When the forecast was last read.", "placeholders": {"time": {"type": "String"}}},
+
+  "weatherForecastCheckFailedSince": "Couldn't update the forecast since {time}",
+  "@weatherForecastCheckFailedSince": {"description": "In red when the forecast is over 8 hours old.", "placeholders": {"time": {"type": "String"}}},
+
+  "weatherAlertsHeading": "Weather alerts",
+  "@weatherAlertsHeading": {"description": "Weather screen: alerts section."},
+
+  "weatherNoAlerts": "No weather alerts for Témiscaming.",
+  "@weatherNoAlerts": {"description": "Shown only right after a successful check of ECCC's alerts."},
+
+  "weatherAlertsLastChecked": "Alerts checked: {time}",
+  "@weatherAlertsLastChecked": {"description": "When ECCC's alerts were last checked.", "placeholders": {"time": {"type": "String"}}},
+
+  "weatherAlertsCheckFailedSince": "Couldn't check weather alerts since {time}",
+  "@weatherAlertsCheckFailedSince": {"description": "In red when the alerts check is over an hour old (principle 3).", "placeholders": {"time": {"type": "String"}}},
+
+  "weatherAlertsNeverChecked": "Weather alerts haven't been checked yet.",
+  "@weatherAlertsNeverChecked": {"description": "Before the backend's first alerts check."},
+
+  "weatherNeverChecked": "The weather hasn't been checked yet.",
+  "@weatherNeverChecked": {"description": "Before the backend's first weather run."},
+
+  "weatherLoadFailed": "Couldn't load the weather.",
+  "@weatherLoadFailed": {"description": "When the weather couldn't be loaded at all."},
+
+  "weatherAlertTypeWarning": "Warning",
+  "@weatherAlertTypeWarning": {"description": "ECCC alert type."},
+
+  "weatherAlertTypeWatch": "Watch",
+  "@weatherAlertTypeWatch": {"description": "ECCC alert type."},
+
+  "weatherAlertTypeAdvisory": "Advisory",
+  "@weatherAlertTypeAdvisory": {"description": "ECCC alert type."},
+
+  "weatherAlertTypeStatement": "Statement",
+  "@weatherAlertTypeStatement": {"description": "ECCC alert type (e.g. special weather statement)."},
+
+  "weatherAlertBannerHeader": "{type} · Environment Canada",
+  "@weatherAlertBannerHeader": {"description": "Top line of the weather alert banner on Today. type = Warning, Watch…", "placeholders": {"type": {"type": "String"}}},
+
+  "weatherAlertMore": "{count, plural, =1{+1 more weather alert} other{+{count} more weather alerts}}",
+  "@weatherAlertMore": {"description": "Weather alert banner when several alerts are in effect.", "placeholders": {"count": {"type": "int"}}},
+
+  "weatherAlertIssued": "Issued: {time}",
+  "@weatherAlertIssued": {"description": "When ECCC issued the alert.", "placeholders": {"time": {"type": "String"}}},
+
+  "weatherAlertEnds": "Expected to end: {time}",
+  "@weatherAlertEnds": {"description": "When ECCC expects the weather event to end.", "placeholders": {"time": {"type": "String"}}},
+
+  "weatherAlertSourceLink": "See Environment Canada's page",
+  "@weatherAlertSourceLink": {"description": "Link under an alert."},
+
+  "weatherSourcesHeading": "Sources",
+  "@weatherSourcesHeading": {"description": "Weather screen: sources section."},
+
+  "weatherSourceEccc": "Current conditions and weather alerts: Environment Canada ({station} station).",
+  "@weatherSourceEccc": {"description": "Source line. station = ECCC's station name.", "placeholders": {"station": {"type": "String"}}},
+
+  "weatherSourceOpenMeteo": "7-day forecast: computed by Open-Meteo for Témiscaming from Environment Canada's weather models (CC BY 4.0). Not reviewed by a meteorologist.",
+  "@weatherSourceOpenMeteo": {"description": "Source and required attribution for the forecast."},
+
+  "weatherOfficialForecastLink": "Environment Canada's official forecast for the region",
+  "@weatherOfficialForecastLink": {"description": "Link to ECCC's Témiscaming page (its forecast covers the Ville-Marie area)."},
+
+  "weatherOpenMeteoLink": "Open-Meteo",
+  "@weatherOpenMeteoLink": {"description": "Link to Open-Meteo's site."},
+
+  "wmoSunny": "Sunny",
+  "@wmoSunny": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "wmoMainlySunny": "Mainly sunny",
+  "@wmoMainlySunny": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "wmoMixSunCloud": "A mix of sun and cloud",
+  "@wmoMixSunCloud": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "wmoCloudy": "Cloudy",
+  "@wmoCloudy": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "wmoFog": "Fog",
+  "@wmoFog": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "wmoFreezingFog": "Freezing fog",
+  "@wmoFreezingFog": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "wmoLightDrizzle": "Light drizzle",
+  "@wmoLightDrizzle": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "wmoDrizzle": "Drizzle",
+  "@wmoDrizzle": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "wmoFreezingDrizzle": "Freezing drizzle",
+  "@wmoFreezingDrizzle": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "wmoLightRain": "Light rain",
+  "@wmoLightRain": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "wmoRain": "Rain",
+  "@wmoRain": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "wmoHeavyRain": "Heavy rain",
+  "@wmoHeavyRain": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "wmoFreezingRain": "Freezing rain",
+  "@wmoFreezingRain": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "wmoLightSnow": "Light snow",
+  "@wmoLightSnow": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "wmoSnow": "Snow",
+  "@wmoSnow": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "wmoHeavySnow": "Heavy snow",
+  "@wmoHeavySnow": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "wmoSnowGrains": "Snow grains",
+  "@wmoSnowGrains": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "wmoShowers": "Showers",
+  "@wmoShowers": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "wmoHeavyShowers": "Heavy showers",
+  "@wmoHeavyShowers": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "wmoFlurries": "Flurries",
+  "@wmoFlurries": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "wmoHeavyFlurries": "Heavy flurries",
+  "@wmoHeavyFlurries": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "wmoThunderstorm": "Thunderstorms",
+  "@wmoThunderstorm": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "wmoThunderstormHail": "Thunderstorms with hail",
+  "@wmoThunderstormHail": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "wmoUnknown": "Conditions unknown",
+  "@wmoUnknown": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."}
 }

@@ -13,6 +13,8 @@ import 'package:community/collection/pickup.dart';
 import 'package:community/events/event_widgets.dart';
 import 'package:community/events/town_event.dart';
 import 'package:community/settings/app_settings.dart';
+import 'package:community/weather/weather_card.dart';
+import 'package:community/weather/weather_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -21,6 +23,7 @@ import 'collection_fakes.dart';
 import 'events_fakes.dart';
 import 'fakes.dart';
 import 'helpers.dart';
+import 'weather_fakes.dart';
 
 /// Tests normally draw text as blocks; load the real Roboto and icon fonts
 /// that ship with the Flutter SDK so the screenshots are readable.
@@ -186,6 +189,42 @@ void main() {
       await tester.scrollUntilVisible(find.byType(EventsHealthLine), -200,
           scrollable: find.byType(Scrollable).hitTestable().first);
       await _capture('${code}_19_events_stale');
+    });
+
+    testWidgets('weather screens in $code', (tester) async {
+      phone(tester);
+      final strings = stringsFor(language);
+      final weather = FakeWeatherRepository(weather: SampleWeather.normal(
+        alerts: [SampleWeather.frostAdvisory(), SampleWeather.specialStatement()],
+      ));
+      final collection = FakeCollectionRepository(pickups: SamplePickups.aroundToday());
+      await pumpApp(tester, {'language': code, 'sector': 'town'}, null, null, collection, null, null, null, weather);
+      await _capture('${code}_20_today_weather_alert');
+
+      await tester.scrollUntilVisible(find.byType(WeatherCard), 200,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      await _capture('${code}_21_today_weather_card');
+
+      await scrollAndTap(tester, find.byType(WeatherAlertBanner));
+      await _capture('${code}_22_weather');
+      await tester.scrollUntilVisible(find.text(strings.weatherForecastHeading), 300,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      await _capture('${code}_23_weather_forecast');
+      await tester.scrollUntilVisible(find.text(strings.weatherOpenMeteoLink), 300,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      await _capture('${code}_24_weather_sources');
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      // No alerts, but the alerts check is 2 hours old and the station quiet.
+      weather.set(SampleWeather.normal(
+        alertsAge: const Duration(hours: 2),
+        conditions: SampleWeather.reading(age: const Duration(hours: 5)),
+      ));
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(find.byType(WeatherCard), 200,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      await _capture('${code}_25_today_weather_stale');
     });
 
     testWidgets('sector screen at 200% text in $code', (tester) async {

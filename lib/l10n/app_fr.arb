@@ -23,7 +23,7 @@
 
   "todayTitle": "Aujourd’hui",
 
-  "todayComingSoon": "La météo et plus encore s’afficheront ici bientôt.",
+  "todayComingSoon": "Les interdictions de feu, l’état des routes et les pannes de courant s’afficheront ici bientôt.",
 
   "settingsTitle": "Paramètres",
 
@@ -223,5 +223,139 @@
 
   "eventLocation": "{place}, Témiscaming",
 
-  "eventLocationTown": "Témiscaming"
+  "eventLocationTown": "Témiscaming",
+
+  "weatherTitle": "Météo",
+
+  "weatherTemperature": "{value} °C",
+
+  "weatherStationAt": "Station {station}, {time}",
+
+  "weatherNoRecentReading": "Aucune lecture récente de la station.",
+
+  "weatherWindChill": "Refroidissement éolien {value}",
+
+  "weatherHumidex": "Humidex {value}",
+
+  "weatherHumidity": "Humidité {value} %",
+
+  "weatherWind": "Vent {dir} {speed} km/h",
+
+  "weatherWindGusts": "{wind}, rafales {gust} km/h",
+
+  "weatherWindCalm": "Vent calme",
+
+  "weatherWindVariable": "variable",
+
+  "weatherDayLine": "{day} : {condition}, {highLow}",
+
+  "weatherHighLow": "Max {high}° · Min {low}°",
+
+  "weatherRain": "Pluie {amount} mm",
+
+  "weatherSnow": "Neige {amount} cm",
+
+  "weatherGustsUpTo": "Rafales jusqu’à {speed} km/h",
+
+  "weatherNowHeading": "En ce moment",
+
+  "weatherForecastHeading": "Les 7 prochains jours",
+
+  "weatherForecastNote": "Prévision automatique pour Témiscaming",
+
+  "weatherForecastUnavailable": "Aucune prévision disponible pour l’instant.",
+
+  "weatherForecastUpdated": "Prévision mise à jour : {time}",
+
+  "weatherForecastCheckFailedSince": "Impossible de mettre à jour la prévision depuis {time}",
+
+  "weatherAlertsHeading": "Alertes météo",
+
+  "weatherNoAlerts": "Aucune alerte météo pour Témiscaming.",
+
+  "weatherAlertsLastChecked": "Alertes vérifiées : {time}",
+
+  "weatherAlertsCheckFailedSince": "Impossible de vérifier les alertes météo depuis {time}",
+
+  "weatherAlertsNeverChecked": "Les alertes météo n’ont pas encore été vérifiées.",
+
+  "weatherNeverChecked": "La météo n’a pas encore été vérifiée.",
+
+  "weatherLoadFailed": "Impossible de charger la météo.",
+
+  "weatherAlertTypeWarning": "Avertissement",
+
+  "weatherAlertTypeWatch": "Veille",
+
+  "weatherAlertTypeAdvisory": "Avis",
+
+  "weatherAlertTypeStatement": "Bulletin",
+
+  "weatherAlertBannerHeader": "{type} · Environnement Canada",
+
+  "weatherAlertMore": "{count, plural, =1{+1 autre alerte météo} other{+{count} autres alertes météo}}",
+
+  "weatherAlertIssued": "Émise : {time}",
+
+  "weatherAlertEnds": "Fin prévue : {time}",
+
+  "weatherAlertSourceLink": "Voir la page d’Environnement Canada",
+
+  "weatherSourcesHeading": "Sources",
+
+  "weatherSourceEccc": "Conditions actuelles et alertes météo : Environnement Canada (station {station}).",
+
+  "weatherSourceOpenMeteo": "Prévision sur 7 jours : calculée par Open-Meteo pour Témiscaming à partir des modèles météo d’Environnement Canada (CC BY 4.0). Non révisée par un météorologue.",
+
+  "weatherOfficialForecastLink": "Prévision officielle d’Environnement Canada pour la région",
+
+  "weatherOpenMeteoLink": "Open-Meteo",
+
+  "wmoSunny": "Ensoleillé",
+
+  "wmoMainlySunny": "Généralement ensoleillé",
+
+  "wmoMixSunCloud": "Alternance de soleil et de nuages",
+
+  "wmoCloudy": "Nuageux",
+
+  "wmoFog": "Brouillard",
+
+  "wmoFreezingFog": "Brouillard givrant",
+
+  "wmoLightDrizzle": "Faible bruine",
+
+  "wmoDrizzle": "Bruine",
+
+  "wmoFreezingDrizzle": "Bruine verglaçante",
+
+  "wmoLightRain": "Faible pluie",
+
+  "wmoRain": "Pluie",
+
+  "wmoHeavyRain": "Forte pluie",
+
+  "wmoFreezingRain": "Pluie verglaçante",
+
+  "wmoLightSnow": "Faible neige",
+
+  "wmoSnow": "Neige",
+
+  "wmoHeavySnow": "Forte neige",
+
+  "wmoSnowGrains": "Grains de neige",
+
+  "wmoShowers": "Averses",
+
+  "wmoHeavyShowers": "Fortes averses",
+
+  "wmoFlurries": "Averses de neige",
+
+  "wmoHeavyFlurries": "Fortes averses de neige",
+
+  "wmoThunderstorm": "Orages",
+
+  "wmoThunderstormHail": "Orages avec grêle",
+
+  "wmoUnknown": "Conditions inconnues"
 }

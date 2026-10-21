@@ -14,6 +14,7 @@ import 'firebase_options.dart';
 import 'push/push_service.dart';
 import 'services.dart';
 import 'settings/app_settings.dart';
+import 'weather/weather_repository.dart';
 
 /// Where the app starts: connect to Firebase, load the saved settings,
 /// then show the app.
@@ -40,6 +41,9 @@ Future<void> main() async {
         ? FirestoreEventsRepository(FirebaseFirestore.instance)
         : UnavailableEventsRepository(),
     calendar: DeviceCalendarAdder(),
+    weather: firebaseReady
+        ? FirestoreWeatherRepository(FirebaseFirestore.instance)
+        : UnavailableWeatherRepository(),
   );
   // Keeps the push subscription matching the language and settings.
   if (firebaseReady) PushSync(settings, services.push);

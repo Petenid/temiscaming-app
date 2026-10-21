@@ -8,6 +8,9 @@ import 'package:community/collection/collection_screen.dart';
 import 'package:community/events/event_detail_screen.dart';
 import 'package:community/events/events_card.dart';
 import 'package:community/settings/app_settings.dart';
+import 'package:community/weather/weather_card.dart';
+import 'package:community/weather/weather_screen.dart';
+import 'package:community/weather/weather_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -15,6 +18,7 @@ import 'collection_fakes.dart';
 import 'events_fakes.dart';
 import 'fakes.dart';
 import 'helpers.dart';
+import 'weather_fakes.dart';
 
 /// Like the system back button (Android back gesture, Esc on desktop).
 Future<void> _back(WidgetTester tester) async {
@@ -50,7 +54,11 @@ void main() {
 
       final collection = FakeCollectionRepository(pickups: SamplePickups.aroundToday());
       final events = FakeEventsRepository(events: SampleEvents.all());
-      await pumpApp(tester, const {}, alerts, push, collection, null, events);
+      // Every weather alert type, for the longest banner and screen.
+      final weather = FakeWeatherRepository(weather: SampleWeather.normal(alerts: [
+        SampleWeather.freezingRainWarning(), SampleWeather.frostAdvisory(), SampleWeather.specialStatement(),
+      ]));
+      await pumpApp(tester, const {}, alerts, push, collection, null, events, null, weather);
       expect(tester.takeException(), isNull, reason: 'language screen');
 
       await scrollAndTap(tester, find.text(strings.languageName));
@@ -67,6 +75,19 @@ void main() {
       expect(find.byType(AlertDetailScreen), findsOneWidget);
       expect(tester.takeException(), isNull, reason: 'alert detail');
       await _back(tester);
+
+      expect(find.byType(WeatherAlertBanner), findsOneWidget);
+      await scrollAndTap(tester, find.byType(WeatherAlertBanner));
+      expect(find.byType(WeatherScreen), findsOneWidget);
+      expect(tester.takeException(), isNull, reason: 'Weather screen');
+      await tester.scrollUntilVisible(find.text(strings.weatherOpenMeteoLink), 300,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      expect(tester.takeException(), isNull, reason: 'Weather screen, sources');
+      await _back(tester);
+
+      await tester.scrollUntilVisible(find.byType(WeatherCard), 200,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      expect(tester.takeException(), isNull, reason: 'Today weather card');
 
       // At 200% the card is far down the list, which only builds rows near
       // the screen, and taller than the space above the bottom bar: scroll

@@ -4,6 +4,7 @@ import 'collection/reminders.dart';
 import 'events/calendar_adder.dart';
 import 'events/events_repository.dart';
 import 'push/push_service.dart';
+import 'weather/weather_repository.dart';
 
 /// The app's connections to the outside world, created once in main.dart.
 /// Tests pass fakes instead, so no screen talks to Firebase directly.
@@ -15,6 +16,7 @@ class AppServices {
     required this.reminders,
     required this.events,
     required this.calendar,
+    required this.weather,
   });
 
   final AlertsRepository alerts;
@@ -25,4 +27,7 @@ class AppServices {
 
   /// "Add to my calendar" (events spec D6).
   final CalendarAdder calendar;
+
+  /// Weather for Témiscaming (Milestone 4).
+  final WeatherRepository weather;
 }
