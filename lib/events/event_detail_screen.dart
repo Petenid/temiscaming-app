@@ -64,18 +64,29 @@ class EventDetailScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
             ],
+            // The category above the title; an untitled event (spec D3) shows
+            // the category as its title, so it isn't said twice.
             Row(
               children: [
                 CategoryIcon(event.category, size: 24),
                 const SizedBox(width: 8),
-                Expanded(child: Text(categoryName(l10n, event.category), style: textTheme.labelLarge)),
+                Expanded(
+                  child: event.isUntitled
+                      ? Semantics(
+                          header: true,
+                          child: EventTitle(event: event, language: language, style: textTheme.headlineSmall),
+                        )
+                      : Text(categoryName(l10n, event.category), style: textTheme.labelLarge),
+                ),
               ],
             ),
-            const SizedBox(height: 8),
-            Semantics(
-              header: true,
-              child: EventTitle(event: event, language: language, style: textTheme.headlineSmall),
-            ),
+            if (!event.isUntitled) ...[
+              const SizedBox(height: 8),
+              Semantics(
+                header: true,
+                child: EventTitle(event: event, language: language, style: textTheme.headlineSmall),
+              ),
+            ],
             const SizedBox(height: 16),
             _Fact(icon: Icons.event_outlined, text: formatEventDates(context, event)),
             if (place.isNotEmpty) _Fact(icon: Icons.place_outlined, text: place),

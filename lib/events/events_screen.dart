@@ -130,7 +130,8 @@ class _EventTile extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final place = event.place(language);
     final details = [
-      categoryName(l10n, event.category),
+      // An untitled event already shows the category as its title (spec D3).
+      if (!event.isUntitled) categoryName(l10n, event.category),
       if (event.isMultiDay) formatDayRange(context, event.startsOn, event.endsOn),
       if (place.isNotEmpty) place,
     ];

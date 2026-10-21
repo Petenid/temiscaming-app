@@ -170,8 +170,12 @@ void main() {
     await _openEventsTab(tester, AppLanguage.en);
     final title = tester.widget<Text>(find.text('Town council'));
     expect(title.style?.fontStyle, FontStyle.italic);
+    // Said once, not repeated in the line under it.
+    expect(find.textContaining('Town council'), findsOneWidget);
+    expect(find.text('Le Centre - Salon Desjardins'), findsOneWidget);
     await scrollAndTap(tester, find.text('Town council'));
     expect(find.byType(EventDetailScreen), findsOneWidget);
+    expect(find.textContaining('Town council'), findsOneWidget);
   });
 
   testWidgets('a French-only event says so in English', (tester) async {
