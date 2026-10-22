@@ -10,7 +10,7 @@ Built with Flutter for iOS, Android, Windows and macOS. Design and decisions: `D
 - **Milestone 1 — Town alerts + urgent water push: complete (2026-10-19).** Spec: `specs/town-alerts.md`. Backend in `functions/` reads the Town's alert site every 10 minutes; the app has an Alerts tab, a boil-water banner on Today, and push notifications in the user's language. Verified on the Android emulator (English push tested in code only).
 - **Milestone 2 — Collection day + local reminders + change notices: complete (2026-10-20).** Spec: `specs/collection-day.md`.
 - **Milestone 3 — Events calendar: complete (2026-10-20).** Spec: `specs/events-calendar.md`. Events tab, event detail with "Add to my calendar" (phones), and a "Coming up" card on Today, read from the same Town calendar pages as the bins. Verified on the Android emulator.
-- **Milestone 4 — Weather: in progress.** Spec: `specs/weather.md`. Backend deployed and running; Today's weather card, the amber weather-alert banner and the Weather screen are being checked.
+- **Milestone 4 — Weather: complete (2026-10-21).** Spec: `specs/weather.md`. Environment Canada's readings at the Barrage Témiscaming station and its weather alerts for the town, plus a 7-day Open-Meteo forecast for Témiscaming's own coordinates; a weather card and amber alert banner on Today, and a Weather screen. Nothing pushes.
 - **Milestone 6 — Fire bans: in progress.** Spec: `specs/fire-bans.md`. Backend deployed 2026-10-21 (Quebec's open-fire and forest access bans, every 30 minutes, with pushes); the red banner, the seasonal Today card, the Fire screen and the "Fire bans" notification switch are being checked.
 
 Full plan and milestones: `DESIGN.md` in the project docs.
