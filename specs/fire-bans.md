@@ -1,6 +1,6 @@
 # Spec — Milestone 6: Fire bans
 
-Status: **agreed** · 2026-10-21 (owner agreed all of §3)
+Status: **complete** · 2026-10-22 · agreed 2026-10-21 (owner agreed all of §3)
 Reads with: `DESIGN.md` (§2 principles, §4 architecture and source health, §5 language, §6.6 fire bans, §7 app structure)
 
 ---
@@ -151,3 +151,9 @@ Fire danger index in-app (needs SOPFEU's permission), RTF, maps drawn in the app
 - **Opt-in (D7):** the first-launch answer now sets fire bans with the rest. People who answered before get the one-time card on Today, on phones only; either button hides it for good.
 - **Unknown states:** if the backend ever writes a state the app doesn't know, the app treats it as "a ban here", so the person checks the official page rather than trusting silence.
 - **SOPFEU's French page** is `/etat-situation/abitibi-temiscamingue/` (read from the site's language switch); the backend's stored link was corrected in the same patch.
+
+## 12. Verification (2026-10-22)
+1. Backend: 155 tests (34 new), on the real "no ban" files and the hand-made ban fixtures. Deployed 2026-10-21; first run recorded "none since 20 July" without pushing.
+2. App: analyze + 161 tests + iOS build green on CI; screenshots 26–32 reviewed in both languages. Fixed during checks: an announced ban was called "In effect" on the card and Fire screen.
+3. On the Android emulator: the app works with the live backend (owner, 2026-10-22).
+4. **Still to see:** a real ban. When Quebec issues one anywhere, run *Capture fixtures* → `fire` and compare it with the hand-made fixtures.
