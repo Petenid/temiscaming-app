@@ -209,6 +209,15 @@ jobs:
           fetch "$TOWN/en/work-info/1019/water-system-flushing-month-of-october" town-detail-en-1019.html || true
           fetch "$TOWN/en/work-info/757/kipawa-road-disruption" town-detail-en-757.html || true
 
+      # Ontario 511 (Highway 63). Needs the ONTARIO_511_KEY repository secret
+      # (Settings → Secrets and variables → Actions); skipped without it. The
+      # key never reaches the saved files (tools/capture_ontario511.py).
+      - name: Download Ontario 511 data
+        if: inputs.source == 'roads'
+        env:
+          ONTARIO_511_KEY: ${{ secrets.ONTARIO_511_KEY }}
+        run: python3 tools/capture_ontario511.py "functions/test/fixtures/roads/$(TZ=America/Toronto date +%F)"
+
       - name: Commit
         env:
           SOURCE: ${{ inputs.source }}
