@@ -10,7 +10,7 @@ on:
       source:
         description: "Which source to save"
         type: choice
-        options: [alerts, calendar, weather, fire]
+        options: [alerts, calendar, weather, fire, roads]
         default: alerts
       detail_paths:
         description: "alerts only: extra detail pages to save (space-separated paths, e.g. /alertes/2026/10/12/avis-d-ebullition-preventif)"
@@ -140,6 +140,65 @@ jobs:
           }
           get msp_interdiction_feu_ciel_ouvert_ifco ifco.json
           get msp_interdiction_circuler_foret_icaf icaf.json
+
+      # Roads (Milestone 7): Quebec transport ministry (MTMD) layers — road
+      # warnings/closures, roadworks, winter road conditions — and the Town's
+      # "Info-Travaux" / "Work Info" pages. Each MTMD layer is saved twice:
+      # the area request the backend would make (bbox), and the whole province
+      # trimmed to a wide box around Témiscaming (in case the bbox request
+      # misbehaves, and to keep the files small). Province-wide road warnings
+      # are kept whole so we have real "Fermeture" examples from elsewhere.
+      - name: Download road data
+        if: inputs.source == 'roads'
+        env:
+          WFS: https://ws.mapserver.transports.gouv.qc.ca/swtq
+          TOWN: https://www.temiscaming.net
+        run: |
+          set -euo pipefail
+          day=$(TZ=America/Toronto date +%F)
+          out="functions/test/fixtures/roads/$day"
+          mkdir -p "$out"
+          ua="AlloTemis-fixture-capture/1.0 (+https://github.com/${GITHUB_REPOSITORY})"
+          fetch() { # $1 = URL, $2 = file name
+            curl -sSfL --max-time 120 -A "$ua" "$1" -o "$out/$2"
+            echo "saved $2 ($(wc -c < "$out/$2") bytes)"
+            sleep 2
+          }
+          # Box around the corridor: Témiscaming, Route 101 to Ville-Marie,
+          # Highway 63 to North Bay (lat 46.2–47.5, lon -80.0 to -78.5).
+          bbox="46.2,-80.0,47.5,-78.5,urn:ogc:def:crs:EPSG::4326"
+          for layer in evenements chantiers_mtmdet conditions_routieres; do
+            q="service=wfs&version=2.0.0&request=getfeature&typename=ms:$layer&srsname=EPSG:4326&outputformat=geojson"
+            fetch "$WFS?$q&bbox=$bbox" "qc-$layer-bbox.json"
+            fetch "$WFS?$q" "province.tmp.json"
+            python3 - "$out/province.tmp.json" "$out/qc-$layer-area.json" <<'PY'
+          import json, sys
+          src, dst = sys.argv[1], sys.argv[2]
+          data = json.load(open(src, encoding="utf-8"))
+          def pts(g):
+              if not g: return
+              c = g.get("coordinates")
+              def walk(x):
+                  if isinstance(x[0], (int, float)): yield x
+                  else:
+                      for y in x: yield from walk(y)
+              if c: yield from walk(c)
+          def near(f):
+              return any(46.2 <= p[1] <= 47.5 and -80.0 <= p[0] <= -78.5 for p in pts(f.get("geometry")))
+          total = len(data.get("features", []))
+          data["features"] = [f for f in data.get("features", []) if near(f)]
+          json.dump(data, open(dst, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+          print(f"{dst}: {len(data['features'])} of {total} features near Témiscaming")
+          PY
+            if [ "$layer" = evenements ]; then mv "$out/province.tmp.json" "$out/qc-evenements-province.json"
+            else rm "$out/province.tmp.json"; fi
+          done
+          # The Town's Work Info list (both languages) and two detail pages.
+          fetch "$TOWN/fr/info-travaux" town-list-fr.html
+          fetch "$TOWN/en/work-info" town-list-en.html
+          fetch "$TOWN/fr/info-travaux/1019/rincage-du-reseau-d-aqueduc-mois-d-octobre-" town-detail-fr-1019.html
+          fetch "$TOWN/en/work-info/1019/water-system-flushing-month-of-october" town-detail-en-1019.html
+          fetch "$TOWN/en/work-info/757/kipawa-road-disruption" town-detail-en-757.html
 
       - name: Commit
         env:
