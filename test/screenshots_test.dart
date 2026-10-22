@@ -12,6 +12,7 @@ import 'package:community/collection/collection_card.dart';
 import 'package:community/collection/pickup.dart';
 import 'package:community/events/event_widgets.dart';
 import 'package:community/events/town_event.dart';
+import 'package:community/fire/fire_data.dart';
 import 'package:community/fire/fire_widgets.dart';
 import 'package:community/settings/app_settings.dart';
 import 'package:community/weather/weather_card.dart';
@@ -245,12 +246,14 @@ void main() {
       await tester.binding.handlePopRoute();
       await tester.pumpAndSettle();
 
-      // Today's real state, in season: the small card.
-      fire.set(SampleFire.none());
-      await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(find.byType(FireCard), 200,
-          scrollable: find.byType(Scrollable).hitTestable().first);
-      await _capture('${code}_29_today_fire_card');
+      // Today's real state: the small card (shown only in fire season).
+      if (isFireSeason(DateTime.now())) {
+        fire.set(SampleFire.none());
+        await tester.pumpAndSettle();
+        await tester.scrollUntilVisible(find.byType(FireCard), 200,
+            scrollable: find.byType(Scrollable).hitTestable().first);
+        await _capture('${code}_29_today_fire_card');
+      }
 
       // Announced for tomorrow, and the ministry's service down for 3 hours.
       fire.set(SampleFire.banAnnounced());

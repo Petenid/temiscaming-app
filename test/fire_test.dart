@@ -165,6 +165,8 @@ void main() {
       expect(find.text(strings.fireStateIfcoNone), findsOneWidget);
       expect(find.text(strings.fireStateIcafNone), findsOneWidget);
       expect(find.textContaining(strings.fireNoneInQuebecSince('').trim()), findsNWidgets(2));
+      // Below the two bans: the list only builds what's near the screen.
+      await _scrollTo(tester, find.textContaining(strings.fireCheckedAt('').trim()));
       expect(find.textContaining(strings.fireCheckedAt('').trim()), findsOneWidget);
     });
 
@@ -195,6 +197,7 @@ void main() {
       await _pumpScreen(tester, language, FakeFireRepository(useDefault: false));
       expect(find.text(strings.fireNeverChecked), findsWidgets);
       await _pumpScreen(tester, language, FakeFireRepository(useDefault: false, failed: true));
+      await _scrollTo(tester, find.text(strings.fireLoadFailed));
       expect(find.text(strings.fireLoadFailed), findsOneWidget);
     });
   }
@@ -209,7 +212,8 @@ void main() {
       await scrollAndTap(tester, find.text(strings.notificationsAllow));
       expect(settings.fireBansEnabled, isTrue);
       expect(find.byType(FireOptInCard), findsNothing);
-      expect(push.appliedFire.last, isTrue);
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getBool('fire_bans'), isTrue);
     });
 
     testWidgets('installed before fire bans: offered once on Today; "Turn on" asks and saves', (tester) async {

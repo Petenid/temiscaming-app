@@ -83,10 +83,15 @@ void main() {
 
       // At 200% the boil-water banner fills the screen, and the list only
       // builds rows near the screen: scroll to the fire banner first.
-      await tester.scrollUntilVisible(find.byType(FireBanBanner), 200,
+      // At 200% the banner is taller than the screen: tap its first title.
+      final fireTitle = find.descendant(
+        of: find.byType(FireBanBanner),
+        matching: find.text(strings.fireIfcoName),
+      );
+      await tester.scrollUntilVisible(fireTitle, 200,
           scrollable: find.byType(Scrollable).hitTestable().first);
       expect(tester.takeException(), isNull, reason: 'Today fire banner');
-      await scrollAndTap(tester, find.byType(FireBanBanner));
+      await scrollAndTap(tester, fireTitle);
       expect(find.byType(FireScreen), findsOneWidget);
       expect(tester.takeException(), isNull, reason: 'Fire screen');
       await tester.scrollUntilVisible(find.text(strings.fireSource), 300,
