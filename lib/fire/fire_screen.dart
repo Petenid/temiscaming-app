@@ -117,7 +117,7 @@ class _LayerSection extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              fireStateText(l10n, s),
+              fireStateText(l10n, s, now),
               style: textTheme.titleMedium?.copyWith(color: color, fontWeight: here ? FontWeight.bold : null),
             ),
           ),

@@ -144,6 +144,7 @@ Fire danger index in-app (needs SOPFEU's permission), RTF, maps drawn in the app
 
 ## 11. Implementation notes (2026-10-21, app)
 - **The banner shows announced bans too** ("For Témiscaming, starting Thursday, October 22 at 8:00 a.m."), not only bans in effect: the announcement is when people need to know.
+- **"Announced", never "in effect", before a ban starts** (card and Fire screen); caught in the first screenshot review.
 - **Both bans in one banner**, open-fire ban first, rather than two red banners.
 - **A stale check:** a ban last known in effect stays on the banner and screen, with "Couldn't check fire bans since …" in red. "No ban" is never shown after a failed check (principle 3). A problem also brings the Today card back outside fire season.
 - **Today card:** the open-fire ban line always; the forest access ban only when there's one in the region or around town.

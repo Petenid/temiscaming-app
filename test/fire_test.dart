@@ -144,10 +144,16 @@ void main() {
       expect(find.text(strings.fireTownRulesNote), findsOneWidget);
     });
 
-    testWidgets('an announced ban shows on Today with its start (${language.name})', (tester) async {
+    testWidgets('an announced ban shows on Today with its start, never as "in effect" (${language.name})', (tester) async {
       await _pumpToday(tester, prefs, FakeFireRepository(status: SampleFire.banAnnounced()));
       expect(find.textContaining(strings.fireBannerIfcoUpcoming('').trim()), findsOneWidget);
       expect(find.text(strings.fireBannerIfcoNow), findsNothing);
+      expect(find.text(strings.fireStateIfcoTown), findsNothing);
+
+      await _pumpScreen(tester, language, FakeFireRepository(status: SampleFire.banAnnounced()));
+      expect(find.text(strings.fireStateIfcoAnnounced), findsOneWidget);
+      expect(find.text(strings.fireStateIfcoTown), findsNothing);
+      expect(find.textContaining(strings.fireStarts('').trim()), findsOneWidget);
     });
 
     testWidgets('both bans: one banner, both named (${language.name})', (tester) async {

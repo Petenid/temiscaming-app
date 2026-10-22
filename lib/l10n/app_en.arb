@@ -680,6 +680,9 @@
   "channelFireUpdatesDescription": "When a fire ban for Témiscaming is lifted",
   "@channelFireUpdatesDescription": {"description": "Android notification channel description."},
 
-  "fireNameState": "{name}: {state}",
-  "@fireNameState": {"description": "A ban's name and its status on the Today card, e.g. 'Open-fire ban: In effect for T\u00e9miscaming'.", "placeholders": {"name": {"type": "String"}, "state": {"type": "String"}}}
+  "fireStateIfcoAnnounced": "Announced for Témiscaming",
+  "@fireStateIfcoAnnounced": {"description": "Status of an open-fire ban that's been announced but hasn't started yet."},
+
+  "fireStateIcafAnnounced": "Announced around Témiscaming",
+  "@fireStateIcafAnnounced": {"description": "Status of a forest access ban that's been announced but hasn't started yet."}
 }

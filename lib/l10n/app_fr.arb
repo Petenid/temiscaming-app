@@ -439,5 +439,7 @@
 
   "channelFireUpdatesDescription": "Quand une interdiction de feu à Témiscaming est levée",
 
-  "fireNameState": "{name} : {state}"
+  "fireStateIfcoAnnounced": "Annoncée à Témiscaming",
+
+  "fireStateIcafAnnounced": "Annoncée autour de Témiscaming"
 }

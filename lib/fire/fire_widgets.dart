@@ -20,10 +20,11 @@ String fireLayerName(AppLocalizations l10n, FireLayer layer) =>
     layer == FireLayer.ifco ? l10n.fireIfcoName : l10n.fireIcafName;
 
 /// The layer's state in words. "None" is only said after a recent check:
-/// callers show the health line instead when the check is stale.
-String fireStateText(AppLocalizations l10n, FireLayerStatus s) => switch (s.state) {
-  FireLayerState.town => l10n.fireStateIfcoTown,
-  FireLayerState.around => l10n.fireStateIcafAround,
+/// callers show the health line instead when the check is stale. An
+/// announced ban is never called "in effect" before it starts.
+String fireStateText(AppLocalizations l10n, FireLayerStatus s, DateTime now) => switch (s.state) {
+  FireLayerState.town => s.isUpcoming(now) ? l10n.fireStateIfcoAnnounced : l10n.fireStateIfcoTown,
+  FireLayerState.around => s.isUpcoming(now) ? l10n.fireStateIcafAnnounced : l10n.fireStateIcafAround,
   FireLayerState.region => l10n.fireStateRegion('${s.nearestKm ?? '—'}'),
   FireLayerState.none => s.layer == FireLayer.ifco ? l10n.fireStateIfcoNone : l10n.fireStateIcafNone,
 };
@@ -157,8 +158,17 @@ class FireCard extends StatelessWidget {
           if (layer.isStale(at) && !layer.isHere) continue;
           // The forest access ban only gets a line when there's something to say.
           if (layer.layer == FireLayer.icaf && none) continue;
-          final text = none ? fireStateText(l10n, layer) : l10n.fireNameState(fireLayerName(l10n, layer.layer), fireStateText(l10n, layer));
-          lines.add(_StateLine(text: text, here: layer.isHere));
+          // No ban: one line. A ban: its name, then its state for Témiscaming.
+          lines.add(_StateLine(
+            text: none ? fireStateText(l10n, layer, at) : fireLayerName(l10n, layer.layer),
+            here: layer.isHere,
+          ));
+          if (!none) {
+            lines.add(Padding(
+              padding: const EdgeInsetsDirectional.only(start: 32),
+              child: Text(fireStateText(l10n, layer, at), style: textTheme.bodyLarge),
+            ));
+          }
           if (layer.isHere && layer.startsAt != null) {
             lines.add(Padding(
               padding: const EdgeInsetsDirectional.only(start: 32),
