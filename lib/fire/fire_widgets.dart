@@ -135,7 +135,7 @@ class FireCard extends StatelessWidget {
     if (s?.anyBan ?? false) return true;
     // A problem shows all year: silence must never look like safety.
     return repository.failed || s?.ifco == null || s?.icaf == null ||
-        s!.ifco!.isStale(now) || s!.icaf!.isStale(now);
+        s!.ifco!.isStale(now) || s.icaf!.isStale(now);
   }
 
   @override
