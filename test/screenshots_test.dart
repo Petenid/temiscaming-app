@@ -12,6 +12,7 @@ import 'package:community/collection/collection_card.dart';
 import 'package:community/collection/pickup.dart';
 import 'package:community/events/event_widgets.dart';
 import 'package:community/events/town_event.dart';
+import 'package:community/fire/fire_widgets.dart';
 import 'package:community/settings/app_settings.dart';
 import 'package:community/weather/weather_card.dart';
 import 'package:community/weather/weather_widgets.dart';
@@ -22,6 +23,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'collection_fakes.dart';
 import 'events_fakes.dart';
 import 'fakes.dart';
+import 'fire_fakes.dart';
 import 'helpers.dart';
 import 'weather_fakes.dart';
 
@@ -225,6 +227,50 @@ void main() {
       await tester.scrollUntilVisible(find.byType(WeatherCard), 200,
           scrollable: find.byType(Scrollable).hitTestable().first);
       await _capture('${code}_25_today_weather_stale');
+    });
+
+    testWidgets('fire screens in $code', (tester) async {
+      phone(tester);
+      final strings = stringsFor(language);
+      final fire = FakeFireRepository(status: SampleFire.banStarted());
+      final collection = FakeCollectionRepository(pickups: SamplePickups.aroundToday());
+      await pumpApp(tester, {'language': code, 'sector': 'town'}, null, null, collection, null, null, null, null, fire);
+      await _capture('${code}_26_today_fire_ban');
+
+      await scrollAndTap(tester, find.byType(FireBanBanner));
+      await _capture('${code}_27_fire');
+      await tester.scrollUntilVisible(find.text(strings.fireSource), 300,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      await _capture('${code}_28_fire_sources');
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      // Today's real state, in season: the small card.
+      fire.set(SampleFire.none());
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(find.byType(FireCard), 200,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      await _capture('${code}_29_today_fire_card');
+
+      // Announced for tomorrow, and the ministry's service down for 3 hours.
+      fire.set(SampleFire.banAnnounced());
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(find.byType(FireBanBanner), -200,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      await _capture('${code}_30_today_fire_announced');
+      fire.set(SampleFire.none(checkedAge: const Duration(hours: 3)));
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(find.byType(FireCard), 200,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      await _capture('${code}_31_today_fire_stale');
+    });
+
+    testWidgets('fire-ban offer in $code', (tester) async {
+      phone(tester);
+      final push = FakePushService(isSupported: true);
+      final collection = FakeCollectionRepository(pickups: SamplePickups.aroundToday());
+      await pumpApp(tester, {'language': code, 'sector': 'town', 'water_alerts': true}, null, push, collection);
+      await _capture('${code}_32_today_fire_offer');
     });
 
     testWidgets('sector screen at 200% text in $code', (tester) async {

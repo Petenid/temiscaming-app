@@ -58,6 +58,9 @@ class FakePushService implements PushService {
 
   /// Pickup-change subscriptions asked for: (sector, on).
   final appliedCollection = <(Sector?, bool)>[];
+
+  /// Fire-ban subscriptions asked for: on or off.
+  final appliedFire = <bool>[];
   final _opened = StreamController<String>.broadcast();
   String? initialId;
 
@@ -80,9 +83,11 @@ class FakePushService implements PushService {
     required bool enabled,
     Sector? sector,
     bool collectionChanges = false,
+    bool fireBans = false,
   }) async {
     applied.add((language, enabled));
     appliedCollection.add((sector, collectionChanges));
+    appliedFire.add(fireBans);
     return applySucceeds;
   }
 

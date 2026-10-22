@@ -23,7 +23,7 @@
 
   "todayTitle": "Aujourd’hui",
 
-  "todayComingSoon": "Les interdictions de feu, l’état des routes et les pannes de courant s’afficheront ici bientôt.",
+  "todayComingSoon": "L’état des routes et les pannes de courant s’afficheront ici bientôt.",
 
   "settingsTitle": "Paramètres",
 
@@ -75,7 +75,7 @@
 
   "notificationsPrompt": "Recevoir des notifications?",
 
-  "notificationsExplanation": "Nous vous avertirons quand la Ville publie un avis sur l'eau, comme un avis d'ébullition ou une coupure d'eau, et quand il est levé; la veille de votre collecte des bacs; et quand la Ville déplace ou annule une collecte. La météo et les nouvelles générales n'envoient jamais de notification.",
+  "notificationsExplanation": "Nous vous avertirons quand la Ville publie un avis sur l'eau, comme un avis d'ébullition ou une coupure d'eau, et quand il est levé; quand une interdiction de feux à ciel ouvert ou d'accès en forêt commence ou est levée à Témiscaming; la veille de votre collecte des bacs; et quand la Ville déplace ou annule une collecte. La météo et les nouvelles générales n'envoient jamais de notification.",
 
   "notificationsReminder": "Cette application ne remplace pas les alertes officielles de la Ville. Nous vous recommandons de vous y inscrire aussi.",
 
@@ -357,5 +357,87 @@
 
   "wmoThunderstormHail": "Orages avec grêle",
 
-  "wmoUnknown": "Conditions inconnues"
+  "wmoUnknown": "Conditions inconnues",
+
+  "fireTitle": "Interdictions de feu",
+
+  "fireIfcoName": "Interdiction de faire des feux à ciel ouvert",
+
+  "fireIcafName": "Interdiction d’accès en forêt",
+
+  "fireBannerIfcoNow": "En vigueur à Témiscaming. Pas de feux de camp ni de brûlage.",
+
+  "fireBannerIcafNow": "En vigueur autour de Témiscaming. N’allez pas en forêt.",
+
+  "fireBannerIfcoUpcoming": "À Témiscaming, à partir du {when}",
+
+  "fireBannerIcafUpcoming": "Autour de Témiscaming, à partir du {when}",
+
+  "fireWhen": "{day} à {time}",
+
+  "fireStateIfcoTown": "En vigueur à Témiscaming",
+
+  "fireStateIcafAround": "En vigueur autour de Témiscaming",
+
+  "fireStateRegion": "Pas en vigueur à Témiscaming, mais en vigueur ailleurs dans la région (à environ {km} km)",
+
+  "fireStateIfcoNone": "Aucune interdiction de feux à ciel ouvert à Témiscaming",
+
+  "fireStateIcafNone": "Aucune interdiction d’accès en forêt près de Témiscaming",
+
+  "fireSince": "Depuis le {when}",
+
+  "fireStarts": "À partir du {when}",
+
+  "fireNoneInQuebecSince": "Aucune interdiction au Québec depuis le {date}",
+
+  "fireCheckedAt": "Interdictions de feu vérifiées : {time}",
+
+  "fireCheckFailedSince": "Impossible de vérifier les interdictions de feu depuis {time}",
+
+  "fireNeverChecked": "Les interdictions de feu n’ont pas encore été vérifiées.",
+
+  "fireLoadFailed": "Impossible de charger les interdictions de feu.",
+
+  "fireDangerLink": "Danger d’incendie aujourd’hui (SOPFEU)",
+
+  "fireMeaningHeading": "Ce que ça veut dire",
+
+  "fireIfcoMeaning": "Aucun feu à ciel ouvert en forêt ou à proximité : feux de camp, brûlage de branches ou de feuilles, feux d’artifice. Toujours permis : appareils au gaz, au propane ou à l’éthanol, et foyers ou barbecues munis d’un pare-étincelles (ouvertures de 1 cm ou moins).",
+
+  "fireIcafMeaning": "Personne ne peut circuler ni accéder en forêt dans le secteur, sauf les personnes qui combattent les feux ou qui sont autorisées par le gouvernement. Vérifiez avant d’aller à la chasse, au chalet ou sur les chemins forestiers.",
+
+  "fireSourcesHeading": "Sources officielles",
+
+  "fireOfficialNote": "Le territoire officiel est celui de la décision du gouvernement; la carte n’est qu’un repère. Consultez la page officielle avant de faire un feu ou d’aller en forêt.",
+
+  "fireTownRulesNote": "La Ville peut ajouter ses propres règles : voir Alertes.",
+
+  "fireOfficialLink": "Décisions officielles (Québec.ca)",
+
+  "fireMapLink": "Carte des mesures",
+
+  "fireSource": "Source : ministère de la Sécurité intérieure, par Données Québec (CC BY 4.0).",
+
+  "fireOptInTitle": "Nouveau : notifications d’interdiction de feu",
+
+  "fireOptInBody": "Recevez une notification quand une interdiction de feux à ciel ouvert ou d’accès en forêt commence ou est levée à Témiscaming.",
+
+  "fireOptInYes": "Activer",
+
+  "fireOptInNo": "Non merci",
+
+  "settingsFireBans": "Interdictions de feu",
+
+  "settingsFireBansSubtitle": "Quand une interdiction de feux à ciel ouvert ou d’accès en forêt commence ou est levée à Témiscaming",
+
+  "channelFireUrgentName": "Interdictions de feu",
+
+  "channelFireUrgentDescription": "Quand une interdiction de feux à ciel ouvert ou d’accès en forêt est annoncée ou commence à Témiscaming",
+
+  "channelFireUpdatesName": "Interdictions de feu levées",
+
+  "channelFireUpdatesDescription": "Quand une interdiction de feu à Témiscaming est levée",
+
+  "fireNameState": "{name} : {state}"
 }

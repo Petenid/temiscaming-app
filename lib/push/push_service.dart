@@ -9,12 +9,12 @@ import '../l10n/app_localizations.dart';
 import '../settings/app_settings.dart';
 import '../settings/sector.dart';
 
-/// Push notifications for water advisories (Milestone 1, spec §3 D5) and
-/// pickup changes (Milestone 2, spec D6).
+/// Push notifications for water advisories (Milestone 1, spec §3 D5),
+/// pickup changes (Milestone 2, spec D6) and fire bans (Milestone 6, D6).
 ///
 /// Each phone subscribes to one FCM "topic" matching its language
 /// (`water-fr` or `water-en`), and one matching its sector and language
-/// (`collection-town-fr` …). The backend sends one message per topic, so
+/// (`collection-town-fr` …), and `fire-fr` or `fire-en`. The backend sends one message per topic, so
 /// every phone gets exactly one notification, in its own language, and we
 /// never need to store anyone's device token.
 abstract class PushService {
@@ -27,17 +27,18 @@ abstract class PushService {
   /// Subscribes to the right topics (or none) and, on Android, (re)creates
   /// the notification channels with names in the user's language.
   /// [enabled] is for water advisories; [collectionChanges] for pickup
-  /// changes in [sector]. Returns false if it couldn't (typically no
+  /// changes in [sector]; [fireBans] for fire bans. Returns false if it couldn't (typically no
   /// network), so the caller can try again.
   Future<bool> apply({
     required AppLanguage language,
     required bool enabled,
     Sector? sector,
     bool collectionChanges = false,
+    bool fireBans = false,
   });
 
-  /// What the user tapped while the app was running: an alert id, or
-  /// [collectionTarget] for a pickup notice.
+  /// What the user tapped while the app was running: an alert id,
+  /// [collectionTarget] for a pickup notice or [fireTarget] for a fire ban.
   Stream<String> get openedAlertIds;
 
   /// The same for the notification that launched the app, if any.
@@ -51,12 +52,22 @@ String topicFor(AppLanguage language) => 'water-${language.name}';
 String collectionTopicFor(Sector sector, AppLanguage language) =>
     'collection-${sector.name}-${language.name}';
 
+/// Fire-ban topic for a language; matches the backend's FIRE_TOPICS
+/// in functions/src/fire/sync.ts.
+String fireTopicFor(AppLanguage language) => 'fire-${language.name}';
+
 /// Stands for "open the pickup schedule" where an alert id would go.
 const collectionTarget = 'collection';
 
-/// Where a tapped push leads: its alert, or the schedule for pickup notices.
+/// Stands for "open the Fire screen".
+const fireTarget = 'fire';
+
+/// Where a tapped push leads: its alert, the schedule for pickup notices,
+/// or the Fire screen (the backend sends `screen: fire`).
 String? targetOf(Map<String, dynamic> data) =>
-    data['alert_id'] as String? ?? (data['type'] == 'collection' ? collectionTarget : null);
+    data['alert_id'] as String? ??
+    (data['type'] == 'collection' ? collectionTarget : null) ??
+    (data['screen'] == 'fire' ? fireTarget : null);
 
 class FcmPushService implements PushService {
   // Talks to MainActivity.kt to create Android notification channels.
@@ -86,6 +97,7 @@ class FcmPushService implements PushService {
     required bool enabled,
     Sector? sector,
     bool collectionChanges = false,
+    bool fireBans = false,
   }) async {
     if (!isSupported) return true;
     final strings = lookupAppLocalizations(language.locale);
@@ -98,6 +110,10 @@ class FcmPushService implements PushService {
           'updatesDescription': strings.channelUpdatesDescription,
           'collectionName': strings.channelCollectionName,
           'collectionDescription': strings.channelCollectionDescription,
+          'fireUrgentName': strings.channelFireUrgentName,
+          'fireUrgentDescription': strings.channelFireUrgentDescription,
+          'fireUpdatesName': strings.channelFireUpdatesName,
+          'fireUpdatesDescription': strings.channelFireUpdatesDescription,
         });
       }
       for (final each in AppLanguage.values) {
@@ -105,6 +121,11 @@ class FcmPushService implements PushService {
           await _messaging.subscribeToTopic(topicFor(each));
         } else {
           await _messaging.unsubscribeFromTopic(topicFor(each));
+        }
+        if (fireBans && each == language) {
+          await _messaging.subscribeToTopic(fireTopicFor(each));
+        } else {
+          await _messaging.unsubscribeFromTopic(fireTopicFor(each));
         }
         for (final s in Sector.values) {
           final topic = collectionTopicFor(s, each);
@@ -161,7 +182,7 @@ class PushSync {
   final Duration _firstRetry;
   Duration _nextRetry;
   Timer? _retry;
-  (AppLanguage, bool, Sector?, bool)? _applied;
+  (AppLanguage, bool, Sector?, bool, bool)? _applied;
 
   void _sync() {
     final language = _settings.language;
@@ -171,6 +192,7 @@ class PushSync {
       _settings.waterAlertsEnabled,
       _settings.sector,
       _settings.collectionChangesEnabled,
+      _settings.fireBansEnabled,
     );
     if (wanted == _applied) return;
     _applied = wanted;
@@ -178,12 +200,13 @@ class PushSync {
     unawaited(_apply(wanted));
   }
 
-  Future<void> _apply((AppLanguage, bool, Sector?, bool) wanted) async {
+  Future<void> _apply((AppLanguage, bool, Sector?, bool, bool) wanted) async {
     final ok = await _push.apply(
       language: wanted.$1,
       enabled: wanted.$2,
       sector: wanted.$3,
       collectionChanges: wanted.$4,
+      fireBans: wanted.$5,
     );
     // A newer change has taken over: it does its own retrying.
     if (wanted != _applied) return;

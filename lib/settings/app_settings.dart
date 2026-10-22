@@ -27,6 +27,7 @@ class AppSettings extends ChangeNotifier {
     this._binReminder,
     this._reminderMinutes,
     this._collectionChanges,
+    this._fireBans,
   );
 
   static const _languageKey = 'language';
@@ -35,6 +36,7 @@ class AppSettings extends ChangeNotifier {
   static const _binReminderKey = 'bin_reminder';
   static const _reminderTimeKey = 'bin_reminder_time';
   static const _collectionChangesKey = 'collection_changes';
+  static const _fireBansKey = 'fire_bans';
 
   /// The evening-before reminder's default time: 7 p.m. (DESIGN §6.2).
   static const defaultReminderMinutes = 19 * 60;
@@ -46,6 +48,7 @@ class AppSettings extends ChangeNotifier {
   bool? _binReminder;
   int _reminderMinutes;
   bool? _collectionChanges;
+  bool? _fireBans;
 
   /// Loads saved choices from the device. Called once at startup.
   static Future<AppSettings> load() async {
@@ -61,6 +64,9 @@ class AppSettings extends ChangeNotifier {
       prefs.getBool(_binReminderKey) ?? water,
       _parseTime(prefs.getString(_reminderTimeKey)) ?? defaultReminderMinutes,
       prefs.getBool(_collectionChangesKey) ?? water,
+      // Not defaulted from the water answer: people who installed before
+      // fire bans are asked once, on Today (fire-bans spec D7).
+      prefs.getBool(_fireBansKey),
     );
   }
 
@@ -89,16 +95,32 @@ class AppSettings extends ChangeNotifier {
   /// Notices when the Town moves, cancels or adds a pickup (spec D8).
   bool get collectionChangesEnabled => _collectionChanges ?? false;
 
-  /// The answer to the notifications question: turns all three kinds of
+  /// Notifications when a fire ban starts or lifts for Témiscaming (fire-bans spec D7).
+  bool get fireBansEnabled => _fireBans ?? false;
+
+  /// True for people who answered the notifications question before fire
+  /// bans existed and haven't been asked about them yet: Today offers them
+  /// once (spec D7).
+  bool get fireBansToOffer => notificationsAsked && _fireBans == null;
+
+  /// The answer to the notifications question: turns every kind of
   /// notification on (permission granted) or off.
   Future<void> setNotificationsAnswer(bool granted) async {
     _waterAlerts = granted;
     _binReminder = granted;
     _collectionChanges = granted;
+    _fireBans = granted;
     notifyListeners();
     await _prefs.setBool(_waterAlertsKey, granted);
     await _prefs.setBool(_binReminderKey, granted);
     await _prefs.setBool(_collectionChangesKey, granted);
+    await _prefs.setBool(_fireBansKey, granted);
+  }
+
+  Future<void> setFireBans(bool enabled) async {
+    _fireBans = enabled;
+    notifyListeners();
+    await _prefs.setBool(_fireBansKey, enabled);
   }
 
   Future<void> setBinReminder(bool enabled) async {

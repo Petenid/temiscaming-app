@@ -139,5 +139,14 @@ Fire danger index in-app (needs SOPFEU's permission), RTF, maps drawn in the app
 - **First run records, doesn't push**, so deploying never sends a surprise.
 - **`pushed` lives inside each layer** (`ifco.pushed`, `icaf.pushed`) rather than a top-level map, so each layer's write is self-contained. It's in a public document; it holds only a kind and a time.
 - **Partial push failure:** if one language's push fails and the other goes out, it's recorded as sent (resending the other language every 30 min would be worse); the failure is logged.
-- **Links:** the Québec.ca measures page exists in French only (the app labels it, DESIGN §5). SOPFEU: English regional page confirmed; the French address (`/situation-actuelle/abitibi-temiscamingue/`) still to be opened once in a browser before the app milestone.
+- **Links:** the Québec.ca measures page exists in French only (the app labels it, DESIGN §5). SOPFEU's regional pages, both read from the site's own language switch on 2026-10-21: `sopfeu.qc.ca/etat-situation/abitibi-temiscamingue/` (FR) and `sopfeu.qc.ca/en/current-situation/abitibi-temiscamingue/` (EN). The first backend release had a guessed French address; fixed with the app.
 - **Fixtures:** `fixtures/fire/2026-10-21/` was copied from the live service through a web reader, not downloaded byte for byte; run *Capture fixtures* → `fire` once to replace it with the exact files (tests should still pass).
+
+## 11. Implementation notes (2026-10-21, app)
+- **The banner shows announced bans too** ("For Témiscaming, starting Thursday, October 22 at 8:00 a.m."), not only bans in effect: the announcement is when people need to know.
+- **Both bans in one banner**, open-fire ban first, rather than two red banners.
+- **A stale check:** a ban last known in effect stays on the banner and screen, with "Couldn't check fire bans since …" in red. "No ban" is never shown after a failed check (principle 3). A problem also brings the Today card back outside fire season.
+- **Today card:** the open-fire ban line always; the forest access ban only when there's one in the region or around town.
+- **Opt-in (D7):** the first-launch answer now sets fire bans with the rest. People who answered before get the one-time card on Today, on phones only; either button hides it for good.
+- **Unknown states:** if the backend ever writes a state the app doesn't know, the app treats it as "a ban here", so the person checks the official page rather than trusting silence.
+- **SOPFEU's French page** is `/etat-situation/abitibi-temiscamingue/` (read from the site's language switch); the backend's stored link was corrected in the same patch.

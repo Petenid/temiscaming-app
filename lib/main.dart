@@ -10,6 +10,7 @@ import 'collection/local_reminder_service.dart';
 import 'collection/reminders.dart';
 import 'events/calendar_adder.dart';
 import 'events/events_repository.dart';
+import 'fire/fire_repository.dart';
 import 'firebase_options.dart';
 import 'push/push_service.dart';
 import 'services.dart';
@@ -44,6 +45,9 @@ Future<void> main() async {
     weather: firebaseReady
         ? FirestoreWeatherRepository(FirebaseFirestore.instance)
         : UnavailableWeatherRepository(),
+    fire: firebaseReady
+        ? FirestoreFireRepository(FirebaseFirestore.instance)
+        : UnavailableFireRepository(),
   );
   // Keeps the push subscription matching the language and settings.
   if (firebaseReady) PushSync(settings, services.push);

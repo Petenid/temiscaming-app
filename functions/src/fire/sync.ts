@@ -27,7 +27,7 @@ export const FIRE_LINKS = {
   official_url_fr:
     "https://www.quebec.ca/agriculture-environnement-et-ressources-naturelles/forets/protection-forets/gestion-feux/mesures-prevention",
   map_url: "https://www.carte-igo.donneesquebec.ca/igo2/apercu-qc/?pos=@-79.1,46.9,8&ctx=msp_feu_mesure_preventive",
-  sopfeu_url_fr: "https://www.sopfeu.qc.ca/situation-actuelle/abitibi-temiscamingue/",
+  sopfeu_url_fr: "https://www.sopfeu.qc.ca/etat-situation/abitibi-temiscamingue/",
   sopfeu_url_en: "https://www.sopfeu.qc.ca/en/current-situation/abitibi-temiscamingue/",
 } as const;
 

@@ -3,6 +3,7 @@ import 'collection/collection_repository.dart';
 import 'collection/reminders.dart';
 import 'events/calendar_adder.dart';
 import 'events/events_repository.dart';
+import 'fire/fire_repository.dart';
 import 'push/push_service.dart';
 import 'weather/weather_repository.dart';
 
@@ -17,6 +18,7 @@ class AppServices {
     required this.events,
     required this.calendar,
     required this.weather,
+    required this.fire,
   });
 
   final AlertsRepository alerts;
@@ -30,4 +32,7 @@ class AppServices {
 
   /// Weather for Témiscaming (Milestone 4).
   final WeatherRepository weather;
+
+  /// Fire bans for Témiscaming (Milestone 6).
+  final FireRepository fire;
 }

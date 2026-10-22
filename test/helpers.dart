@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'collection_fakes.dart';
 import 'events_fakes.dart';
 import 'fakes.dart';
+import 'fire_fakes.dart';
 import 'weather_fakes.dart';
 
 /// Starts the app as if on a device whose saved settings are [savedPrefs]
@@ -25,6 +26,7 @@ Future<AppSettings> pumpApp(
   FakeEventsRepository? events,
   FakeCalendarAdder? calendar,
   FakeWeatherRepository? weather,
+  FakeFireRepository? fire,
 ]) async {
   SharedPreferences.setMockInitialValues(savedPrefs);
   final settings = await AppSettings.load();
@@ -39,6 +41,7 @@ Future<AppSettings> pumpApp(
         events: events ?? FakeEventsRepository(),
         calendar: calendar ?? FakeCalendarAdder(),
         weather: weather ?? FakeWeatherRepository(),
+        fire: fire ?? FakeFireRepository(),
       ),
     ),
   );

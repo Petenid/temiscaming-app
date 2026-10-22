@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'alerts/alert_detail_screen.dart';
 import 'collection/collection_screen.dart';
+import 'fire/fire_screen.dart';
 import 'home/home_shell.dart';
 import 'l10n/app_localizations.dart';
 import 'onboarding/notifications_screen.dart';
@@ -46,7 +47,7 @@ class _TemiscamingAppState extends State<TemiscamingApp> {
     });
   }
 
-  /// Opens what a tapped notification is about: an alert, or the schedule.
+  /// Opens what a tapped notification is about: an alert, the schedule, or the Fire screen.
   void _openAlert(String id) {
     // When a notification launches the app, this can run before the first
     // screen exists: try again once it does.
@@ -54,6 +55,14 @@ class _TemiscamingAppState extends State<TemiscamingApp> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (_navigator.currentState != null) _openAlert(id);
       });
+      return;
+    }
+    if (id == fireTarget) {
+      _navigator.currentState?.push(
+        MaterialPageRoute<void>(
+          builder: (_) => FireScreen(settings: settings, repository: services.fire),
+        ),
+      );
       return;
     }
     if (id == collectionTarget) {

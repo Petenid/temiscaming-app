@@ -7,6 +7,8 @@ import 'package:community/collection/collection_card.dart';
 import 'package:community/collection/collection_screen.dart';
 import 'package:community/events/event_detail_screen.dart';
 import 'package:community/events/events_card.dart';
+import 'package:community/fire/fire_screen.dart';
+import 'package:community/fire/fire_widgets.dart';
 import 'package:community/settings/app_settings.dart';
 import 'package:community/weather/weather_card.dart';
 import 'package:community/weather/weather_screen.dart';
@@ -17,6 +19,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'collection_fakes.dart';
 import 'events_fakes.dart';
 import 'fakes.dart';
+import 'fire_fakes.dart';
 import 'helpers.dart';
 import 'weather_fakes.dart';
 
@@ -58,7 +61,9 @@ void main() {
       final weather = FakeWeatherRepository(weather: SampleWeather.normal(alerts: [
         SampleWeather.freezingRainWarning(), SampleWeather.frostAdvisory(), SampleWeather.specialStatement(),
       ]));
-      await pumpApp(tester, const {}, alerts, push, collection, null, events, null, weather);
+      // Both fire bans, for the tallest banner (it shows in any season).
+      final fire = FakeFireRepository(status: SampleFire.both());
+      await pumpApp(tester, const {}, alerts, push, collection, null, events, null, weather, fire);
       expect(tester.takeException(), isNull, reason: 'language screen');
 
       await scrollAndTap(tester, find.text(strings.languageName));
@@ -77,7 +82,19 @@ void main() {
       await _back(tester);
 
       // At 200% the boil-water banner fills the screen, and the list only
-      // builds rows near the screen: scroll to the weather banner first.
+      // builds rows near the screen: scroll to the fire banner first.
+      await tester.scrollUntilVisible(find.byType(FireBanBanner), 200,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      expect(tester.takeException(), isNull, reason: 'Today fire banner');
+      await scrollAndTap(tester, find.byType(FireBanBanner));
+      expect(find.byType(FireScreen), findsOneWidget);
+      expect(tester.takeException(), isNull, reason: 'Fire screen');
+      await tester.scrollUntilVisible(find.text(strings.fireSource), 300,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      expect(tester.takeException(), isNull, reason: 'Fire screen, sources');
+      await _back(tester);
+
+      // Then on to the weather banner.
       await tester.scrollUntilVisible(find.byType(WeatherAlertBanner), 200,
           scrollable: find.byType(Scrollable).hitTestable().first);
       expect(tester.takeException(), isNull, reason: 'Today weather alert banner');
@@ -107,6 +124,11 @@ void main() {
       expect(find.byType(CollectionScreen), findsOneWidget);
       expect(tester.takeException(), isNull, reason: 'pickup schedule');
       await _back(tester);
+
+      // The fire card sits between the weather and events cards.
+      await tester.scrollUntilVisible(find.byType(FireCard), 200,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      expect(tester.takeException(), isNull, reason: 'Today fire card');
 
       // The "Coming up" card, then on to the Events tab by tapping it.
       final eventsTitle = find.descendant(

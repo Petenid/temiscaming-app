@@ -113,6 +113,12 @@ class SettingsScreen extends StatelessWidget {
                   onChanged: (on) => _setNotified(context, on, settings.setWaterAlerts),
                 ),
                 SwitchListTile(
+                  title: Text(l10n.settingsFireBans),
+                  subtitle: Text(l10n.settingsFireBansSubtitle),
+                  value: settings.fireBansEnabled,
+                  onChanged: (on) => _setNotified(context, on, settings.setFireBans),
+                ),
+                SwitchListTile(
                   title: Text(l10n.settingsBinReminder),
                   subtitle: Text(l10n.settingsBinReminderSubtitle),
                   value: settings.binReminderEnabled,

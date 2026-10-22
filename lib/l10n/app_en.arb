@@ -34,7 +34,7 @@
   "todayTitle": "Today",
   "@todayTitle": {"description": "Title of the home screen."},
 
-  "todayComingSoon": "Fire bans, roads and power outages will appear here soon.",
+  "todayComingSoon": "Roads and power outages will appear here soon.",
   "@todayComingSoon": {"description": "Placeholder on the home screen until features are built."},
 
   "settingsTitle": "Settings",
@@ -112,7 +112,7 @@
   "notificationsPrompt": "Get notifications?",
   "@notificationsPrompt": {"description": "Heading on the notifications step."},
 
-  "notificationsExplanation": "We'll notify you when the Town posts a water advisory, like a boil-water notice or a water cut, and when it's lifted; the evening before your bin pickup; and when the Town moves or cancels a pickup. Weather and general news never send notifications.",
+  "notificationsExplanation": "We'll notify you when the Town posts a water advisory, like a boil-water notice or a water cut, and when it's lifted; when an open-fire or forest access ban starts or lifts for Témiscaming; the evening before your bin pickup; and when the Town moves or cancels a pickup. Weather and general news never send notifications.",
   "@notificationsExplanation": {"description": "What will and won't notify (DESIGN §7)."},
 
   "notificationsReminder": "This app doesn't replace the Town's official alerts. We recommend signing up for those too.",
@@ -558,5 +558,128 @@
   "@wmoThunderstormHail": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
 
   "wmoUnknown": "Conditions unknown",
-  "@wmoUnknown": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."}
+  "@wmoUnknown": {"description": "Forecast condition from a WMO weather code (Open-Meteo); our own wording, ECCC style."},
+
+  "fireTitle": "Fire bans",
+  "@fireTitle": {"description": "Fire card on Today and the Fire screen title."},
+
+  "fireIfcoName": "Open-fire ban",
+  "@fireIfcoName": {"description": "Name of Quebec's IFCO measure, our own wording."},
+
+  "fireIcafName": "Forest access ban",
+  "@fireIcafName": {"description": "Name of Quebec's ICAF measure, our own wording."},
+
+  "fireBannerIfcoNow": "In effect for Témiscaming. No campfires or brush burning.",
+  "@fireBannerIfcoNow": {"description": "Red banner on Today while an open-fire ban covers the town."},
+
+  "fireBannerIcafNow": "In effect around Témiscaming. Stay out of the forest.",
+  "@fireBannerIcafNow": {"description": "Red banner on Today while a forest access ban covers the forest around town."},
+
+  "fireBannerIfcoUpcoming": "For Témiscaming, starting {when}",
+  "@fireBannerIfcoUpcoming": {"description": "Red banner on Today when an open-fire ban is announced. when = fireWhen.", "placeholders": {"when": {"type": "String"}}},
+
+  "fireBannerIcafUpcoming": "Around Témiscaming, starting {when}",
+  "@fireBannerIcafUpcoming": {"description": "Red banner on Today when a forest access ban is announced. when = fireWhen.", "placeholders": {"when": {"type": "String"}}},
+
+  "fireWhen": "{day} at {time}",
+  "@fireWhen": {"description": "A day and time, e.g. 'Thursday, October 22 at 8:00 a.m.'.", "placeholders": {"day": {"type": "String"}, "time": {"type": "String"}}},
+
+  "fireStateIfcoTown": "In effect for Témiscaming",
+  "@fireStateIfcoTown": {"description": "Status of the open-fire ban."},
+
+  "fireStateIcafAround": "In effect around Témiscaming",
+  "@fireStateIcafAround": {"description": "Status of the forest access ban."},
+
+  "fireStateRegion": "Not in effect for Témiscaming, but in effect elsewhere in the region (about {km} km away)",
+  "@fireStateRegion": {"description": "A ban exists within 150 km but doesn't apply here.", "placeholders": {"km": {"type": "String"}}},
+
+  "fireStateIfcoNone": "No open-fire ban for Témiscaming",
+  "@fireStateIfcoNone": {"description": "Shown only after a recent successful check (principle 3)."},
+
+  "fireStateIcafNone": "No forest access ban near Témiscaming",
+  "@fireStateIcafNone": {"description": "Shown only after a recent successful check (principle 3)."},
+
+  "fireSince": "Since {when}",
+  "@fireSince": {"description": "When a ban in effect started. when = fireWhen.", "placeholders": {"when": {"type": "String"}}},
+
+  "fireStarts": "Starts {when}",
+  "@fireStarts": {"description": "When an announced ban starts. when = fireWhen.", "placeholders": {"when": {"type": "String"}}},
+
+  "fireNoneInQuebecSince": "No ban anywhere in Quebec since {date}",
+  "@fireNoneInQuebecSince": {"description": "When the last ban in Quebec was lifted.", "placeholders": {"date": {"type": "String"}}},
+
+  "fireCheckedAt": "Fire bans checked: {time}",
+  "@fireCheckedAt": {"description": "When the ministry's data was last read.", "placeholders": {"time": {"type": "String"}}},
+
+  "fireCheckFailedSince": "Couldn't check fire bans since {time}",
+  "@fireCheckFailedSince": {"description": "In red when the last check is over 2 hours old (principle 3).", "placeholders": {"time": {"type": "String"}}},
+
+  "fireNeverChecked": "Fire bans haven't been checked yet.",
+  "@fireNeverChecked": {"description": "Before the backend's first run."},
+
+  "fireLoadFailed": "Couldn't load fire bans.",
+  "@fireLoadFailed": {"description": "When the status couldn't be loaded at all."},
+
+  "fireDangerLink": "Today's fire danger (SOPFEU)",
+  "@fireDangerLink": {"description": "Link to SOPFEU's Abitibi-Témiscamingue page."},
+
+  "fireMeaningHeading": "What it means",
+  "@fireMeaningHeading": {"description": "Fire screen: under each ban."},
+
+  "fireIfcoMeaning": "No open fires in or near the forest: campfires, burning brush or leaves, fireworks. Still allowed: gas, propane or ethanol appliances, and fireplaces or barbecues with a spark arrester (openings of 1 cm or less).",
+  "@fireIfcoMeaning": {"description": "What the open-fire ban forbids and allows (from the ministry's dataset notes)."},
+
+  "fireIcafMeaning": "No one may travel in or enter the forest in the area, except people fighting fires or authorized by the government. Check before going hunting, to a camp or on forest roads.",
+  "@fireIcafMeaning": {"description": "What the forest access ban means."},
+
+  "fireSourcesHeading": "Official sources",
+  "@fireSourcesHeading": {"description": "Fire screen: links section."},
+
+  "fireOfficialNote": "The official territory is the one in the government's decision; the map is only a guide. Check the official page before you burn anything or head into the forest.",
+  "@fireOfficialNote": {"description": "Fire screen (principle 2: we relay, the government decides)."},
+
+  "fireTownRulesNote": "The Town may add its own rules: see Alerts.",
+  "@fireTownRulesNote": {"description": "Fire screen (spec D10)."},
+
+  "fireOfficialLink": "Official decisions (Québec.ca, in French)",
+  "@fireOfficialLink": {"description": "Link to the Québec.ca preventive measures page (French only)."},
+
+  "fireMapLink": "Map of the measures",
+  "@fireMapLink": {"description": "Link to the government's interactive map."},
+
+  "fireSource": "Source: Ministère de la Sécurité intérieure, via Données Québec (CC BY 4.0).",
+  "@fireSource": {"description": "Attribution required by the dataset's licence."},
+
+  "fireOptInTitle": "New: fire-ban notifications",
+  "@fireOptInTitle": {"description": "One-time card on Today for people who installed before fire bans (spec D7)."},
+
+  "fireOptInBody": "Get a notification when an open-fire or forest access ban starts or lifts for Témiscaming.",
+  "@fireOptInBody": {"description": "One-time opt-in card."},
+
+  "fireOptInYes": "Turn on",
+  "@fireOptInYes": {"description": "Opt-in card button."},
+
+  "fireOptInNo": "No thanks",
+  "@fireOptInNo": {"description": "Opt-in card button (can be turned on later in Settings)."},
+
+  "settingsFireBans": "Fire bans",
+  "@settingsFireBans": {"description": "Settings switch for fire-ban notifications."},
+
+  "settingsFireBansSubtitle": "When an open-fire or forest access ban starts or lifts for Témiscaming",
+  "@settingsFireBansSubtitle": {"description": "Explains the fire bans switch."},
+
+  "channelFireUrgentName": "Fire bans",
+  "@channelFireUrgentName": {"description": "Android notification channel for fire bans announced or starting."},
+
+  "channelFireUrgentDescription": "When an open-fire or forest access ban is announced or starts for Témiscaming",
+  "@channelFireUrgentDescription": {"description": "Android notification channel description."},
+
+  "channelFireUpdatesName": "Fire bans lifted",
+  "@channelFireUpdatesName": {"description": "Android notification channel for fire bans lifted."},
+
+  "channelFireUpdatesDescription": "When a fire ban for Témiscaming is lifted",
+  "@channelFireUpdatesDescription": {"description": "Android notification channel description."},
+
+  "fireNameState": "{name}: {state}",
+  "@fireNameState": {"description": "A ban's name and its status on the Today card, e.g. 'Open-fire ban: In effect for T\u00e9miscaming'.", "placeholders": {"name": {"type": "String"}, "state": {"type": "String"}}}
 }
