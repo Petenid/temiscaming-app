@@ -1,0 +1,363 @@
+[
+ {
+  "Id": 35,
+  "Source": "RWIS (MTO)",
+  "SourceId": "NR-13",
+  "Roadway": "Highway 11",
+  "Direction": "Unknown",
+  "Latitude": 46.00765,
+  "Longitude": -79.35603,
+  "Location": "Highway 11 North of Highway 522 B",
+  "SortOrder": 760,
+  "Views": [
+   {
+    "Id": 101,
+    "Url": "https://511on.ca/map/Cctv/101",
+    "Status": "Enabled",
+    "Description": "Looking South"
+   },
+   {
+    "Id": 102,
+    "Url": "https://511on.ca/map/Cctv/102",
+    "Status": "Enabled",
+    "Description": "Looking Down"
+   },
+   {
+    "Id": 103,
+    "Url": "https://511on.ca/map/Cctv/103",
+    "Status": "Enabled",
+    "Description": "Looking North"
+   }
+  ]
+ },
+ {
+  "Id": 36,
+  "Source": "RWIS (MTO)",
+  "SourceId": "NR-14",
+  "Roadway": "Highway 11",
+  "Direction": "Unknown",
+  "Latitude": 46.74035,
+  "Longitude": -79.80747,
+  "Location": "Highway 11 near Highway 64",
+  "SortOrder": 765,
+  "Views": [
+   {
+    "Id": 104,
+    "Url": "https://511on.ca/map/Cctv/104",
+    "Status": "Enabled",
+    "Description": "Looking West"
+   },
+   {
+    "Id": 105,
+    "Url": "https://511on.ca/map/Cctv/105",
+    "Status": "Enabled",
+    "Description": "Looking Down"
+   },
+   {
+    "Id": 106,
+    "Url": "https://511on.ca/map/Cctv/106",
+    "Status": "Enabled",
+    "Description": "Looking East"
+   }
+  ]
+ },
+ {
+  "Id": 85,
+  "Source": "RWIS (MTO)",
+  "SourceId": "NR-8",
+  "Roadway": "Highway 17",
+  "Direction": "Unknown",
+  "Latitude": 46.36931,
+  "Longitude": -79.74506,
+  "Location": "Highway 17 at Sturgeon River Bridge",
+  "SortOrder": 1160,
+  "Views": [
+   {
+    "Id": 249,
+    "Url": "https://511on.ca/map/Cctv/249",
+    "Status": "Enabled",
+    "Description": "Looking West"
+   },
+   {
+    "Id": 250,
+    "Url": "https://511on.ca/map/Cctv/250",
+    "Status": "Enabled",
+    "Description": "Looking Down"
+   },
+   {
+    "Id": 251,
+    "Url": "https://511on.ca/map/Cctv/251",
+    "Status": "Enabled",
+    "Description": "Looking East"
+   }
+  ]
+ },
+ {
+  "Id": 86,
+  "Source": "RWIS (MTO)",
+  "SourceId": "NE-06",
+  "Roadway": "Highway 17",
+  "Direction": "Unknown",
+  "Latitude": 46.332062,
+  "Longitude": -79.485589,
+  "Location": "Highway 17 at Gormanville Road",
+  "SortOrder": 1165,
+  "Views": [
+   {
+    "Id": 252,
+    "Url": "https://511on.ca/map/Cctv/252",
+    "Status": "Enabled",
+    "Description": "Looking East"
+   },
+   {
+    "Id": 253,
+    "Url": "https://511on.ca/map/Cctv/253",
+    "Status": "Enabled",
+    "Description": "Looking Down"
+   },
+   {
+    "Id": 254,
+    "Url": "https://511on.ca/map/Cctv/254",
+    "Status": "Enabled",
+    "Description": "Looking West"
+   }
+  ]
+ },
+ {
+  "Id": 178,
+  "Source": "RWIS (MTO)",
+  "SourceId": "NR-03P",
+  "Roadway": "Highway 63",
+  "Direction": "Unknown",
+  "Latitude": 46.542857,
+  "Longitude": -79.156901,
+  "Location": "Highway 63 at Highway 533",
+  "SortOrder": 1520,
+  "Views": [
+   {
+    "Id": 519,
+    "Url": "https://511on.ca/map/Cctv/519",
+    "Status": "Enabled",
+    "Description": "Looking East"
+   }
+  ]
+ },
+ {
+  "Id": 688,
+  "Source": "Maintenance - Northeast",
+  "SourceId": "NER-Hwy17_Cache_Bay",
+  "Roadway": "Highway 17",
+  "Direction": "Unknown",
+  "Latitude": 46.378181,
+  "Longitude": -79.973421,
+  "Location": "Highway 17 at Levac Road",
+  "SortOrder": 1155,
+  "Views": [
+   {
+    "Id": 1273,
+    "Url": "https://511on.ca/map/Cctv/1273",
+    "Status": "Enabled",
+    "Description": "Looking West"
+   },
+   {
+    "Id": 1274,
+    "Url": "https://511on.ca/map/Cctv/1274",
+    "Status": "Enabled",
+    "Description": "Looking East"
+   }
+  ]
+ },
+ {
+  "Id": 690,
+  "Source": "Maintenance - Northeast",
+  "SourceId": "NER-Hwy17_Mattawa_RA",
+  "Roadway": "Highway 17",
+  "Direction": "Unknown",
+  "Latitude": 46.31758,
+  "Longitude": -78.70228,
+  "Location": "Highway 17 at Mattawan Roundabout",
+  "SortOrder": 1175,
+  "Views": [
+   {
+    "Id": 1277,
+    "Url": "https://511on.ca/map/Cctv/1277",
+    "Status": "Enabled",
+    "Description": "Looking South"
+   },
+   {
+    "Id": 1278,
+    "Url": "https://511on.ca/map/Cctv/1278",
+    "Status": "Enabled",
+    "Description": "Looking East"
+   },
+   {
+    "Id": 1279,
+    "Url": "https://511on.ca/map/Cctv/1279",
+    "Status": "Enabled",
+    "Description": "Looking West"
+   }
+  ]
+ },
+ {
+  "Id": 1343,
+  "Source": "Maintenance - Northeast",
+  "SourceId": "NER-Hwy11_17_at_Overpass",
+  "Roadway": "Highway 17",
+  "Direction": "Unknown",
+  "Latitude": 46.30754,
+  "Longitude": -79.435281,
+  "Location": "Highway 17 at Highway 11 Overpass",
+  "SortOrder": 1166,
+  "Views": [
+   {
+    "Id": 2715,
+    "Url": "https://511on.ca/map/Cctv/2715",
+    "Status": "Enabled",
+    "Description": "Looking North"
+   },
+   {
+    "Id": 2716,
+    "Url": "https://511on.ca/map/Cctv/2716",
+    "Status": "Enabled",
+    "Description": "Looking South"
+   },
+   {
+    "Id": 2717,
+    "Url": "https://511on.ca/map/Cctv/2717",
+    "Status": "Enabled",
+    "Description": "Looking Down"
+   }
+  ]
+ },
+ {
+  "Id": 1344,
+  "Source": "Maintenance - Northeast",
+  "SourceId": "NER-Hwy17_at_Hwy531",
+  "Roadway": "Highway 17",
+  "Direction": "Unknown",
+  "Latitude": 46.269765,
+  "Longitude": -79.139803,
+  "Location": "Highway 17 at Highway 531",
+  "SortOrder": 1171,
+  "Views": [
+   {
+    "Id": 2718,
+    "Url": "https://511on.ca/map/Cctv/2718",
+    "Status": "Enabled",
+    "Description": "Looking West"
+   },
+   {
+    "Id": 2719,
+    "Url": "https://511on.ca/map/Cctv/2719",
+    "Status": "Enabled",
+    "Description": "Looking East"
+   }
+  ]
+ },
+ {
+  "Id": 1345,
+  "Source": "Maintenance - Northeast",
+  "SourceId": "NER-Hwy63_at_Thorne",
+  "Roadway": "Highway 63",
+  "Direction": "Unknown",
+  "Latitude": 46.707996,
+  "Longitude": -79.10414,
+  "Location": "Highway 63 at Wyse Road",
+  "SortOrder": 1521,
+  "Views": [
+   {
+    "Id": 2720,
+    "Url": "https://511on.ca/map/Cctv/2720",
+    "Status": "Enabled",
+    "Description": "Looking North"
+   },
+   {
+    "Id": 2721,
+    "Url": "https://511on.ca/map/Cctv/2721",
+    "Status": "Enabled",
+    "Description": "Looking South"
+   }
+  ]
+ },
+ {
+  "Id": 1361,
+  "Source": "Maintenance - Northeast",
+  "SourceId": "NER-Hwy17_Hwy94",
+  "Roadway": "Highway 17",
+  "Direction": "Unknown",
+  "Latitude": 46.28098,
+  "Longitude": -79.302257,
+  "Location": "Highway 17 at Highway 94",
+  "SortOrder": 1167,
+  "Views": [
+   {
+    "Id": 2757,
+    "Url": "https://511on.ca/map/Cctv/2757",
+    "Status": "Enabled",
+    "Description": "Looking North"
+   },
+   {
+    "Id": 2758,
+    "Url": "https://511on.ca/map/Cctv/2758",
+    "Status": "Enabled",
+    "Description": "Looking East"
+   }
+  ]
+ },
+ {
+  "Id": 1412,
+  "Source": "Maintenance - Northeast",
+  "SourceId": "NER-Hwy17_Couchie_Ind_Rd",
+  "Roadway": "Highway 17",
+  "Direction": "Unknown",
+  "Latitude": 46.334158,
+  "Longitude": -79.522623,
+  "Location": "Highway 17 at Couchie Industrial Road",
+  "SortOrder": 1161,
+  "Views": [
+   {
+    "Id": 2843,
+    "Url": "https://511on.ca/map/Cctv/2843",
+    "Status": "Enabled",
+    "Description": "Looking East"
+   },
+   {
+    "Id": 2844,
+    "Url": "https://511on.ca/map/Cctv/2844",
+    "Status": "Enabled",
+    "Description": "Looking South"
+   }
+  ]
+ },
+ {
+  "Id": 1433,
+  "Source": "Maintenance - Northeast",
+  "SourceId": "NER-Hwy17_Nova_Beaucage_Rd",
+  "Roadway": "Highway 17",
+  "Direction": "Unknown",
+  "Latitude": 46.339119,
+  "Longitude": -79.574423,
+  "Location": "Highway 17 at Nova Beaucage Road",
+  "SortOrder": 1161,
+  "Views": [
+   {
+    "Id": 2874,
+    "Url": "https://511on.ca/map/Cctv/2874",
+    "Status": "Enabled",
+    "Description": "Looking West"
+   },
+   {
+    "Id": 2875,
+    "Url": "https://511on.ca/map/Cctv/2875",
+    "Status": "Enabled",
+    "Description": "Looking East"
+   },
+   {
+    "Id": 2876,
+    "Url": "https://511on.ca/map/Cctv/2876",
+    "Status": "Enabled",
+    "Description": "Looking Down"
+   }
+  ]
+ }
+]
