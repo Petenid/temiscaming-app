@@ -86,7 +86,19 @@ export const webFetcher: Fetcher = {
       signal: AbortSignal.timeout(30_000),
       redirect: "follow",
     });
-    if (!res.ok) throw new Error(`HTTP ${res.status} ${url}`);
+    if (!res.ok) {
+      // Say what the server answered, not just the code: a refusal page
+      // (firewall, rate limit) usually names who refused and why. The
+      // status and answer come first, since error messages are cut at 300.
+      let answer = "";
+      try {
+        answer = (await res.text()).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 160);
+      } catch {
+        // no readable body
+      }
+      const server = res.headers.get("server") ?? "?";
+      throw new Error(`HTTP ${res.status} (server: ${server}; "${answer}") ${url}`);
+    }
     return new Uint8Array(await res.arrayBuffer());
   },
 };
