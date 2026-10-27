@@ -484,7 +484,7 @@
 
   "roadsPlannedFrom": "Prévu à partir de {when}",
 
-  "roadsExpectedEnd": "Fin prévue : {when}",
+  "roadsExpectedEnd": "Fin prévue : {when}",
 
   "roadsTownDates": "Du {start} au {end}",
 
@@ -580,7 +580,7 @@
 
   "powerEstimate": "Retour du courant estimé par Hydro-Québec : {when}",
 
-  "powerUntil": "Fin prévue : {when}",
+  "powerUntil": "Fin prévue : {when}",
 
   "powerNoEstimate": "Pas encore d'heure de rétablissement prévue",
 
