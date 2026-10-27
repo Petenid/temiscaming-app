@@ -17,8 +17,10 @@ import {
 } from "./roads/sync";
 import { WeatherHealth, WeatherStore } from "./weather/sync";
 
+// Plain ASCII only: an accented letter in a request header isn't valid HTTP,
+// and strict servers (Quebec's transport map server) refuse the request (403).
 const USER_AGENT =
-  "AlloTemis/1.0 (independent community app for Témiscaming; https://github.com/Petenid/temiscaming-app)";
+  "AlloTemis/1.0 (independent community app for Temiscaming, Quebec; https://github.com/Petenid/temiscaming-app)";
 
 /** Firestore Timestamps → Dates, recursively one level deep (enough for our documents). */
 function toDates<T>(data: Record<string, unknown>): T {
@@ -78,6 +80,13 @@ export function firestoreStore(db: Firestore): Store {
     },
   };
 }
+
+/** True when a header value is plain printable ASCII (tested). */
+export function isAsciiHeader(value: string): boolean {
+  return /^[\x20-\x7e]*$/.test(value);
+}
+
+export const USER_AGENT_FOR_TESTS = USER_AGENT;
 
 export const webFetcher: Fetcher = {
   async get(url) {

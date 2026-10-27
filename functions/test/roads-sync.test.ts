@@ -356,3 +356,11 @@ describe("runTownWorkInfoPoll", () => {
     expect(store.items.has("town-1019")).toBe(false);
   });
 });
+
+describe("request headers", () => {
+  it("our User-Agent is plain ASCII (an accent made Quebec's map server answer 403)", async () => {
+    const { isAsciiHeader, USER_AGENT_FOR_TESTS } = await import("../src/adapters");
+    expect(isAsciiHeader(USER_AGENT_FOR_TESTS)).toBe(true);
+    expect(isAsciiHeader("Témiscaming")).toBe(false);
+  });
+});
