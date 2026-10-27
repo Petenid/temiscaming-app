@@ -5,6 +5,7 @@ import 'events/calendar_adder.dart';
 import 'events/events_repository.dart';
 import 'fire/fire_repository.dart';
 import 'push/push_service.dart';
+import 'roads/roads_repository.dart';
 import 'weather/weather_repository.dart';
 
 /// The app's connections to the outside world, created once in main.dart.
@@ -19,6 +20,7 @@ class AppServices {
     required this.calendar,
     required this.weather,
     required this.fire,
+    required this.roads,
   });
 
   final AlertsRepository alerts;
@@ -35,4 +37,7 @@ class AppServices {
 
   /// Fire bans for Témiscaming (Milestone 6).
   final FireRepository fire;
+
+  /// Route 101, Highway 63 and the Town's work (Milestone 7).
+  final RoadsRepository roads;
 }

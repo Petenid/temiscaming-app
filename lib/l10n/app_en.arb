@@ -34,7 +34,7 @@
   "todayTitle": "Today",
   "@todayTitle": {"description": "Title of the home screen."},
 
-  "todayComingSoon": "Roads and power outages will appear here soon.",
+  "todayComingSoon": "Power outages will appear here soon.",
   "@todayComingSoon": {"description": "Placeholder on the home screen until features are built."},
 
   "settingsTitle": "Settings",
@@ -112,7 +112,7 @@
   "notificationsPrompt": "Get notifications?",
   "@notificationsPrompt": {"description": "Heading on the notifications step."},
 
-  "notificationsExplanation": "We'll notify you when the Town posts a water advisory, like a boil-water notice or a water cut, and when it's lifted; when an open-fire or forest access ban starts or lifts for Témiscaming; the evening before your bin pickup; and when the Town moves or cancels a pickup. Weather and general news never send notifications.",
+  "notificationsExplanation": "We'll notify you when the Town posts a water advisory, like a boil-water notice or a water cut, and when it's lifted; when an open-fire or forest access ban starts or lifts for Témiscaming; the evening before your bin pickup; and when the Town moves or cancels a pickup. Road closures notify only if you turn them on. Weather and general news never send notifications.",
   "@notificationsExplanation": {"description": "What will and won't notify (DESIGN §7)."},
 
   "notificationsReminder": "This app doesn't replace the Town's official alerts. We recommend signing up for those too.",
@@ -684,5 +684,164 @@
   "@fireStateIfcoAnnounced": {"description": "Status of an open-fire ban that's been announced but hasn't started yet."},
 
   "fireStateIcafAnnounced": "Announced around Témiscaming",
-  "@fireStateIcafAnnounced": {"description": "Status of a forest access ban that's been announced but hasn't started yet."}
+  "@fireStateIcafAnnounced": {"description": "Status of a forest access ban that's been announced but hasn't started yet."},
+
+  "moreTitle": "More",
+  "@moreTitle": {"description": "Fourth tab: roads, fire, weather, schedule, settings (roads spec D13)."},
+
+  "roadsTitle": "Roads",
+  "@roadsTitle": {"description": "Roads screen and Today card title."},
+
+  "roadsRoute101Heading": "Route 101 · Témiscaming – Ville-Marie",
+  "@roadsRoute101Heading": {"description": "Section heading: our stretch of Route 101 (spec D1)."},
+
+  "roadsHighway63Heading": "Highway 63 · Thorne – North Bay",
+  "@roadsHighway63Heading": {"description": "Section heading: our stretch of Highway 63 in Ontario."},
+
+  "roadsRoute101": "Route 101",
+  "@roadsRoute101": {"description": "Short road name."},
+
+  "roadsHighway63": "Highway 63",
+  "@roadsHighway63": {"description": "Short road name (Ontario's French says 'route 63')."},
+
+  "roadsTownWorkHeading": "Town work",
+  "@roadsTownWorkHeading": {"description": "Section heading: the Town's Work Info items."},
+
+  "roadsTownWorkNote": "Work Info posted by the Town: streets, the water system and other public works.",
+  "@roadsTownWorkNote": {"description": "Under the Town work heading."},
+
+  "roadsNothingReported": "Nothing reported on this stretch",
+  "@roadsNothingReported": {"description": "Shown only after a recent successful check of a road's sources."},
+
+  "roadsNoTownWork": "No work posted by the Town right now",
+  "@roadsNoTownWork": {"description": "Shown only after a recent successful check of the Town's pages."},
+
+  "roadsConditionsHeading": "Road conditions",
+  "@roadsConditionsHeading": {"description": "Sub-heading in each road's section."},
+
+  "roadsSegment": "{from} → {to}",
+  "@roadsSegment": {"description": "A stretch of road, e.g. 'Témiscaming → Saint-Édouard-de-Fabre'.", "placeholders": {"from": {"type": "String"}, "to": {"type": "String"}}},
+
+  "roadsVisibility": "Visibility: {value}",
+  "@roadsVisibility": {"description": "Visibility on a stretch, e.g. 'Visibility: Good'.", "placeholders": {"value": {"type": "String"}}},
+
+  "roadsDrifting": "Snow drifting across the road",
+  "@roadsDrifting": {"description": "Drifting snow reported on a stretch."},
+
+  "roadsNoReport": "No report for this stretch",
+  "@roadsNoReport": {"description": "Ontario's 'No Report': never shown as 'clear'."},
+
+  "roadsSince": "Since {when}",
+  "@roadsSince": {"description": "When a road condition was reported.", "placeholders": {"when": {"type": "String"}}},
+
+  "roadsConditionsOffSeason": "Quebec publishes winter road conditions from October 15 to April 15.",
+  "@roadsConditionsOffSeason": {"description": "Outside the season, instead of conditions for Route 101."},
+
+  "roadsClosuresHeading": "Closures and incidents",
+  "@roadsClosuresHeading": {"description": "Sub-heading in each road's section."},
+
+  "roadsRoadworkHeading": "Roadwork",
+  "@roadsRoadworkHeading": {"description": "Sub-heading in each road's section."},
+
+  "roadsInEffectSince": "In effect since {when}",
+  "@roadsInEffectSince": {"description": "Status of a road item that has started.", "placeholders": {"when": {"type": "String"}}},
+
+  "roadsPlannedFrom": "Planned from {when}",
+  "@roadsPlannedFrom": {"description": "Status of a road item that hasn't started yet (never 'in effect').", "placeholders": {"when": {"type": "String"}}},
+
+  "roadsExpectedEnd": "Expected to end {when}",
+  "@roadsExpectedEnd": {"description": "The source's planned end (items can stay past it).", "placeholders": {"when": {"type": "String"}}},
+
+  "roadsTownDates": "From {start} to {end}",
+  "@roadsTownDates": {"description": "The dates of a Town Work Info item.", "placeholders": {"start": {"type": "String"}, "end": {"type": "String"}}},
+
+  "roadsAtPlace": "{what} at {place}",
+  "@roadsAtPlace": {"description": "E.g. 'Road closed at Saint-Édouard-de-Fabre'.", "placeholders": {"what": {"type": "String"}, "place": {"type": "String"}}},
+
+  "roadsCamerasHeading": "Cameras",
+  "@roadsCamerasHeading": {"description": "Sub-heading for the Highway 63 cameras (spec D10)."},
+
+  "roadsCameraLoadedAt": "Loaded at {time}. Tap to refresh.",
+  "@roadsCameraLoadedAt": {"description": "Under a camera image.", "placeholders": {"time": {"type": "String"}}},
+
+  "roadsCameraLoading": "Loading the image…",
+  "@roadsCameraLoading": {"description": "While a camera image loads."},
+
+  "roadsCameraUnavailable": "Camera not available. Tap to try again.",
+  "@roadsCameraUnavailable": {"description": "When a camera image can't be loaded."},
+
+  "roadsCameraCredit": "Camera images from Ontario 511, loaded only while this screen is open.",
+  "@roadsCameraCredit": {"description": "Under the cameras."},
+
+  "roadsCheckedAt": "Checked: {time}",
+  "@roadsCheckedAt": {"description": "Health line for a road's sources.", "placeholders": {"time": {"type": "String"}}},
+
+  "roadsCheckFailedSince": "Couldn't check since {time}",
+  "@roadsCheckFailedSince": {"description": "Health line when a road's sources haven't been read recently.", "placeholders": {"time": {"type": "String"}}},
+
+  "roadsNeverChecked": "Not checked yet.",
+  "@roadsNeverChecked": {"description": "Health line before the backend has read a road's sources."},
+
+  "roadsLoadFailed": "Couldn't load road information.",
+  "@roadsLoadFailed": {"description": "When the app can't read the road data at all."},
+
+  "roadsTodayStale": "Couldn't check roads since {time}",
+  "@roadsTodayStale": {"description": "Today card when a road check is failing.", "placeholders": {"time": {"type": "String"}}},
+
+  "roadsTodayNeverChecked": "Roads haven't been checked yet.",
+  "@roadsTodayNeverChecked": {"description": "Today card before the first check."},
+
+  "roadsTodayLine": "{road}: {what}",
+  "@roadsTodayLine": {"description": "A line on Today's road card, e.g. 'Route 101: Road closed at …'.", "placeholders": {"road": {"type": "String"}, "what": {"type": "String"}}},
+
+  "roadsPlannedShort": "{what}, from {when}",
+  "@roadsPlannedShort": {"description": "A planned closure on Today, e.g. 'Road closed, from Tuesday at 7:00 p.m.'.", "placeholders": {"what": {"type": "String"}, "when": {"type": "String"}}},
+
+  "roadsVisibilityShort": "visibility {value}",
+  "@roadsVisibilityShort": {"description": "Added to a conditions line on Today when visibility is poor.", "placeholders": {"value": {"type": "String"}}},
+
+  "roadsNotifyTitle": "Get notified when Route 101 or Highway 63 closes",
+  "@roadsNotifyTitle": {"description": "Switch on the Roads screen (spec D9)."},
+
+  "roadsNotifySubtitle": "Full closures on our stretch only, and when they reopen.",
+  "@roadsNotifySubtitle": {"description": "Under the Roads screen switch."},
+
+  "settingsRoadClosures": "Road closures",
+  "@settingsRoadClosures": {"description": "Settings switch (spec D9)."},
+
+  "settingsRoadClosuresSubtitle": "When Route 101 or Highway 63 fully closes near Témiscaming, and when it reopens. Off unless you turn it on.",
+  "@settingsRoadClosuresSubtitle": {"description": "Under the Settings switch."},
+
+  "roadsSourcesHeading": "Sources",
+  "@roadsSourcesHeading": {"description": "Heading above the credits and links."},
+
+  "roadsRelayNote": "This information is relayed from the official sources. Check them before you leave.",
+  "@roadsRelayNote": {"description": "Principle 2: relay, don't replace."},
+
+  "roadsQuebecSource": "Route 101: Ministère des Transports et de la Mobilité durable, via Données Québec (CC BY 4.0).",
+  "@roadsQuebecSource": {"description": "Credit (spec D12)."},
+
+  "roadsOntarioSource": "Highway 63: contains information licensed under the Open Government Licence – Ontario (Ontario 511), provided as is, without warranty.",
+  "@roadsOntarioSource": {"description": "Credit and Ontario's as-is notice (spec D12)."},
+
+  "roadsTownSource": "Town work: Ville de Témiscaming, Info-Travaux.",
+  "@roadsTownSource": {"description": "Credit."},
+
+  "roadsQuebec511Link": "Québec 511 map",
+  "@roadsQuebec511Link": {"description": "Link."},
+
+  "roadsOntario511Link": "Ontario 511 map",
+  "@roadsOntario511Link": {"description": "Link."},
+
+  "roadsTownLink": "The Town's Work Info page",
+  "@roadsTownLink": {"description": "Link."},
+
+  "roadsOpenSource": "See the source",
+  "@roadsOpenSource": {"description": "Link on a road item's screen."},
+
+  "channelRoadsName": "Road closures",
+  "@channelRoadsName": {"description": "Android notification channel name."},
+
+  "channelRoadsDescription": "When Route 101 or Highway 63 closes or reopens near Témiscaming",
+  "@channelRoadsDescription": {"description": "Android notification channel description."}
 }

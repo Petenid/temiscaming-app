@@ -10,6 +10,7 @@ import 'l10n/app_localizations.dart';
 import 'onboarding/notifications_screen.dart';
 import 'onboarding/onboarding_flow.dart';
 import 'push/push_service.dart';
+import 'roads/roads_screen.dart';
 import 'services.dart';
 import 'settings/app_settings.dart';
 
@@ -47,7 +48,8 @@ class _TemiscamingAppState extends State<TemiscamingApp> {
     });
   }
 
-  /// Opens what a tapped notification is about: an alert, the schedule, or the Fire screen.
+  /// Opens what a tapped notification is about: an alert, the schedule, the
+  /// Fire screen or the Roads screen.
   void _openAlert(String id) {
     // When a notification launches the app, this can run before the first
     // screen exists: try again once it does.
@@ -61,6 +63,14 @@ class _TemiscamingAppState extends State<TemiscamingApp> {
       _navigator.currentState?.push(
         MaterialPageRoute<void>(
           builder: (_) => FireScreen(settings: settings, repository: services.fire),
+        ),
+      );
+      return;
+    }
+    if (id == roadsTarget) {
+      _navigator.currentState?.push(
+        MaterialPageRoute<void>(
+          builder: (_) => RoadsScreen(settings: settings, repository: services.roads, push: services.push),
         ),
       );
       return;

@@ -23,7 +23,7 @@
 
   "todayTitle": "Aujourd’hui",
 
-  "todayComingSoon": "L’état des routes et les pannes de courant s’afficheront ici bientôt.",
+  "todayComingSoon": "Les pannes de courant s’afficheront ici bientôt.",
 
   "settingsTitle": "Paramètres",
 
@@ -75,7 +75,7 @@
 
   "notificationsPrompt": "Recevoir des notifications?",
 
-  "notificationsExplanation": "Nous vous avertirons quand la Ville publie un avis sur l'eau, comme un avis d'ébullition ou une coupure d'eau, et quand il est levé; quand une interdiction de feux à ciel ouvert ou d'accès en forêt commence ou est levée à Témiscaming; la veille de votre collecte des bacs; et quand la Ville déplace ou annule une collecte. La météo et les nouvelles générales n'envoient jamais de notification.",
+  "notificationsExplanation": "Nous vous avertirons quand la Ville publie un avis sur l'eau, comme un avis d'ébullition ou une coupure d'eau, et quand il est levé; quand une interdiction de feux à ciel ouvert ou d'accès en forêt commence ou est levée à Témiscaming; la veille de votre collecte des bacs; et quand la Ville déplace ou annule une collecte. Les fermetures de routes n'envoient une notification que si vous les activez. La météo et les nouvelles générales n'envoient jamais de notification.",
 
   "notificationsReminder": "Cette application ne remplace pas les alertes officielles de la Ville. Nous vous recommandons de vous y inscrire aussi.",
 
@@ -441,5 +441,111 @@
 
   "fireStateIfcoAnnounced": "Annoncée à Témiscaming",
 
-  "fireStateIcafAnnounced": "Annoncée autour de Témiscaming"
+  "fireStateIcafAnnounced": "Annoncée autour de Témiscaming",
+
+  "moreTitle": "Plus",
+
+  "roadsTitle": "Routes",
+
+  "roadsRoute101Heading": "Route 101 · Témiscaming – Ville-Marie",
+
+  "roadsHighway63Heading": "Route 63 · Thorne – North Bay",
+
+  "roadsRoute101": "Route 101",
+
+  "roadsHighway63": "Route 63",
+
+  "roadsTownWorkHeading": "Travaux de la Ville",
+
+  "roadsTownWorkNote": "Info-Travaux publiés par la Ville : rues, réseau d'aqueduc et autres travaux publics.",
+
+  "roadsNothingReported": "Rien de signalé sur ce tronçon",
+
+  "roadsNoTownWork": "Aucuns travaux affichés par la Ville en ce moment",
+
+  "roadsConditionsHeading": "État des routes",
+
+  "roadsSegment": "{from} → {to}",
+
+  "roadsVisibility": "Visibilité : {value}",
+
+  "roadsDrifting": "Lames de neige sur la chaussée",
+
+  "roadsNoReport": "Aucun rapport pour ce tronçon",
+
+  "roadsSince": "Depuis {when}",
+
+  "roadsConditionsOffSeason": "Le Québec publie l'état des routes en hiver, du 15 octobre au 15 avril.",
+
+  "roadsClosuresHeading": "Fermetures et incidents",
+
+  "roadsRoadworkHeading": "Travaux routiers",
+
+  "roadsInEffectSince": "En vigueur depuis {when}",
+
+  "roadsPlannedFrom": "Prévu à partir de {when}",
+
+  "roadsExpectedEnd": "Fin prévue : {when}",
+
+  "roadsTownDates": "Du {start} au {end}",
+
+  "roadsAtPlace": "{what} à {place}",
+
+  "roadsCamerasHeading": "Caméras",
+
+  "roadsCameraLoadedAt": "Chargée à {time}. Touchez pour actualiser.",
+
+  "roadsCameraLoading": "Chargement de l'image…",
+
+  "roadsCameraUnavailable": "Caméra non disponible. Touchez pour réessayer.",
+
+  "roadsCameraCredit": "Images des caméras d'Ontario 511, chargées seulement quand cet écran est ouvert.",
+
+  "roadsCheckedAt": "Vérifié : {time}",
+
+  "roadsCheckFailedSince": "Impossible de vérifier depuis {time}",
+
+  "roadsNeverChecked": "Pas encore vérifié.",
+
+  "roadsLoadFailed": "Impossible de charger l'information sur les routes.",
+
+  "roadsTodayStale": "Impossible de vérifier les routes depuis {time}",
+
+  "roadsTodayNeverChecked": "Les routes n'ont pas encore été vérifiées.",
+
+  "roadsTodayLine": "{road} : {what}",
+
+  "roadsPlannedShort": "{what}, à partir de {when}",
+
+  "roadsVisibilityShort": "visibilité {value}",
+
+  "roadsNotifyTitle": "Être averti quand la route 101 ou la route 63 ferme",
+
+  "roadsNotifySubtitle": "Seulement les fermetures complètes sur notre tronçon, et leur réouverture.",
+
+  "settingsRoadClosures": "Fermetures de routes",
+
+  "settingsRoadClosuresSubtitle": "Quand la route 101 ou la route 63 est complètement fermée près de Témiscaming, et quand elle rouvre. Désactivé à moins que vous l'activiez.",
+
+  "roadsSourcesHeading": "Sources",
+
+  "roadsRelayNote": "Cette information est relayée des sources officielles. Consultez-les avant de partir.",
+
+  "roadsQuebecSource": "Route 101 : ministère des Transports et de la Mobilité durable, via Données Québec (CC BY 4.0).",
+
+  "roadsOntarioSource": "Route 63 : contient de l'information sous licence du gouvernement ouvert – Ontario (Ontario 511), fournie telle quelle, sans garantie.",
+
+  "roadsTownSource": "Travaux de la Ville : Ville de Témiscaming, Info-Travaux.",
+
+  "roadsQuebec511Link": "Carte Québec 511",
+
+  "roadsOntario511Link": "Carte Ontario 511",
+
+  "roadsTownLink": "La page Info-Travaux de la Ville",
+
+  "roadsOpenSource": "Voir la source",
+
+  "channelRoadsName": "Fermetures de routes",
+
+  "channelRoadsDescription": "Quand la route 101 ou la route 63 ferme ou rouvre près de Témiscaming"
 }

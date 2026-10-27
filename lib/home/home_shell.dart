@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import '../alerts/alerts_screen.dart';
 import '../events/events_screen.dart';
 import '../l10n/app_localizations.dart';
+import '../more/more_screen.dart';
 import '../services.dart';
 import '../settings/app_settings.dart';
 import '../settings_screen.dart';
 import 'today_screen.dart';
 
-/// The main app after first launch: a bottom bar with Today, Alerts and
-/// Events (More arrives with its milestones, DESIGN §7).
+/// The main app after first launch: a bottom bar with Today, Alerts,
+/// Events and More (DESIGN §7; More since Milestone 7, roads spec D13).
 class HomeShell extends StatefulWidget {
   const HomeShell({super.key, required this.settings, required this.services});
 
@@ -57,6 +58,7 @@ class _HomeShellState extends State<HomeShell> {
             events: widget.services.events,
             weather: widget.services.weather,
             fire: widget.services.fire,
+            roads: widget.services.roads,
             push: widget.services.push,
             onOpenEvents: () => setState(() => _tab = _eventsTab),
             appBarActions: actions,
@@ -72,6 +74,7 @@ class _HomeShellState extends State<HomeShell> {
             calendar: widget.services.calendar,
             appBarActions: actions,
           ),
+          MoreScreen(settings: widget.settings, services: widget.services),
         ],
       ),
       bottomNavigationBar: NavigationBar(
@@ -92,6 +95,11 @@ class _HomeShellState extends State<HomeShell> {
             icon: const Icon(Icons.event_outlined),
             selectedIcon: const Icon(Icons.event),
             label: l10n.eventsTitle,
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.menu),
+            selectedIcon: const Icon(Icons.menu_open),
+            label: l10n.moreTitle,
           ),
         ],
       ),

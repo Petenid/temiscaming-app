@@ -28,6 +28,7 @@ class AppSettings extends ChangeNotifier {
     this._reminderMinutes,
     this._collectionChanges,
     this._fireBans,
+    this._roadClosures,
   );
 
   static const _languageKey = 'language';
@@ -37,6 +38,7 @@ class AppSettings extends ChangeNotifier {
   static const _reminderTimeKey = 'bin_reminder_time';
   static const _collectionChangesKey = 'collection_changes';
   static const _fireBansKey = 'fire_bans';
+  static const _roadClosuresKey = 'road_closures';
 
   /// The evening-before reminder's default time: 7 p.m. (DESIGN §6.2).
   static const defaultReminderMinutes = 19 * 60;
@@ -49,6 +51,7 @@ class AppSettings extends ChangeNotifier {
   int _reminderMinutes;
   bool? _collectionChanges;
   bool? _fireBans;
+  bool _roadClosures;
 
   /// Loads saved choices from the device. Called once at startup.
   static Future<AppSettings> load() async {
@@ -67,6 +70,8 @@ class AppSettings extends ChangeNotifier {
       // Not defaulted from the water answer: people who installed before
       // fire bans are asked once, on Today (fire-bans spec D7).
       prefs.getBool(_fireBansKey),
+      // Opt-in only, off for everyone until turned on (roads spec D9).
+      prefs.getBool(_roadClosuresKey) ?? false,
     );
   }
 
@@ -101,6 +106,10 @@ class AppSettings extends ChangeNotifier {
   /// True for people who answered the notifications question before fire
   /// bans existed and haven't been asked about them yet: Today offers them
   /// once (spec D7).
+  /// Notifications when Route 101 or Highway 63 closes or reopens. Opt-in:
+  /// the notifications question never turns it on (roads spec D9).
+  bool get roadClosuresEnabled => _roadClosures;
+
   bool get fireBansToOffer => notificationsAsked && _fireBans == null;
 
   /// The answer to the notifications question: turns every kind of
@@ -115,6 +124,12 @@ class AppSettings extends ChangeNotifier {
     await _prefs.setBool(_binReminderKey, granted);
     await _prefs.setBool(_collectionChangesKey, granted);
     await _prefs.setBool(_fireBansKey, granted);
+  }
+
+  Future<void> setRoadClosures(bool enabled) async {
+    _roadClosures = enabled;
+    notifyListeners();
+    await _prefs.setBool(_roadClosuresKey, enabled);
   }
 
   Future<void> setFireBans(bool enabled) async {

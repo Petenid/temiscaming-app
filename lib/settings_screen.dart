@@ -119,6 +119,12 @@ class SettingsScreen extends StatelessWidget {
                   onChanged: (on) => _setNotified(context, on, settings.setFireBans),
                 ),
                 SwitchListTile(
+                  title: Text(l10n.settingsRoadClosures),
+                  subtitle: Text(l10n.settingsRoadClosuresSubtitle),
+                  value: settings.roadClosuresEnabled,
+                  onChanged: (on) => _setNotified(context, on, settings.setRoadClosures),
+                ),
+                SwitchListTile(
                   title: Text(l10n.settingsBinReminder),
                   subtitle: Text(l10n.settingsBinReminderSubtitle),
                   value: settings.binReminderEnabled,

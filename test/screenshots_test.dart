@@ -14,18 +14,23 @@ import 'package:community/events/event_widgets.dart';
 import 'package:community/events/town_event.dart';
 import 'package:community/fire/fire_data.dart';
 import 'package:community/fire/fire_widgets.dart';
+import 'package:community/l10n/app_localizations.dart';
+import 'package:community/roads/roads_screen.dart';
+import 'package:community/roads/roads_widgets.dart';
 import 'package:community/settings/app_settings.dart';
 import 'package:community/weather/weather_card.dart';
 import 'package:community/weather/weather_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'collection_fakes.dart';
 import 'events_fakes.dart';
 import 'fakes.dart';
 import 'fire_fakes.dart';
 import 'helpers.dart';
+import 'roads_fakes.dart';
 import 'weather_fakes.dart';
 
 /// Tests normally draw text as blocks; load the real Roboto and icon fonts
@@ -274,6 +279,75 @@ void main() {
       final collection = FakeCollectionRepository(pickups: SamplePickups.aroundToday());
       await pumpApp(tester, {'language': code, 'sector': 'town', 'water_alerts': true}, null, push, collection);
       await _capture('${code}_32_today_fire_offer');
+    });
+
+    testWidgets('roads screens in $code', (tester) async {
+      phone(tester);
+      final strings = stringsFor(language);
+      final collection = FakeCollectionRepository(pickups: SamplePickups.aroundToday());
+      // A bad day: both roads closed, ice and snow, roadwork, the Town's work.
+      final roads = FakeRoadsRepository(
+        items: [
+          SampleRoads.closure101(), SampleRoads.closure63(), SampleRoads.plannedClosure(),
+          SampleRoads.roadwork101(), SampleRoads.townFlushing(),
+        ],
+        conditions: SampleRoads.winterStorm(),
+      );
+      final push = FakePushService(isSupported: true);
+      await pumpApp(tester, {'language': code, 'sector': 'town', 'water_alerts': true, 'fire_bans': true},
+          null, push, collection, null, null, null, null, null, roads);
+      await _capture('${code}_33_today_roads');
+      await scrollAndTap(tester, find.byType(RoadsCard));
+      await _capture('${code}_34_roads_bad_day');
+      await tester.scrollUntilVisible(find.text(strings.roadsHighway63Heading), 300,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      await _capture('${code}_35_roads_highway63');
+      await tester.scrollUntilVisible(find.text(strings.roadsTownSource), 300,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      await _capture('${code}_36_roads_town_sources');
+      final closure = find.text(language == AppLanguage.fr
+          ? 'Route fermée à Saint-Édouard-de-Fabre'
+          : 'Road closed at Saint-Édouard-de-Fabre');
+      await tester.scrollUntilVisible(closure, -300, scrollable: find.byType(Scrollable).hitTestable().first);
+      await scrollAndTap(tester, closure);
+      await _capture('${code}_37_road_item');
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      // Checks failing: Today says so.
+      roads.set(items: const [], conditions: SampleRoads.bareAndDry(), lastSuccess: SampleRoads.checked(age: const Duration(hours: 2)));
+      await tester.pumpAndSettle();
+      await _capture('${code}_38_today_roads_stale');
+
+      await tester.tap(find.widgetWithText(NavigationDestination, strings.moreTitle));
+      await tester.pumpAndSettle();
+      await _capture('${code}_39_more');
+    });
+
+    testWidgets('roads, a quiet day with cameras, in $code', (tester) async {
+      phone(tester);
+      SharedPreferences.setMockInitialValues({'language': code, 'sector': 'town'});
+      final settings = await AppSettings.load();
+      await tester.pumpWidget(MaterialApp(
+        locale: language.locale,
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        home: RoadsScreen(
+          settings: settings,
+          repository: FakeRoadsRepository(items: [SampleRoads.townFlushing()], cameras: SampleRoads.cameras()),
+          push: FakePushService(isSupported: true),
+          cameraImage: (_) => testCameraImage,
+        ),
+      ));
+      // Decode the stand-in image for real, so the picture shows instead of "Loading".
+      await tester.runAsync(() => precacheImage(testCameraImage, tester.element(find.byType(RoadsScreen))));
+      await tester.pumpAndSettle();
+      await _capture('${code}_40_roads_quiet');
+      await tester.scrollUntilVisible(find.text(stringsFor(language).roadsCamerasHeading), 300,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      await _capture('${code}_41_roads_cameras');
     });
 
     testWidgets('sector screen at 200% text in $code', (tester) async {

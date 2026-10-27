@@ -1,6 +1,6 @@
 # Spec — Milestone 7: Roads
 
-Status: **agreed 2026-10-27** (owner agreed all of §3) · backend built · first draft 2026-10-22; Highway 63 added once the Ontario 511 key arrived
+Status: **agreed 2026-10-27** (owner agreed all of §3) · backend built · app built · first draft 2026-10-22; Highway 63 added once the Ontario 511 key arrived
 Reads with: `DESIGN.md` (§2 principles, §4 architecture and source health, §5 language, §6.7 roads, §7 app structure), `research/roads-sources.md` (project docs)
 
 ---
@@ -172,3 +172,13 @@ Quebec road cameras; maps drawn in the app; Route 101 beyond Ville-Marie; Highwa
 - Ontario events have no place field (it's buried in the description), so Highway 63 pushes say "Highway 63 (Ontario) closed" without a place; the description is in the app.
 - Road lines for D1 are in `functions/src/roads/corridor.ts`, simplified to within 50 m of the ministries' own lines.
 - Tests: 44 new (199 backend tests in all): real captures from both provinces and the Town, 14 hand-made files (`test/fixtures/roads/hand-made/`, see its README), whole runs with a fake clock (pushes, 25-minute reopen, Ontario failing, rate limit, key never in logs or health records).
+
+## 11. Implementation notes (2026-10-27, app)
+
+- `lib/roads/`: `road_data.dart` (items, segments, cameras as stored), `roads_repository.dart` (Firestore listeners for `roads`, `road_conditions`, `road_cameras/highway-63` and the seven `sources/…` health docs; health = never checked / recent / failing per D4), `roads_widgets.dart` (Today card, item cards, condition lines, camera tiles), `roads_screen.dart` (Roads screen, item screen). `lib/more/more_screen.dart`: the More tab.
+- Today's card shows only when D11 says so; on a failing check without problems it's a plain card with the red "Couldn't check roads since …" line. Up to 3 lines, then "+N".
+- "Nothing reported on this stretch" needs a recent read of that road's *item* sources (warnings and roadworks, or Ontario events and construction); a stale conditions source only shows in the health line.
+- Conditions with missing flags count as "worth a look", never as fine; Ontario "No Report" shows as "No report for this stretch".
+- Camera images load straight from Ontario 511 only while the Roads screen is open; tapping a camera refreshes it (the cached picture is dropped first). Tests and screenshots use a stand-in image.
+- Road closures: `AppSettings.roadClosuresEnabled` (saved as `road_closures`), off by default and never turned on by the notifications question; topics `roads-fr` / `roads-en`; Android channel `roads` (high importance). A tap on a road push (`screen: roads`) opens the Roads screen.
+- The Today placeholder now says only power outages are still to come; the notifications question mentions that road closures are opt-in.

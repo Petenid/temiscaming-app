@@ -13,6 +13,9 @@ import '../fire/fire_screen.dart';
 import '../fire/fire_widgets.dart';
 import '../l10n/app_localizations.dart';
 import '../push/push_service.dart';
+import '../roads/roads_repository.dart';
+import '../roads/roads_screen.dart';
+import '../roads/roads_widgets.dart';
 import '../settings/app_settings.dart';
 import '../weather/weather_card.dart';
 import '../weather/weather_data.dart';
@@ -21,9 +24,10 @@ import '../weather/weather_screen.dart';
 import '../weather/weather_widgets.dart';
 
 /// Home screen (DESIGN §7): the boil-water and fire-ban banners when one is
-/// in effect, the weather alert banner, a warning if the Town's alerts can't
-/// be checked, this week's bin, the weather, fire bans in season, the next
-/// few events, and a placeholder for the features still to come.
+/// in effect, the weather alert banner, the road card when something's wrong
+/// on Route 101 or Highway 63, a warning if the Town's alerts can't be
+/// checked, this week's bin, the weather, fire bans in season, the next few
+/// events, and a placeholder for the features still to come.
 class TodayScreen extends StatelessWidget {
   const TodayScreen({
     super.key,
@@ -33,6 +37,7 @@ class TodayScreen extends StatelessWidget {
     required this.events,
     required this.weather,
     required this.fire,
+    required this.roads,
     required this.push,
     required this.onOpenEvents,
     required this.appBarActions,
@@ -44,6 +49,7 @@ class TodayScreen extends StatelessWidget {
   final EventsRepository events;
   final WeatherRepository weather;
   final FireRepository fire;
+  final RoadsRepository roads;
 
   /// For the one-time fire-ban notifications offer (fire-bans spec D7).
   final PushService push;
@@ -60,7 +66,7 @@ class TodayScreen extends StatelessWidget {
       appBar: AppBar(title: Text(l10n.todayTitle), actions: appBarActions),
       body: SafeArea(
         child: ListenableBuilder(
-          listenable: Listenable.merge([repository, weather, fire, settings]),
+          listenable: Listenable.merge([repository, weather, fire, roads, settings]),
           builder: (context, _) {
             final now = DateTime.now();
             final boil = repository.alerts
@@ -100,6 +106,20 @@ class TodayScreen extends StatelessWidget {
                 ],
                 if (weatherAlerts.isNotEmpty) ...[
                   WeatherAlertBanner(alerts: weatherAlerts, language: language, onTap: openWeather),
+                  const SizedBox(height: 16),
+                ],
+                // Only when something's wrong on the roads, or a check is failing (spec D11).
+                if (RoadsCard.shows(context, roads, language, now)) ...[
+                  RoadsCard(
+                    settings: settings,
+                    repository: roads,
+                    now: now,
+                    onOpen: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => RoadsScreen(settings: settings, repository: roads, push: push),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 16),
                 ],
                 if (push.isSupported && settings.fireBansToOffer) ...[

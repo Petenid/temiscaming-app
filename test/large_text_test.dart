@@ -9,18 +9,24 @@ import 'package:community/events/event_detail_screen.dart';
 import 'package:community/events/events_card.dart';
 import 'package:community/fire/fire_screen.dart';
 import 'package:community/fire/fire_widgets.dart';
+import 'package:community/l10n/app_localizations.dart';
+import 'package:community/more/more_screen.dart';
+import 'package:community/roads/roads_screen.dart';
+import 'package:community/roads/roads_widgets.dart';
 import 'package:community/settings/app_settings.dart';
 import 'package:community/weather/weather_card.dart';
 import 'package:community/weather/weather_screen.dart';
 import 'package:community/weather/weather_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'collection_fakes.dart';
 import 'events_fakes.dart';
 import 'fakes.dart';
 import 'fire_fakes.dart';
 import 'helpers.dart';
+import 'roads_fakes.dart';
 import 'weather_fakes.dart';
 
 /// Like the system back button (Android back gesture, Esc on desktop).
@@ -173,6 +179,79 @@ void main() {
       await tester.tap(find.byTooltip(strings.settingsTitle).hitTestable());
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull, reason: 'Settings screen');
+    });
+  }
+
+  // Roads (Milestone 7): Today's road card with the most lines, the Roads
+  // screen with every kind of item, an item, the More tab.
+  for (final language in AppLanguage.values) {
+    testWidgets('roads screens fit at 200% text (${language.name})', (tester) async {
+      tester.view.physicalSize = const Size(360, 640);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.view.reset);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      final strings = stringsFor(language);
+      final roads = FakeRoadsRepository(
+        items: [
+          SampleRoads.closure101(), SampleRoads.closure63(), SampleRoads.plannedClosure(),
+          SampleRoads.roadwork101(), SampleRoads.townFlushing(),
+        ],
+        conditions: SampleRoads.winterStorm(),
+        lastSuccess: {...SampleRoads.checked(), 'on511-events': SampleRoads.ago(const Duration(hours: 2))},
+      );
+      await pumpApp(
+        tester,
+        {'language': language.name, 'sector': 'town', 'water_alerts': true, 'fire_bans': true},
+        null, FakePushService(isSupported: true), null, null, null, null, null, null, roads,
+      );
+      final cardTitle = find.descendant(of: find.byType(RoadsCard), matching: find.text(strings.roadsTitle));
+      await tester.scrollUntilVisible(cardTitle, 200, scrollable: find.byType(Scrollable).hitTestable().first);
+      expect(tester.takeException(), isNull, reason: 'Today road card');
+      await scrollAndTap(tester, cardTitle);
+      expect(find.byType(RoadsScreen), findsOneWidget);
+      expect(tester.takeException(), isNull, reason: 'Roads screen');
+      await tester.scrollUntilVisible(find.text(strings.roadsTownSource), 300,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      expect(tester.takeException(), isNull, reason: 'Roads screen, to the end');
+      final closure = find.text(language == AppLanguage.fr
+          ? 'Route fermée à Saint-Édouard-de-Fabre'
+          : 'Road closed at Saint-Édouard-de-Fabre');
+      await tester.scrollUntilVisible(closure, -300, scrollable: find.byType(Scrollable).hitTestable().first);
+      await scrollAndTap(tester, closure);
+      expect(find.byType(RoadItemScreen), findsOneWidget);
+      expect(tester.takeException(), isNull, reason: 'road item');
+      await _back(tester);
+      await _back(tester);
+      await tester.tap(find.widgetWithText(NavigationDestination, strings.moreTitle));
+      await tester.pumpAndSettle();
+      expect(find.byType(MoreScreen), findsOneWidget);
+      expect(tester.takeException(), isNull, reason: 'More tab');
+    });
+
+    testWidgets('Highway 63 cameras fit at 200% text (${language.name})', (tester) async {
+      tester.view.physicalSize = const Size(360, 640);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.view.reset);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      SharedPreferences.setMockInitialValues({'language': language.name, 'sector': 'town'});
+      final settings = await AppSettings.load();
+      await tester.pumpWidget(MaterialApp(
+        locale: language.locale,
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        home: RoadsScreen(
+          settings: settings,
+          repository: FakeRoadsRepository(cameras: SampleRoads.cameras()),
+          push: FakePushService(),
+          cameraImage: (_) => testCameraImage,
+        ),
+      ));
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(find.text(stringsFor(language).roadsCameraCredit), 300,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      expect(tester.takeException(), isNull, reason: 'cameras');
     });
   }
 }
