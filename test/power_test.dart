@@ -173,13 +173,20 @@ void main() {
       final status = SamplePower.stormDay();
       await _pumpScreen(tester, AppLanguage.en, FakePowerRepository(status: PowerStatus(
         outages: [status.outages.first],
-        outagesCheckedAt: SamplePower.ago(const Duration(hours: 2)),
-        plannedCheckedAt: SamplePower.ago(const Duration(hours: 2)),
+        outagesCheckedAt: SamplePower.ago(const Duration(hours: 2)), // stale after 1 h
+        plannedCheckedAt: SamplePower.ago(const Duration(hours: 4)), // stale after 3 h
       )));
-      expect(find.textContaining(s.powerCheckFailedSince('').trim()), findsWidgets);
+      expect(find.textContaining(s.powerCheckFailedSince('').trim()), findsNWidgets(2));
       expect(find.text(s.powerKindOutage), findsOneWidget);
       expect(find.text(s.powerNoOutage), findsNothing);
       expect(find.text(s.powerNoPlanned), findsNothing);
+    });
+
+    testWidgets('planned checked 2 hours ago is still fine (read hourly, stale after 3 h)', (tester) async {
+      final s = stringsFor(AppLanguage.en);
+      await _pumpScreen(tester, AppLanguage.en, FakePowerRepository(status: SamplePower.quiet(age: const Duration(hours: 2))));
+      expect(find.text(s.powerNoOutage), findsNothing, reason: 'outages: stale after 1 h');
+      await _scrollTo(tester, find.text(s.powerNoPlanned));
     });
 
     testWidgets('a storm day: every detail, in French', (tester) async {
