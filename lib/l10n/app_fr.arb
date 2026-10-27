@@ -23,7 +23,6 @@
 
   "todayTitle": "Aujourd’hui",
 
-  "todayComingSoon": "Les pannes de courant s’afficheront ici bientôt.",
 
   "settingsTitle": "Paramètres",
 
@@ -75,7 +74,7 @@
 
   "notificationsPrompt": "Recevoir des notifications?",
 
-  "notificationsExplanation": "Nous vous avertirons quand la Ville publie un avis sur l'eau, comme un avis d'ébullition ou une coupure d'eau, et quand il est levé; quand une interdiction de feux à ciel ouvert ou d'accès en forêt commence ou est levée à Témiscaming; la veille de votre collecte des bacs; et quand la Ville déplace ou annule une collecte. Les fermetures de routes n'envoient une notification que si vous les activez. La météo et les nouvelles générales n'envoient jamais de notification.",
+  "notificationsExplanation": "Nous vous avertirons quand la Ville publie un avis sur l'eau, comme un avis d'ébullition ou une coupure d'eau, et quand il est levé; quand une interdiction de feux à ciel ouvert ou d'accès en forêt commence ou est levée à Témiscaming; la veille de votre collecte des bacs; et quand la Ville déplace ou annule une collecte. Les fermetures de routes et les pannes de courant n'envoient une notification que si vous les activez. La météo et les nouvelles générales n'envoient jamais de notification.",
 
   "notificationsReminder": "Cette application ne remplace pas les alertes officielles de la Ville. Nous vous recommandons de vous y inscrire aussi.",
 
@@ -549,5 +548,99 @@
 
   "channelRoadsDescription": "Quand la route 101 ou la route 63 ferme ou rouvre près de Témiscaming",
 
-  "roadsMore": "+{count} autres dans l'écran Routes"
+  "roadsMore": "+{count} autres dans l'écran Routes",
+
+  "powerTitle": "Pannes de courant",
+
+  "powerNotifyTitle": "M'avertir des pannes de courant",
+
+  "powerNotifySubtitle": "Quand le courant manque pour 25 clients ou plus à Témiscaming ou au lac Tee, et quand il revient.",
+
+  "powerNowHeading": "En ce moment",
+
+  "powerPlannedHeading": "Interruptions planifiées",
+
+  "powerAboutHeading": "À propos de ces renseignements",
+
+  "powerNoOutage": "Aucune panne signalée à Témiscaming ni au lac Tee.",
+
+  "powerNoPlanned": "Aucune interruption planifiée dans les 14 prochains jours.",
+
+  "powerKindOutage": "Panne de courant",
+
+  "powerKindPlannedInProgress": "Interruption planifiée en cours",
+
+  "powerAreaLacTee": "Lac Tee",
+
+  "powerAtLacTee": "Lac Tee — {line}",
+
+  "powerCustomers": "{count, plural, =1{1 client touché} other{{count} clients touchés}}",
+
+  "powerSince": "Depuis {when}",
+
+  "powerEstimate": "Retour du courant estimé par Hydro-Québec : {when}",
+
+  "powerUntil": "Fin prévue : {when}",
+
+  "powerNoEstimate": "Pas encore d'heure de rétablissement prévue",
+
+  "powerCrewAssigned": "Travaux assignés",
+
+  "powerCrewOnTheWay": "Équipe en route",
+
+  "powerCrewAtWork": "Équipe au travail",
+
+  "powerCause": "Cause : {cause}",
+
+  "powerCauseEquipment": "bris d'équipement",
+
+  "powerCauseWeather": "conditions météorologiques",
+
+  "powerCauseAccident": "accident ou incident",
+
+  "powerCauseVegetation": "végétation",
+
+  "powerCauseAnimal": "animal",
+
+  "powerCausePlannedWork": "travaux planifiés",
+
+  "powerWindowSameDay": "{day}, de {from} à {to}",
+
+  "powerWindow": "Du {from} au {to}",
+
+  "powerMovedFrom": "Déplacée du {day}",
+
+  "powerAlternate": "Si elle est reportée : {window}",
+
+  "powerTodayOutage": "{count, plural, =1{Panne : 1 client depuis {since}} other{Panne : {count} clients depuis {since}}}",
+
+  "powerTodayWork": "{count, plural, =1{Interruption planifiée en cours : 1 client} other{Interruption planifiée en cours : {count} clients}}",
+
+  "powerTodayPlanned": "Interruption planifiée : {window}",
+
+  "powerMore": "+{count} de plus à l'écran Pannes de courant",
+
+  "powerCheckFailedSince": "Impossible de vérifier Hydro-Québec depuis {time}",
+
+  "powerNeverChecked": "Hydro-Québec n'a pas encore été vérifié.",
+
+  "powerLoadFailed": "Impossible de charger l'information sur les pannes.",
+
+  "powerNotice": "Hydro-Québec fournit ces renseignements à titre indicatif : certaines pannes peuvent ne pas y figurer, et les heures de rétablissement, les causes et le nombre de clients touchés sont des estimations.",
+
+  "powerDanger": "Fils électriques au sol, incendie ou personne en danger? Composez le 911.",
+
+  "powerReport": "Signaler une panne : {phone} (24 h sur 24)",
+
+  "powerMapLink": "Carte des pannes d'Hydro-Québec",
+
+  "powerSource": "Source : données ouvertes d'Hydro-Québec (CC BY-NC 4.0), vérifiées toutes les 15 minutes.",
+
+  "settingsPowerOutages": "Pannes de courant",
+
+  "settingsPowerOutagesSubtitle": "Quand le courant manque pour 25 clients ou plus à Témiscaming ou au lac Tee, et quand il revient. Désactivé à moins que vous l'activiez.",
+
+  "channelPowerName": "Pannes de courant",
+
+  "channelPowerDescription": "Quand le courant manque à Témiscaming ou revient"
 }

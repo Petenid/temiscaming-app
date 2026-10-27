@@ -13,6 +13,7 @@ Built with Flutter for iOS, Android, Windows and macOS. Design and decisions: `D
 - **Milestone 4 — Weather: complete (2026-10-21).** Spec: `specs/weather.md`. Environment Canada's readings at the Barrage Témiscaming station and its weather alerts for the town, plus a 7-day Open-Meteo forecast for Témiscaming's own coordinates; a weather card and amber alert banner on Today, and a Weather screen. Nothing pushes.
 - **Milestone 6 — Fire bans: complete (2026-10-22).** Spec: `specs/fire-bans.md`. Quebec's open-fire ban and forest access ban, checked every 30 minutes: a red banner on Today when one is announced or in effect for Témiscaming, a fire card during fire season (1 April – 15 November) with a link to SOPFEU's fire danger, a Fire screen, and a "Fire bans" notification when a ban starts or lifts.
 - **Milestone 7 — Roads: complete (2026-10-27).** Spec: `specs/roads.md`. Route 101 (Témiscaming – Ville-Marie) and Highway 63 (Thorne – North Bay): closures, incidents, roadwork, road conditions and Highway 63's cameras, plus the Town's Work Info, on a Roads screen in a new **More** tab; an amber card on Today only when something's wrong; an opt-in "Road closures" notification (off by default). Verified on the Android emulator against Québec 511 and Ontario 511.
+- **Milestone 8 — Power outages: in progress.** Spec: `specs/power-outages.md`. Hydro-Québec outages in Témiscaming and at Lac Tee, and planned interruptions in the next 14 days, on a Power outages screen in **More**; an amber card on Today only when the power is out, a planned interruption is today or tomorrow, or the check is failing; an opt-in "Power outages" notification (off by default).
 
 Full plan and milestones: `DESIGN.md` in the project docs.
 
@@ -40,7 +41,7 @@ Every push runs these on GitHub (see the Actions tab), plus an iOS compile check
 - **`flutterfire` not found:** add `%LOCALAPPDATA%\Pub\Cache\bin` to your PATH, or run `dart pub global run flutterfire_cli:flutterfire …`
 - **Emulator from the terminal:** `flutter emulators --launch <id>`, then `flutter run -d emulator-5554`
 - **Emulator won't start after being shut off abruptly** ("exited with code 1 during startup", empty stderr): stop leftovers with `Get-Process qemu*, emulator* -ErrorAction SilentlyContinue | Stop-Process -Force`, delete the stale locks with `Get-ChildItem "$env:USERPROFILE\.android\avd\*.avd" -Filter *.lock -Force | Remove-Item -Recurse -Force`, then cold-boot it: `& "$env:LOCALAPPDATA\Android\Sdk\emulator\emulator.exe" -avd <name> -no-snapshot-load` (names from `-list-avds`). Started this way it prints its real error if it still fails.
-- **Applying a patch from Claude:** always give the file name, `git am <file>.patch`. Plain `git am` waits for typed input ("reading patches from stdin") forever: stop it with Ctrl+C, then `git am --quit` (not `--abort`, which can undo a patch already applied). After a patch that changes `pubspec.yaml`, run `flutter pub get` and commit the updated `pubspec.lock`.
+- **Applying a patch from Claude:** Claude puts each patch in the `patches/` folder (git ignores it). Always give the file name, `git am patches/<file>.patch`. Once a patch is applied and pushed it's no longer needed: empty the folder whenever you like. Plain `git am` waits for typed input ("reading patches from stdin") forever: stop it with Ctrl+C, then `git am --quit` (not `--abort`, which can undo a patch already applied). After a patch that changes `pubspec.yaml`, run `flutter pub get` and commit the updated `pubspec.lock`.
 - **Deploy fails with "User code failed to load … Timeout after 10000":** run `$env:FUNCTIONS_DISCOVERY_TIMEOUT=60` in that terminal, then deploy again. Windows Defender scanning `node_modules` slows the local load; the code itself loads in under a second.
 
 ## Firebase
@@ -83,13 +84,17 @@ The Town's calendar is read by `pollTownCalendar` every 2 hours: first the bin p
 
 **Testing a road push:** in the app, More → Roads → turn on "Get notified when Route 101 or Highway 63 closes" (or Settings → Road closures), put the app in the background, then Firebase console → Messaging → new campaign → topic `roads-fr` or `roads-en`; add the custom data `screen` = `roads` so tapping it opens the Roads screen. It arrives on the "Road closures" channel (pop-up).
 
+**Power outages** (`functions/src/power/`, Milestone 8): `pollPowerOutages` (every 15 minutes) reads Hydro-Québec's open data: a "version" file, then the list it names, for current interruptions (`bisversion` → `bismarkers`) and, about once an hour, for planned ones (`aipversion` → `aipmarkers`). It keeps Témiscaming (Hydro-Québec's locality `9130`, or municipality `85005` in the planned file) and Lac Tee (locality `9124`; planned work in Kipawa within 3 km of the lake) and saves them in `power/temiscaming`. Health: `sources/hq-outages` and `sources/hq-planned`. A version file more than 45 minutes old (6 hours for planned) counts as a failure: Hydro-Québec's file has stopped updating, which mustn't look like "no outage". A healthy run logs `power: ongoing ok (v20261027155006, 0 here, 19 in Quebec), planned ok (v20261027155007, 0 here, 198 in Quebec)`; between hourly reads the planned part says `not due`. Pushes go to `power-fr` / `power-en` (opt-in) when unplanned outages here reach 25 customers, and "restored" once none has been listed for 20 minutes; planned interruptions never push. What people were last told is in `power_state/temiscaming`. If Hydro-Québec changes its files, *Capture fixtures* → `power` saves the current ones.
+
+**Testing a power push:** in the app, More → Power outages → turn on "Notify me of power outages" (or Settings → Power outages), put the app in the background, then Firebase console → Messaging → new campaign → topic `power-fr` or `power-en`; add the custom data `screen` = `power` so tapping it opens the Power outages screen. It arrives on the "Power outages" channel (pop-up).
+
 **The Ontario 511 key** is a Firebase secret, never in the repo. Once, before the first deploy of `pollRoads` (and again only if the key changes), in VS Code's terminal:
 ```
 firebase functions:secrets:set ONTARIO_511_KEY
 ```
 and paste the key when asked (it doesn't show as you type). Without it, `pollRoads` still reads Quebec and the Ontario sources show "no Ontario 511 key". The *Capture fixtures* workflow uses the GitHub secret of the same name.
 
-**Refreshing the test pages:** GitHub → Actions → *Capture fixtures* → Run workflow, then pick a source. `alerts` saves today's alert pages under `functions/test/fixtures/<date>/`; `calendar` saves every month of the Town calendar (FR + EN) and the MRC collection PDF under `functions/test/fixtures/calendar/<date>/`; `weather` saves Environment Canada's data and the Open-Meteo forecast under `functions/test/fixtures/weather/<date-time>/`; `fire` saves both fire-ban layers under `functions/test/fixtures/fire/<date>/`; `roads` saves the Quebec road layers, the Town's Work Info pages and (with the `ONTARIO_511_KEY` secret) Ontario 511 under `functions/test/fixtures/roads/<date>/`.
+**Refreshing the test pages:** GitHub → Actions → *Capture fixtures* → Run workflow, then pick a source. `alerts` saves today's alert pages under `functions/test/fixtures/<date>/`; `calendar` saves every month of the Town calendar (FR + EN) and the MRC collection PDF under `functions/test/fixtures/calendar/<date>/`; `weather` saves Environment Canada's data and the Open-Meteo forecast under `functions/test/fixtures/weather/<date-time>/`; `fire` saves both fire-ban layers under `functions/test/fixtures/fire/<date>/`; `roads` saves the Quebec road layers, the Town's Work Info pages and (with the `ONTARIO_511_KEY` secret) Ontario 511 under `functions/test/fixtures/roads/<date>/`. `power` saves Hydro-Québec's version files and its lists of current and planned interruptions under `functions/test/fixtures/power/<date>/` (its list of places is also tried, but that request fails from GitHub; the tests use a copy in `fixtures/power/hand-copied/`).
 
 ## Where things are
 
@@ -106,10 +111,12 @@ and paste the key when asked (it doesn't show as you type). Without it, `pollRoa
 | `lib/events/` | Events tab, event detail, "Add to my calendar", Today's "Coming up" card |
 | `lib/weather/` | Today's weather card and alert banner, the Weather screen, forecast labels |
 | `lib/fire/` | The red fire-ban banner, Today's fire card and one-time notification offer, the Fire screen |
+| `lib/power/` | Today's outage card and the Power outages screen (Milestone 8) |
 | `lib/push/` | Push notification topics |
 | `functions/src/alerts/` | Backend: reads the Town's alert site, decides pushes |
 | `functions/src/collection/` | Backend: reads the Town's calendar for bin pickups, merges the MRC calendar |
 | `functions/src/events/` | Backend: events from the same calendar pages |
 | `functions/src/weather/` | Backend: Environment Canada conditions and alerts, Open-Meteo forecast |
 | `functions/src/fire/` | Backend: Quebec's open-fire and forest access bans, and their pushes |
+| `functions/src/power/` | Backend: Hydro-Québec outages and planned interruptions in Témiscaming, and their pushes |
 | `test/` | Automated tests |

@@ -59,6 +59,7 @@ class _HomeShellState extends State<HomeShell> {
             weather: widget.services.weather,
             fire: widget.services.fire,
             roads: widget.services.roads,
+            power: widget.services.power,
             push: widget.services.push,
             onOpenEvents: () => setState(() => _tab = _eventsTab),
             appBarActions: actions,

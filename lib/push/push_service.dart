@@ -11,12 +11,13 @@ import '../settings/sector.dart';
 
 /// Push notifications for water advisories (Milestone 1, spec §3 D5),
 /// pickup changes (Milestone 2, spec D6), fire bans (Milestone 6, D6) and
-/// road closures (Milestone 7, roads spec D8; opt-in).
+/// road closures (Milestone 7, roads spec D8; opt-in) and power outages
+/// (Milestone 8, power-outages spec D6; opt-in).
 ///
 /// Each phone subscribes to one FCM "topic" matching its language
 /// (`water-fr` or `water-en`), and one matching its sector and language
 /// (`collection-town-fr` …), `fire-fr` or `fire-en`, and `roads-fr` or
-/// `roads-en` for those who opted in. The backend sends one message per topic, so
+/// `roads-en` and `power-fr` or `power-en` for those who opted in. The backend sends one message per topic, so
 /// every phone gets exactly one notification, in its own language, and we
 /// never need to store anyone's device token.
 abstract class PushService {
@@ -30,7 +31,7 @@ abstract class PushService {
   /// the notification channels with names in the user's language.
   /// [enabled] is for water advisories; [collectionChanges] for pickup
   /// changes in [sector]; [fireBans] for fire bans; [roadClosures] for road
-  /// closures. Returns false if it couldn't (typically no network), so the
+  /// closures; [powerOutages] for power outages. Returns false if it couldn't (typically no network), so the
   /// caller can try again.
   Future<bool> apply({
     required AppLanguage language,
@@ -39,11 +40,12 @@ abstract class PushService {
     bool collectionChanges = false,
     bool fireBans = false,
     bool roadClosures = false,
+    bool powerOutages = false,
   });
 
   /// What the user tapped while the app was running: an alert id,
   /// [collectionTarget] for a pickup notice, [fireTarget] for a fire ban or
-  /// [roadsTarget] for a road closure.
+  /// [roadsTarget] for a road closure, [powerTarget] for a power outage.
   Stream<String> get openedAlertIds;
 
   /// The same for the notification that launched the app, if any.
@@ -65,6 +67,10 @@ String fireTopicFor(AppLanguage language) => 'fire-${language.name}';
 /// in functions/src/roads/sync.ts.
 String roadsTopicFor(AppLanguage language) => 'roads-${language.name}';
 
+/// Power-outage topic for a language; matches the backend's POWER_TOPICS
+/// in functions/src/power/sync.ts.
+String powerTopicFor(AppLanguage language) => 'power-${language.name}';
+
 /// Stands for "open the pickup schedule" where an alert id would go.
 const collectionTarget = 'collection';
 
@@ -74,13 +80,17 @@ const fireTarget = 'fire';
 /// Stands for "open the Roads screen".
 const roadsTarget = 'roads';
 
+/// Stands for "open the Power outages screen".
+const powerTarget = 'power';
+
 /// Where a tapped push leads: its alert, the schedule for pickup notices,
 /// or the Fire screen (the backend sends `screen: fire`).
 String? targetOf(Map<String, dynamic> data) =>
     data['alert_id'] as String? ??
     (data['type'] == 'collection' ? collectionTarget : null) ??
     (data['screen'] == 'fire' ? fireTarget : null) ??
-    (data['screen'] == 'roads' ? roadsTarget : null);
+    (data['screen'] == 'roads' ? roadsTarget : null) ??
+    (data['screen'] == 'power' ? powerTarget : null);
 
 class FcmPushService implements PushService {
   // Talks to MainActivity.kt to create Android notification channels.
@@ -112,6 +122,7 @@ class FcmPushService implements PushService {
     bool collectionChanges = false,
     bool fireBans = false,
     bool roadClosures = false,
+    bool powerOutages = false,
   }) async {
     if (!isSupported) return true;
     final strings = lookupAppLocalizations(language.locale);
@@ -130,6 +141,8 @@ class FcmPushService implements PushService {
           'fireUpdatesDescription': strings.channelFireUpdatesDescription,
           'roadsName': strings.channelRoadsName,
           'roadsDescription': strings.channelRoadsDescription,
+          'powerName': strings.channelPowerName,
+          'powerDescription': strings.channelPowerDescription,
         });
       }
       for (final each in AppLanguage.values) {
@@ -147,6 +160,11 @@ class FcmPushService implements PushService {
           await _messaging.subscribeToTopic(roadsTopicFor(each));
         } else {
           await _messaging.unsubscribeFromTopic(roadsTopicFor(each));
+        }
+        if (powerOutages && each == language) {
+          await _messaging.subscribeToTopic(powerTopicFor(each));
+        } else {
+          await _messaging.unsubscribeFromTopic(powerTopicFor(each));
         }
         for (final s in Sector.values) {
           final topic = collectionTopicFor(s, each);
@@ -203,7 +221,7 @@ class PushSync {
   final Duration _firstRetry;
   Duration _nextRetry;
   Timer? _retry;
-  (AppLanguage, bool, Sector?, bool, bool, bool)? _applied;
+  (AppLanguage, bool, Sector?, bool, bool, bool, bool)? _applied;
 
   void _sync() {
     final language = _settings.language;
@@ -215,6 +233,7 @@ class PushSync {
       _settings.collectionChangesEnabled,
       _settings.fireBansEnabled,
       _settings.roadClosuresEnabled,
+      _settings.powerOutagesEnabled,
     );
     if (wanted == _applied) return;
     _applied = wanted;
@@ -222,7 +241,7 @@ class PushSync {
     unawaited(_apply(wanted));
   }
 
-  Future<void> _apply((AppLanguage, bool, Sector?, bool, bool, bool) wanted) async {
+  Future<void> _apply((AppLanguage, bool, Sector?, bool, bool, bool, bool) wanted) async {
     final ok = await _push.apply(
       language: wanted.$1,
       enabled: wanted.$2,
@@ -230,6 +249,7 @@ class PushSync {
       collectionChanges: wanted.$4,
       fireBans: wanted.$5,
       roadClosures: wanted.$6,
+      powerOutages: wanted.$7,
     );
     // A newer change has taken over: it does its own retrying.
     if (wanted != _applied) return;

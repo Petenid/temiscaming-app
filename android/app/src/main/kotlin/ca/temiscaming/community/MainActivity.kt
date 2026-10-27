@@ -13,7 +13,8 @@ class MainActivity : FlutterActivity() {
     // "water_urgent" and "advisory lifted" notices on "water_updates"; bin
     // reminders (scheduled on the phone) and pickup changes use "collection";
     // fire bans announced or starting use "fire_urgent", lifted "fire_updates";
-    // road closures and reopenings (opt-in) use "roads", which pops up.
+    // road closures and reopenings (opt-in) use "roads", which pops up;
+    // power outages and "power restored" (opt-in) use "power", which pops up too.
     // The names come from the app's translation files (lib/l10n/*.arb), sent
     // over from Dart, so they appear in the user's language.
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
@@ -69,6 +70,13 @@ class MainActivity : FlutterActivity() {
                             call.argument<String>("roadsName"),
                             NotificationManager.IMPORTANCE_HIGH,
                         ).apply { description = call.argument<String>("roadsDescription") },
+                    )
+                    manager.createNotificationChannel(
+                        NotificationChannel(
+                            "power",
+                            call.argument<String>("powerName"),
+                            NotificationManager.IMPORTANCE_HIGH,
+                        ).apply { description = call.argument<String>("powerDescription") },
                     )
                 }
                 result.success(null)

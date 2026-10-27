@@ -11,6 +11,8 @@ import 'package:community/fire/fire_screen.dart';
 import 'package:community/fire/fire_widgets.dart';
 import 'package:community/l10n/app_localizations.dart';
 import 'package:community/more/more_screen.dart';
+import 'package:community/power/power_screen.dart';
+import 'package:community/power/power_widgets.dart';
 import 'package:community/roads/roads_screen.dart';
 import 'package:community/roads/roads_widgets.dart';
 import 'package:community/settings/app_settings.dart';
@@ -26,6 +28,7 @@ import 'events_fakes.dart';
 import 'fakes.dart';
 import 'fire_fakes.dart';
 import 'helpers.dart';
+import 'power_fakes.dart';
 import 'roads_fakes.dart';
 import 'weather_fakes.dart';
 
@@ -252,6 +255,34 @@ void main() {
       await tester.scrollUntilVisible(find.text(stringsFor(language).roadsCameraCredit), 300,
           scrollable: find.byType(Scrollable).hitTestable().first);
       expect(tester.takeException(), isNull, reason: 'cameras');
+    });
+  }
+
+  // Power outages (Milestone 8): Today's card with the most lines, the
+  // Power outages screen from top to bottom.
+  for (final language in AppLanguage.values) {
+    testWidgets('power outage screens fit at 200% text (${language.name})', (tester) async {
+      tester.view.physicalSize = const Size(360, 640);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.view.reset);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      final strings = stringsFor(language);
+      await pumpApp(
+        tester,
+        {'language': language.name, 'sector': 'town', 'water_alerts': true, 'fire_bans': true},
+        null, FakePushService(isSupported: true), null, null, null, null, null, null, null,
+        FakePowerRepository(status: SamplePower.stormDay()),
+      );
+      final cardTitle = find.descendant(of: find.byType(PowerCard), matching: find.text(strings.powerTitle));
+      await tester.scrollUntilVisible(cardTitle, 200, scrollable: find.byType(Scrollable).hitTestable().first);
+      expect(tester.takeException(), isNull, reason: 'Today outage card');
+      await scrollAndTap(tester, cardTitle);
+      expect(find.byType(PowerScreen), findsOneWidget);
+      expect(tester.takeException(), isNull, reason: 'Power outages screen');
+      await tester.scrollUntilVisible(find.text(strings.powerSource), 300,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      expect(tester.takeException(), isNull, reason: 'Power outages screen, to the end');
     });
   }
 }

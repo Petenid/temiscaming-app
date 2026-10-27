@@ -13,6 +13,7 @@ import 'events/events_repository.dart';
 import 'fire/fire_repository.dart';
 import 'firebase_options.dart';
 import 'push/push_service.dart';
+import 'power/power_repository.dart';
 import 'roads/roads_repository.dart';
 import 'services.dart';
 import 'settings/app_settings.dart';
@@ -52,6 +53,9 @@ Future<void> main() async {
     roads: firebaseReady
         ? FirestoreRoadsRepository(FirebaseFirestore.instance)
         : UnavailableRoadsRepository(),
+    power: firebaseReady
+        ? FirestorePowerRepository(FirebaseFirestore.instance)
+        : UnavailablePowerRepository(),
   );
   // Keeps the push subscription matching the language and settings.
   if (firebaseReady) PushSync(settings, services.push);

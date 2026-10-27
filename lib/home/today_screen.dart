@@ -12,6 +12,9 @@ import '../fire/fire_repository.dart';
 import '../fire/fire_screen.dart';
 import '../fire/fire_widgets.dart';
 import '../l10n/app_localizations.dart';
+import '../power/power_repository.dart';
+import '../power/power_screen.dart';
+import '../power/power_widgets.dart';
 import '../push/push_service.dart';
 import '../roads/roads_repository.dart';
 import '../roads/roads_screen.dart';
@@ -25,9 +28,10 @@ import '../weather/weather_widgets.dart';
 
 /// Home screen (DESIGN §7): the boil-water and fire-ban banners when one is
 /// in effect, the weather alert banner, the road card when something's wrong
-/// on Route 101 or Highway 63, a warning if the Town's alerts can't be
-/// checked, this week's bin, the weather, fire bans in season, the next few
-/// events, and a placeholder for the features still to come.
+/// on Route 101 or Highway 63, the outage card when the power is out or a
+/// planned interruption is near, a warning if the Town's alerts can't be
+/// checked, this week's bin, the weather, fire bans in season and the next
+/// few events.
 class TodayScreen extends StatelessWidget {
   const TodayScreen({
     super.key,
@@ -38,6 +42,7 @@ class TodayScreen extends StatelessWidget {
     required this.weather,
     required this.fire,
     required this.roads,
+    required this.power,
     required this.push,
     required this.onOpenEvents,
     required this.appBarActions,
@@ -50,6 +55,7 @@ class TodayScreen extends StatelessWidget {
   final WeatherRepository weather;
   final FireRepository fire;
   final RoadsRepository roads;
+  final PowerRepository power;
 
   /// For the one-time fire-ban notifications offer (fire-bans spec D7).
   final PushService push;
@@ -66,7 +72,7 @@ class TodayScreen extends StatelessWidget {
       appBar: AppBar(title: Text(l10n.todayTitle), actions: appBarActions),
       body: SafeArea(
         child: ListenableBuilder(
-          listenable: Listenable.merge([repository, weather, fire, roads, settings]),
+          listenable: Listenable.merge([repository, weather, fire, roads, power, settings]),
           builder: (context, _) {
             final now = DateTime.now();
             final boil = repository.alerts
@@ -122,6 +128,19 @@ class TodayScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                 ],
+                // Only when the power is out, a planned interruption is near, or the check fails (power spec D9).
+                if (PowerCard.shows(context, power, now)) ...[
+                  PowerCard(
+                    repository: power,
+                    now: now,
+                    onOpen: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => PowerScreen(settings: settings, repository: power, push: push),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
                 if (push.isSupported && settings.fireBansToOffer) ...[
                   FireOptInCard(settings: settings, push: push),
                   const SizedBox(height: 16),
@@ -145,12 +164,6 @@ class TodayScreen extends StatelessWidget {
                   const SizedBox(height: 16),
                 ],
                 EventsCard(settings: settings, repository: events, onOpenEvents: onOpenEvents),
-                const SizedBox(height: 24),
-                Text(
-                  l10n.todayComingSoon,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                  textAlign: TextAlign.center,
-                ),
               ],
             );
           },

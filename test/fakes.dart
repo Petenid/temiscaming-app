@@ -64,6 +64,9 @@ class FakePushService implements PushService {
 
   /// Road-closure subscriptions asked for: on or off.
   final appliedRoads = <bool>[];
+
+  /// Power-outage subscriptions asked for: on or off.
+  final appliedPower = <bool>[];
   final _opened = StreamController<String>.broadcast();
   String? initialId;
 
@@ -88,11 +91,13 @@ class FakePushService implements PushService {
     bool collectionChanges = false,
     bool fireBans = false,
     bool roadClosures = false,
+    bool powerOutages = false,
   }) async {
     applied.add((language, enabled));
     appliedCollection.add((sector, collectionChanges));
     appliedFire.add(fireBans);
     appliedRoads.add(roadClosures);
+    appliedPower.add(powerOutages);
     return applySucceeds;
   }
 

@@ -29,6 +29,7 @@ class AppSettings extends ChangeNotifier {
     this._collectionChanges,
     this._fireBans,
     this._roadClosures,
+    this._powerOutages,
   );
 
   static const _languageKey = 'language';
@@ -39,6 +40,7 @@ class AppSettings extends ChangeNotifier {
   static const _collectionChangesKey = 'collection_changes';
   static const _fireBansKey = 'fire_bans';
   static const _roadClosuresKey = 'road_closures';
+  static const _powerOutagesKey = 'power_outages';
 
   /// The evening-before reminder's default time: 7 p.m. (DESIGN §6.2).
   static const defaultReminderMinutes = 19 * 60;
@@ -52,6 +54,7 @@ class AppSettings extends ChangeNotifier {
   bool? _collectionChanges;
   bool? _fireBans;
   bool _roadClosures;
+  bool _powerOutages;
 
   /// Loads saved choices from the device. Called once at startup.
   static Future<AppSettings> load() async {
@@ -72,6 +75,8 @@ class AppSettings extends ChangeNotifier {
       prefs.getBool(_fireBansKey),
       // Opt-in only, off for everyone until turned on (roads spec D9).
       prefs.getBool(_roadClosuresKey) ?? false,
+      // Opt-in only too (power-outages spec D7).
+      prefs.getBool(_powerOutagesKey) ?? false,
     );
   }
 
@@ -110,6 +115,10 @@ class AppSettings extends ChangeNotifier {
   /// the notifications question never turns it on (roads spec D9).
   bool get roadClosuresEnabled => _roadClosures;
 
+  /// Notifications when the power goes out in Témiscaming (25+ customers) and
+  /// when it's back. Opt-in, like road closures (power-outages spec D7).
+  bool get powerOutagesEnabled => _powerOutages;
+
   bool get fireBansToOffer => notificationsAsked && _fireBans == null;
 
   /// The answer to the notifications question: turns every kind of
@@ -130,6 +139,12 @@ class AppSettings extends ChangeNotifier {
     _roadClosures = enabled;
     notifyListeners();
     await _prefs.setBool(_roadClosuresKey, enabled);
+  }
+
+  Future<void> setPowerOutages(bool enabled) async {
+    _powerOutages = enabled;
+    notifyListeners();
+    await _prefs.setBool(_powerOutagesKey, enabled);
   }
 
   Future<void> setFireBans(bool enabled) async {

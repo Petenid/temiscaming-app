@@ -4,6 +4,7 @@ import 'collection/reminders.dart';
 import 'events/calendar_adder.dart';
 import 'events/events_repository.dart';
 import 'fire/fire_repository.dart';
+import 'power/power_repository.dart';
 import 'push/push_service.dart';
 import 'roads/roads_repository.dart';
 import 'weather/weather_repository.dart';
@@ -21,6 +22,7 @@ class AppServices {
     required this.weather,
     required this.fire,
     required this.roads,
+    required this.power,
   });
 
   final AlertsRepository alerts;
@@ -40,4 +42,7 @@ class AppServices {
 
   /// Route 101, Highway 63 and the Town's work (Milestone 7).
   final RoadsRepository roads;
+
+  /// Hydro-Québec power outages in Témiscaming (Milestone 8).
+  final PowerRepository power;
 }

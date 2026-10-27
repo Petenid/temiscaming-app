@@ -34,8 +34,6 @@
   "todayTitle": "Today",
   "@todayTitle": {"description": "Title of the home screen."},
 
-  "todayComingSoon": "Power outages will appear here soon.",
-  "@todayComingSoon": {"description": "Placeholder on the home screen until features are built."},
 
   "settingsTitle": "Settings",
   "@settingsTitle": {"description": "Settings screen title and the settings button label."},
@@ -112,7 +110,7 @@
   "notificationsPrompt": "Get notifications?",
   "@notificationsPrompt": {"description": "Heading on the notifications step."},
 
-  "notificationsExplanation": "We'll notify you when the Town posts a water advisory, like a boil-water notice or a water cut, and when it's lifted; when an open-fire or forest access ban starts or lifts for Témiscaming; the evening before your bin pickup; and when the Town moves or cancels a pickup. Road closures notify only if you turn them on. Weather and general news never send notifications.",
+  "notificationsExplanation": "We'll notify you when the Town posts a water advisory, like a boil-water notice or a water cut, and when it's lifted; when an open-fire or forest access ban starts or lifts for Témiscaming; the evening before your bin pickup; and when the Town moves or cancels a pickup. Road closures and power outages notify only if you turn them on. Weather and general news never send notifications.",
   "@notificationsExplanation": {"description": "What will and won't notify (DESIGN §7)."},
 
   "notificationsReminder": "This app doesn't replace the Town's official alerts. We recommend signing up for those too.",
@@ -846,5 +844,146 @@
   "@channelRoadsDescription": {"description": "Android notification channel description."},
 
   "roadsMore": "+{count} more on the Roads screen",
-  "@roadsMore": {"description": "Last line of Today's road card when there are more than 3 problems.", "placeholders": {"count": {"type": "int"}}}
+  "@roadsMore": {"description": "Last line of Today's road card when there are more than 3 problems.", "placeholders": {"count": {"type": "int"}}},
+
+  "powerTitle": "Power outages",
+  "@powerTitle": {"description": "Title of the Power outages screen, More tile and Today card."},
+
+  "powerNotifyTitle": "Notify me of power outages",
+  "@powerNotifyTitle": {"description": "Opt-in switch at the top of the Power outages screen."},
+
+  "powerNotifySubtitle": "When the power goes out for 25 or more customers in Témiscaming or at Lac Tee, and when it's back.",
+  "@powerNotifySubtitle": {"description": "Under the opt-in switch."},
+
+  "powerNowHeading": "Now",
+  "@powerNowHeading": {"description": "Heading for current interruptions."},
+
+  "powerPlannedHeading": "Planned interruptions",
+  "@powerPlannedHeading": {"description": "Heading for upcoming planned interruptions."},
+
+  "powerAboutHeading": "About this information",
+  "@powerAboutHeading": {"description": "Heading for Hydro-Québec's notices, phone and map."},
+
+  "powerNoOutage": "No outage reported in Témiscaming or at Lac Tee.",
+  "@powerNoOutage": {"description": "Shown only after a recent successful check."},
+
+  "powerNoPlanned": "No planned interruption in the next 14 days.",
+  "@powerNoPlanned": {"description": "Shown only after a recent successful check."},
+
+  "powerKindOutage": "Power outage",
+  "@powerKindOutage": {"description": "A current outage."},
+
+  "powerKindPlannedInProgress": "Planned interruption in progress",
+  "@powerKindPlannedInProgress": {"description": "Planned work under way: the power is off on purpose."},
+
+  "powerAreaLacTee": "Lac Tee",
+  "@powerAreaLacTee": {"description": "Under an item at Lac Tee (Hydro-Québec lists it under Kipawa)."},
+
+  "powerAtLacTee": "Lac Tee — {line}",
+  "@powerAtLacTee": {"description": "A Today line about Lac Tee.", "placeholders": {"line": {"type": "String"}}},
+
+  "powerCustomers": "{count, plural, =1{1 customer affected} other{{count} customers affected}}",
+  "@powerCustomers": {"description": "Customers without power.", "placeholders": {"count": {"type": "int"}}},
+
+  "powerSince": "Since {when}",
+  "@powerSince": {"description": "When an interruption started; when = a time today, or a day and time.", "placeholders": {"when": {"type": "String"}}},
+
+  "powerEstimate": "Hydro-Québec's estimate for power back: {when}",
+  "@powerEstimate": {"description": "Estimated restoration, always said as an estimate.", "placeholders": {"when": {"type": "String"}}},
+
+  "powerUntil": "Expected to end: {when}",
+  "@powerUntil": {"description": "End of planned work in progress.", "placeholders": {"when": {"type": "String"}}},
+
+  "powerNoEstimate": "No estimated time yet",
+  "@powerNoEstimate": {"description": "Hydro-Québec hasn't given a restoration time."},
+
+  "powerCrewAssigned": "Work assigned",
+  "@powerCrewAssigned": {"description": "Hydro-Québec status A."},
+
+  "powerCrewOnTheWay": "Crew on the way",
+  "@powerCrewOnTheWay": {"description": "Hydro-Québec status R."},
+
+  "powerCrewAtWork": "Crew at work",
+  "@powerCrewAtWork": {"description": "Hydro-Québec status L."},
+
+  "powerCause": "Cause: {cause}",
+  "@powerCause": {"description": "The cause, when Hydro-Québec gives one.", "placeholders": {"cause": {"type": "String"}}},
+
+  "powerCauseEquipment": "equipment failure",
+  "@powerCauseEquipment": {"description": "Cause group."},
+
+  "powerCauseWeather": "weather",
+  "@powerCauseWeather": {"description": "Cause group."},
+
+  "powerCauseAccident": "accident or incident",
+  "@powerCauseAccident": {"description": "Cause group."},
+
+  "powerCauseVegetation": "vegetation",
+  "@powerCauseVegetation": {"description": "Cause group."},
+
+  "powerCauseAnimal": "animal",
+  "@powerCauseAnimal": {"description": "Cause group."},
+
+  "powerCausePlannedWork": "planned work",
+  "@powerCausePlannedWork": {"description": "Cause of a planned interruption."},
+
+  "powerWindowSameDay": "{day}, {from} to {to}",
+  "@powerWindowSameDay": {"description": "A planned window on one day, e.g. 'Thursday, October 29, 8:30 a.m. to 12:00 p.m.'.", "placeholders": {"day": {"type": "String"}, "from": {"type": "String"}, "to": {"type": "String"}}},
+
+  "powerWindow": "From {from} to {to}",
+  "@powerWindow": {"description": "A planned window over several days; from and to = fireWhen.", "placeholders": {"from": {"type": "String"}, "to": {"type": "String"}}},
+
+  "powerMovedFrom": "Moved from {day}",
+  "@powerMovedFrom": {"description": "A planned interruption Hydro-Québec moved.", "placeholders": {"day": {"type": "String"}}},
+
+  "powerAlternate": "If postponed: {window}",
+  "@powerAlternate": {"description": "Hydro-Québec's backup date.", "placeholders": {"window": {"type": "String"}}},
+
+  "powerTodayOutage": "{count, plural, =1{Outage: 1 customer since {since}} other{Outage: {count} customers since {since}}}",
+  "@powerTodayOutage": {"description": "A line on Today's outage card.", "placeholders": {"count": {"type": "int"}, "since": {"type": "String"}}},
+
+  "powerTodayWork": "{count, plural, =1{Planned interruption in progress: 1 customer} other{Planned interruption in progress: {count} customers}}",
+  "@powerTodayWork": {"description": "A line on Today's outage card.", "placeholders": {"count": {"type": "int"}}},
+
+  "powerTodayPlanned": "Planned interruption: {window}",
+  "@powerTodayPlanned": {"description": "A line on Today's outage card, for today or tomorrow.", "placeholders": {"window": {"type": "String"}}},
+
+  "powerMore": "+{count} more on the Power outages screen",
+  "@powerMore": {"description": "Last line of Today's card when there are more than 3.", "placeholders": {"count": {"type": "int"}}},
+
+  "powerCheckFailedSince": "Couldn't check Hydro-Québec since {time}",
+  "@powerCheckFailedSince": {"description": "Health line when Hydro-Québec's file hasn't been read recently.", "placeholders": {"time": {"type": "String"}}},
+
+  "powerNeverChecked": "Hydro-Québec hasn't been checked yet.",
+  "@powerNeverChecked": {"description": "Health line before the first check."},
+
+  "powerLoadFailed": "Couldn't load power outage information.",
+  "@powerLoadFailed": {"description": "When nothing could be loaded."},
+
+  "powerNotice": "Hydro-Québec gives this information as a guide: some outages may not appear, and restoration times, causes and customer counts are estimates.",
+  "@powerNotice": {"description": "Hydro-Québec's own caveat, in our words."},
+
+  "powerDanger": "Wires down, a fire, or someone in danger? Call 911.",
+  "@powerDanger": {"description": "Safety line on the Power outages screen."},
+
+  "powerReport": "Report an outage: {phone} (24 hours a day)",
+  "@powerReport": {"description": "Hydro-Québec's phone number; tapping it calls.", "placeholders": {"phone": {"type": "String"}}},
+
+  "powerMapLink": "Hydro-Québec's outage map",
+  "@powerMapLink": {"description": "Link to Hydro-Québec's Info-pannes site."},
+
+  "powerSource": "Source: Hydro-Québec open data (CC BY-NC 4.0), checked every 15 minutes.",
+  "@powerSource": {"description": "Credit on the Power outages screen."},
+
+  "settingsPowerOutages": "Power outages",
+  "@settingsPowerOutages": {"description": "Settings switch."},
+
+  "settingsPowerOutagesSubtitle": "When the power goes out for 25 or more customers in Témiscaming or at Lac Tee, and when it's back. Off unless you turn it on.",
+  "@settingsPowerOutagesSubtitle": {"description": "Under the Settings switch."},
+
+  "channelPowerName": "Power outages",
+  "@channelPowerName": {"description": "Android notification channel name."},
+
+  "channelPowerDescription": "When the power goes out in Témiscaming or comes back",
+  "@channelPowerDescription": {"description": "Android notification channel description."}
 }

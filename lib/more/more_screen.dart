@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../collection/collection_screen.dart';
 import '../fire/fire_screen.dart';
 import '../l10n/app_localizations.dart';
+import '../power/power_screen.dart';
 import '../roads/roads_screen.dart';
 import '../services.dart';
 import '../settings/app_settings.dart';
@@ -35,6 +36,8 @@ class MoreScreen extends StatelessWidget {
           children: [
             tile(Icons.directions_car_outlined, l10n.roadsTitle,
                 () => RoadsScreen(settings: settings, repository: services.roads, push: services.push)),
+            tile(Icons.power_outlined, l10n.powerTitle,
+                () => PowerScreen(settings: settings, repository: services.power, push: services.push)),
             tile(Icons.local_fire_department_outlined, l10n.fireTitle,
                 () => FireScreen(settings: settings, repository: services.fire)),
             tile(Icons.wb_cloudy_outlined, l10n.weatherTitle,

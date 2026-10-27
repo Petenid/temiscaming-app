@@ -16,6 +16,8 @@ import 'package:community/events/town_event.dart';
 import 'package:community/fire/fire_data.dart';
 import 'package:community/fire/fire_widgets.dart';
 import 'package:community/l10n/app_localizations.dart';
+import 'package:community/power/power_screen.dart';
+import 'package:community/power/power_widgets.dart';
 import 'package:community/roads/roads_screen.dart';
 import 'package:community/roads/roads_widgets.dart';
 import 'package:community/settings/app_settings.dart';
@@ -31,6 +33,7 @@ import 'events_fakes.dart';
 import 'fakes.dart';
 import 'fire_fakes.dart';
 import 'helpers.dart';
+import 'power_fakes.dart';
 import 'roads_fakes.dart';
 import 'weather_fakes.dart';
 
@@ -361,6 +364,50 @@ void main() {
       await tester.ensureVisible(find.text(stringsFor(language).roadsCamerasHeading));
       await tester.pumpAndSettle();
       await _capture('${code}_41_roads_cameras');
+    });
+
+    testWidgets('power outages in $code', (tester) async {
+      phone(tester);
+      final strings = stringsFor(language);
+      final collection = FakeCollectionRepository(pickups: SamplePickups.aroundToday());
+      // A storm: an outage in town, planned work under way, Lac Tee, planned work tomorrow.
+      final power = FakePowerRepository(status: SamplePower.stormDay());
+      final push = FakePushService(isSupported: true);
+      await pumpApp(tester, {'language': code, 'sector': 'town', 'water_alerts': true, 'fire_bans': true},
+          null, push, collection, null, null, null, null, null, null, power);
+      await _capture('${code}_42_today_power');
+      await scrollAndTap(tester, find.byType(PowerCard));
+      await _capture('${code}_43_power_storm');
+      await tester.scrollUntilVisible(find.text(strings.powerPlannedHeading), 300,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      await _capture('${code}_44_power_planned');
+      await tester.scrollUntilVisible(find.text(strings.powerSource), 300,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      await _capture('${code}_45_power_about');
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      // Check failing: Today says so; the screen keeps the last outage.
+      power.set(PowerStatusSamples.staleWithOutage());
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(find.byType(PowerCard), 200,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      await _capture('${code}_46_today_power_stale');
+    });
+
+    testWidgets('power outages, a quiet day, in $code', (tester) async {
+      phone(tester);
+      SharedPreferences.setMockInitialValues({'language': code, 'sector': 'town'});
+      final settings = await AppSettings.load();
+      await tester.pumpWidget(MaterialApp(
+        debugShowCheckedModeBanner: false,
+        locale: language.locale,
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        home: PowerScreen(settings: settings, repository: FakePowerRepository(), push: FakePushService(isSupported: true)),
+      ));
+      await tester.pumpAndSettle();
+      await _capture('${code}_47_power_quiet');
     });
 
     testWidgets('sector screen at 200% text in $code', (tester) async {

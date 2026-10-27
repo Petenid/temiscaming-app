@@ -10,6 +10,7 @@ import 'l10n/app_localizations.dart';
 import 'onboarding/notifications_screen.dart';
 import 'onboarding/onboarding_flow.dart';
 import 'push/push_service.dart';
+import 'power/power_screen.dart';
 import 'roads/roads_screen.dart';
 import 'services.dart';
 import 'settings/app_settings.dart';
@@ -49,7 +50,7 @@ class _TemiscamingAppState extends State<TemiscamingApp> {
   }
 
   /// Opens what a tapped notification is about: an alert, the schedule, the
-  /// Fire screen or the Roads screen.
+  /// Fire screen, the Roads screen or the Power outages screen.
   void _openAlert(String id) {
     // When a notification launches the app, this can run before the first
     // screen exists: try again once it does.
@@ -71,6 +72,14 @@ class _TemiscamingAppState extends State<TemiscamingApp> {
       _navigator.currentState?.push(
         MaterialPageRoute<void>(
           builder: (_) => RoadsScreen(settings: settings, repository: services.roads, push: services.push),
+        ),
+      );
+      return;
+    }
+    if (id == powerTarget) {
+      _navigator.currentState?.push(
+        MaterialPageRoute<void>(
+          builder: (_) => PowerScreen(settings: settings, repository: services.power, push: services.push),
         ),
       );
       return;

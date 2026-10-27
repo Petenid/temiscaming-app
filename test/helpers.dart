@@ -9,6 +9,7 @@ import 'collection_fakes.dart';
 import 'events_fakes.dart';
 import 'fakes.dart';
 import 'fire_fakes.dart';
+import 'power_fakes.dart';
 import 'roads_fakes.dart';
 import 'weather_fakes.dart';
 
@@ -29,6 +30,7 @@ Future<AppSettings> pumpApp(
   FakeWeatherRepository? weather,
   FakeFireRepository? fire,
   FakeRoadsRepository? roads,
+  FakePowerRepository? power,
 ]) async {
   SharedPreferences.setMockInitialValues(savedPrefs);
   final settings = await AppSettings.load();
@@ -45,6 +47,8 @@ Future<AppSettings> pumpApp(
         weather: weather ?? FakeWeatherRepository(),
         fire: fire ?? FakeFireRepository(),
         roads: roads ?? FakeRoadsRepository(),
+        // Default: checked 5 minutes ago, nothing here (the usual state).
+        power: power ?? FakePowerRepository(),
       ),
     ),
   );
