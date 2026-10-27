@@ -123,8 +123,8 @@ void main() {
       expect(find.descendant(of: card, matching: find.textContaining('Outage: 120 customers since')), findsOneWidget);
       expect(find.descendant(of: card, matching: find.textContaining(s.powerNoEstimate)), findsOneWidget);
       expect(find.descendant(of: card, matching: find.textContaining('Planned interruption in progress: 80 customers')), findsOneWidget);
-      expect(find.descendant(of: card, matching: find.textContaining("Lac Tee — Outage: 3 customers")), findsOneWidget);
-      expect(find.descendant(of: card, matching: find.textContaining("Hydro-Québec's estimate")), findsOneWidget);
+      expect(find.descendant(of: card, matching: find.textContaining("Lac Tee\u00A0— Outage: 3 customers")), findsOneWidget);
+      expect(find.descendant(of: card, matching: find.textContaining('Estimated return: ')), findsOneWidget);
       expect(find.descendant(of: card, matching: find.text(s.powerMore(1))), findsOneWidget);
       await scrollAndTap(tester, card);
       expect(find.byType(PowerScreen), findsOneWidget);
@@ -138,7 +138,7 @@ void main() {
       )));
       final card = find.byType(PowerCard);
       await tester.scrollUntilVisible(card, 200, scrollable: find.byType(Scrollable).hitTestable().first);
-      expect(find.descendant(of: card, matching: find.textContaining('Interruption planifiée : ')), findsOneWidget);
+      expect(find.descendant(of: card, matching: find.textContaining('Interruption planifiée\u00A0: ')), findsOneWidget);
       expect(find.descendant(of: card, matching: find.textContaining('Lac Tee')), findsNothing);
     });
 
@@ -197,15 +197,19 @@ void main() {
       await _pumpScreen(tester, AppLanguage.fr, FakePowerRepository(status: SamplePower.stormDay()));
       expect(find.text(s.powerKindOutage), findsNWidgets(2));
       expect(find.text('120 clients touchés'), findsOneWidget);
+      // Times never break across lines: "19 h 37" uses non-breaking spaces.
+      expect(find.textContaining(RegExp(r'Depuis \d+[\u00A0\u202F]h')), findsWidgets);
       expect(find.text(s.powerCrewOnTheWay), findsOneWidget);
       expect(find.text(s.powerCause(s.powerCauseWeather)), findsOneWidget);
       expect(find.text(s.powerNoEstimate), findsOneWidget);
       expect(find.text(s.powerKindPlannedInProgress), findsOneWidget);
-      expect(find.textContaining('Fin prévue : '), findsOneWidget);
+      expect(find.textContaining('Fin prévue\u00A0: '), findsOneWidget);
       await _scrollTo(tester, find.text(s.powerAreaLacTee).last);
-      expect(find.textContaining('Retour du courant estimé par Hydro-Québec : '), findsOneWidget);
-      await _scrollTo(tester, find.textContaining('Si elle est reportée : '));
+      expect(find.textContaining('Retour du courant estimé par Hydro-Québec\u00A0: '), findsOneWidget);
+      await _scrollTo(tester, find.textContaining('Si elle est reportée\u00A0: '));
       expect(find.textContaining('Déplacée du '), findsOneWidget);
+      // Quebec-style times: "8 h 30" and "12 h", not "08 h 30" and "12 h 00".
+      expect(find.textContaining(RegExp(r'de 8[\u00A0\u202F]h[\u00A0\u202F]30 à 12[\u00A0\u202F]h$')), findsNWidgets(2)); // the date and its backup date
       await _scrollTo(tester, find.text(s.powerSource));
       expect(find.text(s.powerReport(PowerLinks.reportPhone)), findsOneWidget);
       expect(find.text(s.powerDanger), findsOneWidget);

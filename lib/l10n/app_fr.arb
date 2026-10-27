@@ -484,7 +484,7 @@
 
   "roadsPlannedFrom": "Prévu à partir de {when}",
 
-  "roadsExpectedEnd": "Fin prévue : {when}",
+  "roadsExpectedEnd": "Fin prévue : {when}",
 
   "roadsTownDates": "Du {start} au {end}",
 
@@ -572,13 +572,13 @@
 
   "powerAreaLacTee": "Lac Tee",
 
-  "powerAtLacTee": "Lac Tee — {line}",
+  "powerAtLacTee": "Lac Tee — {line}",
 
   "powerCustomers": "{count, plural, =1{1 client touché} other{{count} clients touchés}}",
 
   "powerSince": "Depuis {when}",
 
-  "powerEstimate": "Retour du courant estimé par Hydro-Québec : {when}",
+  "powerEstimate": "Retour du courant estimé par Hydro-Québec : {when}",
 
   "powerUntil": "Fin prévue : {when}",
 
@@ -590,7 +590,7 @@
 
   "powerCrewAtWork": "Équipe au travail",
 
-  "powerCause": "Cause : {cause}",
+  "powerCause": "Cause : {cause}",
 
   "powerCauseEquipment": "bris d'équipement",
 
@@ -610,13 +610,13 @@
 
   "powerMovedFrom": "Déplacée du {day}",
 
-  "powerAlternate": "Si elle est reportée : {window}",
+  "powerAlternate": "Si elle est reportée : {window}",
 
-  "powerTodayOutage": "{count, plural, =1{Panne : 1 client depuis {since}} other{Panne : {count} clients depuis {since}}}",
+  "powerTodayOutage": "{count, plural, =1{Panne : 1 client depuis {since}} other{Panne : {count} clients depuis {since}}}",
 
-  "powerTodayWork": "{count, plural, =1{Interruption planifiée en cours : 1 client} other{Interruption planifiée en cours : {count} clients}}",
+  "powerTodayWork": "{count, plural, =1{Interruption planifiée en cours : 1 client} other{Interruption planifiée en cours : {count} clients}}",
 
-  "powerTodayPlanned": "Interruption planifiée : {window}",
+  "powerTodayPlanned": "Interruption planifiée : {window}",
 
   "powerMore": "+{count} de plus à l'écran Pannes de courant",
 
@@ -626,15 +626,15 @@
 
   "powerLoadFailed": "Impossible de charger l'information sur les pannes.",
 
-  "powerNotice": "Hydro-Québec fournit ces renseignements à titre indicatif : certaines pannes peuvent ne pas y figurer, et les heures de rétablissement, les causes et le nombre de clients touchés sont des estimations.",
+  "powerNotice": "Hydro-Québec fournit ces renseignements à titre indicatif : certaines pannes peuvent ne pas y figurer, et les heures de rétablissement, les causes et le nombre de clients touchés sont des estimations.",
 
   "powerDanger": "Fils électriques au sol, incendie ou personne en danger? Composez le 911.",
 
-  "powerReport": "Signaler une panne : {phone} (24 h sur 24)",
+  "powerReport": "Signaler une panne : {phone} (24 h sur 24)",
 
   "powerMapLink": "Carte des pannes d'Hydro-Québec",
 
-  "powerSource": "Source : données ouvertes d'Hydro-Québec (CC BY-NC 4.0), vérifiées toutes les 15 minutes.",
+  "powerSource": "Source : données ouvertes d'Hydro-Québec (CC BY-NC 4.0), vérifiées toutes les 15 minutes.",
 
   "settingsPowerOutages": "Pannes de courant",
 
@@ -642,5 +642,7 @@
 
   "channelPowerName": "Pannes de courant",
 
-  "channelPowerDescription": "Quand le courant manque à Témiscaming ou revient"
+  "channelPowerDescription": "Quand le courant manque à Témiscaming ou revient",
+
+  "powerTodayEstimate": "Retour estimé : {when}"
 }

@@ -879,7 +879,7 @@
   "powerAreaLacTee": "Lac Tee",
   "@powerAreaLacTee": {"description": "Under an item at Lac Tee (Hydro-Québec lists it under Kipawa)."},
 
-  "powerAtLacTee": "Lac Tee — {line}",
+  "powerAtLacTee": "Lac Tee — {line}",
   "@powerAtLacTee": {"description": "A Today line about Lac Tee.", "placeholders": {"line": {"type": "String"}}},
 
   "powerCustomers": "{count, plural, =1{1 customer affected} other{{count} customers affected}}",
@@ -985,5 +985,8 @@
   "@channelPowerName": {"description": "Android notification channel name."},
 
   "channelPowerDescription": "When the power goes out in Témiscaming or comes back",
-  "@channelPowerDescription": {"description": "Android notification channel description."}
+  "@channelPowerDescription": {"description": "Android notification channel description."},
+
+  "powerTodayEstimate": "Estimated return: {when}",
+  "@powerTodayEstimate": {"description": "Short estimate on Today's card; the Power outages screen says it is Hydro-Québec's estimate.", "placeholders": {"when": {"type": "String"}}}
 }

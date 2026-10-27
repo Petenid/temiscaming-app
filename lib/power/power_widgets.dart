@@ -6,12 +6,23 @@ import '../widgets/dates.dart';
 import 'power_data.dart';
 import 'power_repository.dart';
 
+/// A time that never breaks across lines, written the Quebec way in French
+/// ("8 h 30", "12 h", "19 h 37"; the date library gives "08 h 30", "12 h 00").
+String _time(BuildContext context, DateTime at) {
+  var t = formatTime(context, at);
+  if (Localizations.localeOf(context).languageCode == 'fr') {
+    t = t.replaceFirst(RegExp(r'^0(?=\d)'), '')
+        .replaceFirstMapped(RegExp(r'(\d)[\s\u00A0\u202F]?h[\s\u00A0\u202F]?00$'), (m) => '${m[1]} h');
+  }
+  return t.replaceAll(' ', '\u00A0');
+}
+
 /// "2:15 p.m." today, otherwise "Thursday, October 29 at 8:30 a.m.".
 String powerWhen(BuildContext context, DateTime at, DateTime now) {
   final local = at.toLocal(), today = now.toLocal();
   final sameDay = local.year == today.year && local.month == today.month && local.day == today.day;
-  if (sameDay) return formatTime(context, local);
-  return AppLocalizations.of(context).fireWhen(formatLongDay(context, local), formatTime(context, local));
+  if (sameDay) return _time(context, local);
+  return AppLocalizations.of(context).fireWhen(formatLongDay(context, local), _time(context, local));
 }
 
 /// A planned window: "Thursday, October 29, 8:30 a.m. to 12:00 p.m.", or
@@ -20,9 +31,9 @@ String powerWindow(BuildContext context, DateTime from, DateTime to) {
   final l10n = AppLocalizations.of(context);
   final a = from.toLocal(), b = to.toLocal();
   if (a.year == b.year && a.month == b.month && a.day == b.day) {
-    return l10n.powerWindowSameDay(formatLongDay(context, a), formatTime(context, a), formatTime(context, b));
+    return l10n.powerWindowSameDay(formatLongDay(context, a), _time(context, a), _time(context, b));
   }
-  String full(DateTime d) => l10n.fireWhen(formatLongDay(context, d), formatTime(context, d));
+  String full(DateTime d) => l10n.fireWhen(formatLongDay(context, d), _time(context, d));
   return l10n.powerWindow(full(a), full(b));
 }
 
@@ -47,13 +58,15 @@ String causeLabel(AppLocalizations l10n, OutageCause c) => switch (c) {
 };
 
 /// Hydro-Québec's estimate, said as an estimate (spec D10); a planned
-/// interruption in progress has an expected end instead.
-String endLine(BuildContext context, Outage o, DateTime now) {
+/// interruption in progress has an expected end instead. [short] is for
+/// Today's card, where the screen one tap away names Hydro-Québec.
+String endLine(BuildContext context, Outage o, DateTime now, {bool short = false}) {
   final l10n = AppLocalizations.of(context);
   final end = o.estimatedEndAt;
   if (end == null) return l10n.powerNoEstimate;
   final when = powerWhen(context, end, now);
-  return o.kind == OutageKind.plannedInProgress ? l10n.powerUntil(when) : l10n.powerEstimate(when);
+  if (o.kind == OutageKind.plannedInProgress) return l10n.powerUntil(when);
+  return short ? l10n.powerTodayEstimate(when) : l10n.powerEstimate(when);
 }
 
 /// The health of one list: current outages or planned interruptions.
@@ -195,7 +208,7 @@ class PowerCard extends StatelessWidget {
       for (final o in s.outages)
         where(o.area, '${o.kind == OutageKind.outage
             ? l10n.powerTodayOutage(o.customers, powerWhen(context, o.startedAt, now))
-            : l10n.powerTodayWork(o.customers)} · ${endLine(context, o, now)}'),
+            : l10n.powerTodayWork(o.customers)} · ${endLine(context, o, now, short: true)}'),
       for (final p in s.soon(now)) where(p.area, l10n.powerTodayPlanned(powerWindow(context, p.startsAt, p.endsAt))),
     ];
   }

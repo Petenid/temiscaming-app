@@ -122,7 +122,7 @@ class PowerLinks {
   static const mapEn = 'https://infopannes.solutions.hydroquebec.com/info-pannes?langue=en';
 
   /// To report an outage, 24 hours a day (hydroquebec.com/pannes/en-cas-de-panne, 2026-10-27).
-  static const reportPhone = '1 800 790-2424';
+  static const reportPhone = '1\u00A0800\u00A0790-2424'; // never broken across lines
   static const reportPhoneUri = 'tel:+18007902424';
 }
 
