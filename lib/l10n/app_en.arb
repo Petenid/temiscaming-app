@@ -719,8 +719,8 @@
   "roadsConditionsHeading": "Road conditions",
   "@roadsConditionsHeading": {"description": "Sub-heading in each road's section."},
 
-  "roadsSegment": "{from} → {to}",
-  "@roadsSegment": {"description": "A stretch of road, e.g. 'Témiscaming → Saint-Édouard-de-Fabre'.", "placeholders": {"from": {"type": "String"}, "to": {"type": "String"}}},
+  "roadsSegment": "{from} – {to}",
+  "@roadsSegment": {"description": "A stretch of road, e.g. 'Témiscaming – Saint-Édouard-de-Fabre'. An en dash: the arrow isn't in every font.", "placeholders": {"from": {"type": "String"}, "to": {"type": "String"}}},
 
   "roadsVisibility": "Visibility: {value}",
   "@roadsVisibility": {"description": "Visibility on a stretch, e.g. 'Visibility: Good'.", "placeholders": {"value": {"type": "String"}}},
@@ -843,5 +843,8 @@
   "@channelRoadsName": {"description": "Android notification channel name."},
 
   "channelRoadsDescription": "When Route 101 or Highway 63 closes or reopens near Témiscaming",
-  "@channelRoadsDescription": {"description": "Android notification channel description."}
+  "@channelRoadsDescription": {"description": "Android notification channel description."},
+
+  "roadsMore": "+{count} more on the Roads screen",
+  "@roadsMore": {"description": "Last line of Today's road card when there are more than 3 problems.", "placeholders": {"count": {"type": "int"}}}
 }

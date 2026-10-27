@@ -343,6 +343,7 @@ void main() {
       SharedPreferences.setMockInitialValues({'language': code, 'sector': 'town'});
       final settings = await AppSettings.load();
       await tester.pumpWidget(MaterialApp(
+        debugShowCheckedModeBanner: false,
         locale: language.locale,
         supportedLocales: AppLocalizations.supportedLocales,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -355,8 +356,10 @@ void main() {
       ));
       await tester.pumpAndSettle();
       await _capture('${code}_40_roads_quiet');
-      await tester.scrollUntilVisible(find.text(stringsFor(language).roadsCamerasHeading), 300,
-          scrollable: find.byType(Scrollable).hitTestable().first);
+      // Build the camera rows, then bring the Cameras heading to the top.
+      await tester.dragUntilVisible(find.byType(CameraViewTile).first, find.byType(ListView), const Offset(0, -300));
+      await tester.ensureVisible(find.text(stringsFor(language).roadsCamerasHeading));
+      await tester.pumpAndSettle();
       await _capture('${code}_41_roads_cameras');
     });
 

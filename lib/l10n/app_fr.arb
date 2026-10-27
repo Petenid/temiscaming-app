@@ -465,7 +465,7 @@
 
   "roadsConditionsHeading": "État des routes",
 
-  "roadsSegment": "{from} → {to}",
+  "roadsSegment": "{from} – {to}",
 
   "roadsVisibility": "Visibilité : {value}",
 
@@ -547,5 +547,7 @@
 
   "channelRoadsName": "Fermetures de routes",
 
-  "channelRoadsDescription": "Quand la route 101 ou la route 63 ferme ou rouvre près de Témiscaming"
+  "channelRoadsDescription": "Quand la route 101 ou la route 63 ferme ou rouvre près de Témiscaming",
+
+  "roadsMore": "+{count} autres dans l'écran Routes"
 }

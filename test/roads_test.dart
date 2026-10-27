@@ -151,8 +151,8 @@ void main() {
     testWidgets('icy road and snow on 63: one line each', (tester) async {
       final s = stringsFor(AppLanguage.en);
       await _pumpApp(tester, _en, FakeRoadsRepository(conditions: SampleRoads.winterStorm()));
-      expect(find.text(s.roadsTodayLine('Route 101 (Témiscaming → Saint-Édouard-de-Fabre)', 'Ice Covered, visibility poor')), findsOneWidget);
-      expect(find.text(s.roadsTodayLine('Highway 63 (North Bay → Thorne)', 'Snow packed')), findsOneWidget);
+      expect(find.text(s.roadsTodayLine('Route 101 (Témiscaming – Saint-Édouard-de-Fabre)', 'Ice Covered, visibility poor')), findsOneWidget);
+      expect(find.text(s.roadsTodayLine('Highway 63 (North Bay – Thorne)', 'Snow packed')), findsOneWidget);
     });
 
     testWidgets('a planned closure says from when', (tester) async {
@@ -186,8 +186,8 @@ void main() {
       await _pumpScreen(tester, AppLanguage.en, FakeRoadsRepository(items: [SampleRoads.townFlushing()]));
       expect(find.text(s.roadsRoute101Heading), findsOneWidget);
       expect(find.text(s.roadsNothingReported), findsWidgets);
-      expect(find.text('Témiscaming → Saint-Édouard-de-Fabre'), findsOneWidget);
-      await _scrollTo(tester, find.text('North Bay → Thorne'));
+      expect(find.text('Témiscaming – Saint-Édouard-de-Fabre'), findsOneWidget);
+      await _scrollTo(tester, find.text('North Bay – Thorne'));
       expect(find.text(s.roadsNothingReported), findsWidgets);
       expect(find.text('Bare and dry road'), findsOneWidget);
       await _scrollTo(tester, find.text('WATER SYSTEM FLUSHING | MONTH OF OCTOBER'));

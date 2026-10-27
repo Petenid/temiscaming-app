@@ -152,7 +152,7 @@ class RoadsCard extends StatelessWidget {
                     ],
                     if (lines.length > shown.length) ...[
                       const SizedBox(height: 4),
-                      Text('+${lines.length - shown.length}', style: textTheme.bodyMedium?.copyWith(color: fg)),
+                      Text(l10n.roadsMore(lines.length - shown.length), style: textTheme.bodyMedium?.copyWith(color: fg)),
                     ],
                     if (stale != null) ...[
                       const SizedBox(height: 8),
@@ -262,7 +262,7 @@ class RoadItemCard extends StatelessWidget {
   }
 }
 
-/// One stretch's conditions: "Témiscaming → Saint-Édouard-de-Fabre",
+/// One stretch's conditions: "Témiscaming – Saint-Édouard-de-Fabre",
 /// surface, visibility, drifting, since when. Flagged ones get a warning icon
 /// (icon + words, never colour alone).
 class SegmentConditions extends StatelessWidget {
