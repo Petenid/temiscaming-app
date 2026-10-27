@@ -70,6 +70,7 @@ void main() {
       expect(item.title(AppLanguage.en), 'Road closed');
       expect(item.displayLanguage(AppLanguage.en), AppLanguage.fr, reason: 'French-only text is never translated');
       expect(item.body(AppLanguage.en), 'R-101 …');
+      expect(item.firstLine(AppLanguage.en), 'R-101 …');
       expect(RoadItem.fromMap({'id': 'x', 'kind': 'mystery'}), isNull);
       expect(RoadItem.fromMap({'id': 'x', 'kind': 'closure', 'on_today': false})!.onToday, isTrue,
           reason: 'a closure always goes on Today');
@@ -199,8 +200,9 @@ void main() {
       await _pumpScreen(tester, AppLanguage.en, FakeRoadsRepository(lastSuccess: SampleRoads.checked(age: const Duration(hours: 2))));
       expect(find.text(s.roadsNothingReported), findsNothing);
       expect(find.textContaining(s.roadsCheckFailedSince('').trim()), findsWidgets);
-      await _scrollTo(tester, find.text(s.roadsTownWorkHeading));
-      expect(find.text(s.roadsNoTownWork), findsNothing, reason: 'the Town wasn\'t read recently either');
+      // The Town's pages are read hourly and only count as failing after 3 hours.
+      await _scrollTo(tester, find.text(s.roadsNoTownWork));
+      expect(find.text(s.roadsNoTownWork), findsOneWidget);
     });
 
     testWidgets('never checked: no conditions, no "nothing reported"', (tester) async {
@@ -215,6 +217,7 @@ void main() {
       await _pumpScreen(tester, AppLanguage.en, FakeRoadsRepository(items: [SampleRoads.closure101()]));
       expect(find.text(s.roadsClosuresHeading), findsOneWidget);
       expect(find.text(s.alertOnlyFrench), findsOneWidget);
+      expect(find.text('R-101 à la hauteur de Saint-Édouard-de-Fabre'), findsOneWidget, reason: 'the source\'s first line');
       await scrollAndTap(tester, find.text(s.roadsAtPlace('Road closed', 'Saint-Édouard-de-Fabre')));
       expect(find.byType(RoadItemScreen), findsOneWidget);
       expect(find.text(s.alertOnlyFrench), findsOneWidget);
@@ -232,8 +235,8 @@ void main() {
     testWidgets('roadwork under its own heading', (tester) async {
       final s = stringsFor(AppLanguage.fr);
       await _pumpScreen(tester, AppLanguage.fr, FakeRoadsRepository(items: [SampleRoads.roadwork101()]));
-      expect(find.text(s.roadsRoadworkHeading), findsOneWidget);
-      expect(find.text('Travaux routiers'), findsOneWidget);
+      expect(find.text(s.roadsRoadworkHeading), findsOneWidget, reason: 'said once, not again on the card');
+      expect(find.text('À Duhamel-Ouest et Saint-Bruno-de-Guigues entre la rue Dubrûle et route à Cotnoir'), findsOneWidget);
     });
 
     testWidgets('outside the season, Route 101 says winter conditions aren\'t published', (tester) async {
@@ -320,6 +323,9 @@ void main() {
       final settings = await _pumpApp(tester, _en, FakeRoadsRepository(), push: push);
       await tester.tap(find.byTooltip(s.settingsTitle).first);
       await tester.pumpAndSettle();
+      // The list builds rows as they scroll into view.
+      await tester.scrollUntilVisible(find.text(s.settingsRoadClosures), 100,
+          scrollable: find.byType(Scrollable).hitTestable().first);
       await scrollAndTap(tester, find.text(s.settingsRoadClosures));
       expect(settings.roadClosuresEnabled, isTrue);
     });

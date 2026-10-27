@@ -208,6 +208,12 @@ class RoadItemCard extends StatelessWidget {
     final status = itemStatus(context, item, now);
     final shownIn = item.displayLanguage(language);
     final strong = item.kind == RoadItemKind.closure;
+    // Roadwork sits under a "Roadwork" heading: lead with where it is
+    // instead. Closures and incidents keep our label, then the source's first line.
+    final first = item.firstLine(language);
+    final leadWithText = item.kind == RoadItemKind.roadwork && first.isNotEmpty;
+    final headline = leadWithText ? first : itemHeadline(l10n, item, language);
+    final detail = item.kind == RoadItemKind.town || leadWithText || first.isEmpty ? null : first;
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       clipBehavior: Clip.antiAlias,
@@ -225,9 +231,14 @@ class RoadItemCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      itemHeadline(l10n, item, language),
+                      headline,
+                      locale: leadWithText ? shownIn.locale : null,
                       style: textTheme.titleMedium?.copyWith(fontWeight: strong ? FontWeight.bold : null),
                     ),
+                    if (detail != null) ...[
+                      const SizedBox(height: 2),
+                      Text(detail, locale: shownIn.locale, maxLines: 2, overflow: TextOverflow.ellipsis, style: textTheme.bodyMedium),
+                    ],
                     if (status != null) ...[
                       const SizedBox(height: 2),
                       Text(status, style: textTheme.bodyMedium),

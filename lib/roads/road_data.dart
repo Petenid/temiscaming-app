@@ -78,12 +78,21 @@ class RoadItem {
 
   /// The language the text is shown in: the user's, unless the source
   /// wrote it in the other one only (DESIGN §5, never machine-translated).
+  /// Only the source's own words count: our labels ("Road closed") exist in
+  /// both languages and say nothing about the source. The Town's titles are
+  /// its own words, so they count for its items.
   AppLanguage displayLanguage(AppLanguage language) {
-    final hasFr = bodyFr.isNotEmpty || titleFr.isNotEmpty;
-    final hasEn = bodyEn.isNotEmpty || titleEn.isNotEmpty;
+    final town = kind == RoadItemKind.town;
+    final hasFr = bodyFr.isNotEmpty || (town && titleFr.isNotEmpty);
+    final hasEn = bodyEn.isNotEmpty || (town && titleEn.isNotEmpty);
     if (language == AppLanguage.fr) return hasFr || !hasEn ? AppLanguage.fr : AppLanguage.en;
     return hasEn || !hasFr ? AppLanguage.en : AppLanguage.fr;
   }
+
+  /// The first non-empty line of the source's text ("" if none): usually
+  /// where it is, e.g. "À Duhamel-Ouest et Saint-Bruno-de-Guigues entre …".
+  String firstLine(AppLanguage language) =>
+      body(language).split('\n').map((l) => l.trim()).firstWhere((l) => l.isNotEmpty, orElse: () => '');
 
   /// Our own label (Quebec warnings, Ontario items) or the Town's title, in
   /// the user's language when it exists.
