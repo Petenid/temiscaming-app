@@ -462,6 +462,8 @@
 
   "roadsNoTownWork": "Aucuns travaux affichés par la Ville en ce moment",
 
+  "roadsTownWorkInAlerts": "Les travaux de la Ville (rues, réseau d'aqueduc et autres travaux publics) sont affichés dans l'onglet Alertes.",
+
   "roadsConditionsHeading": "État des routes",
 
   "roadsSegment": "{from} – {to}",

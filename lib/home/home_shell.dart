@@ -67,6 +67,7 @@ class _HomeShellState extends State<HomeShell> {
           AlertsScreen(
             settings: widget.settings,
             repository: widget.services.alerts,
+            roads: widget.services.roads,
             appBarActions: actions,
           ),
           EventsScreen(

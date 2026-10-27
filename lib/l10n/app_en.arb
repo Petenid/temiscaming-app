@@ -714,6 +714,9 @@
   "roadsNoTownWork": "No work posted by the Town right now",
   "@roadsNoTownWork": {"description": "Shown only after a recent successful check of the Town's pages."},
 
+  "roadsTownWorkInAlerts": "The Town's work (streets, the water system and other public works) is listed in the Alerts tab.",
+  "@roadsTownWorkInAlerts": {"description": "On the Roads screen, where the Town work section used to be (release-prep spec D5). 'Alerts' is the tab's name (alertsTitle)."},
+
   "roadsConditionsHeading": "Road conditions",
   "@roadsConditionsHeading": {"description": "Sub-heading in each road's section."},
 

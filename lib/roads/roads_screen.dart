@@ -10,8 +10,9 @@ import 'roads_widgets.dart';
 
 /// The Roads screen (roads spec D12): Route 101 and Highway 63, each with
 /// closures and incidents, conditions and roadwork (and Highway 63's
-/// cameras), then the Town's work, then sources. Opened from More, from
-/// Today's road card and from a road notification.
+/// cameras), then sources. The Town's work moved to the Alerts tab in
+/// Milestone 9 (release-prep spec D5). Opened from More, from Today's road
+/// card and from a road notification.
 class RoadsScreen extends StatelessWidget {
   const RoadsScreen({
     super.key,
@@ -75,8 +76,6 @@ class RoadsScreen extends StatelessWidget {
                   _RoadSection(road: road, repository: repository, language: language, now: at, cameraImage: cameraImage),
                   const SizedBox(height: 32),
                 ],
-                _TownSection(repository: repository, language: language, now: at),
-                const SizedBox(height: 32),
                 ..._sources(context, language),
               ],
             );
@@ -97,13 +96,19 @@ class RoadsScreen extends StatelessWidget {
       const SizedBox(height: 8),
       _Link(l10n.roadsQuebec511Link, fr ? RoadLinks.quebec511Fr : RoadLinks.quebec511En),
       _Link(l10n.roadsOntario511Link, fr ? RoadLinks.ontario511Fr : RoadLinks.ontario511En),
-      _Link(l10n.roadsTownLink, fr ? RoadLinks.townFr : RoadLinks.townEn),
       const SizedBox(height: 8),
       Text(l10n.roadsQuebecSource, style: muted),
       const SizedBox(height: 4),
       Text(l10n.roadsOntarioSource, style: muted),
-      const SizedBox(height: 4),
-      Text(l10n.roadsTownSource, style: muted),
+      const SizedBox(height: 16),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.engineering_outlined, size: 24),
+          const SizedBox(width: 8),
+          Expanded(child: Text(l10n.roadsTownWorkInAlerts, style: textTheme.bodyLarge)),
+        ],
+      ),
     ];
   }
 }
@@ -219,36 +224,6 @@ class _RoadSection extends StatelessWidget {
   }
 }
 
-/// The Town's Work Info items.
-class _TownSection extends StatelessWidget {
-  const _TownSection({required this.repository, required this.language, required this.now});
-
-  final RoadsRepository repository;
-  final AppLanguage language;
-  final DateTime now;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final textTheme = Theme.of(context).textTheme;
-    final items = repository.itemsFor(null);
-    final health = roadsHealthLine(context, repository, townSources, now);
-    final checked = repository.health(townSources, now) is CheckedRecently;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _Heading(l10n.roadsTownWorkHeading),
-        Text(l10n.roadsTownWorkNote, style: textTheme.bodyLarge),
-        const SizedBox(height: 8),
-        if (health != null) ...[RoadsHealthLine(health: health), const SizedBox(height: 8)],
-        for (final item in items)
-          RoadItemCard(item: item, language: language, now: now, onTap: () => _openItem(context, item, language)),
-        if (items.isEmpty && checked) Text(l10n.roadsNoTownWork, style: textTheme.bodyLarge),
-      ],
-    );
-  }
-}
-
 /// One item: headline, status, the source's own text, and a link to it.
 class RoadItemScreen extends StatelessWidget {
   const RoadItemScreen({super.key, required this.item, required this.language, this.now});
@@ -267,7 +242,7 @@ class RoadItemScreen extends StatelessWidget {
     final body = item.body(language);
     final url = item.sourceUrl(language);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.roadsTitle)),
+      appBar: AppBar(title: Text(item.kind == RoadItemKind.town ? l10n.roadsTownWorkHeading : l10n.roadsTitle)),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(16),

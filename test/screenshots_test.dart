@@ -113,7 +113,10 @@ void main() {
         SampleAlerts.frenchOnly(),
       ]);
       final push = FakePushService(isSupported: true);
-      await pumpApp(tester, {'language': code, 'sector': 'town'}, alerts, push);
+      // The Town's work sits under the alerts (release-prep spec D5).
+      final roads = FakeRoadsRepository(items: [SampleRoads.townFlushing()]);
+      await pumpApp(tester, {'language': code, 'sector': 'town'}, alerts, push,
+          null, null, null, null, null, null, roads);
       await _capture('${code}_6_notifications');
 
       await scrollAndTap(tester, find.text(strings.notificationsAllow));
@@ -127,6 +130,16 @@ void main() {
       await tester.scrollUntilVisible(frenchOnly, 200, scrollable: find.byType(Scrollable).hitTestable().first);
       await scrollAndTap(tester, frenchOnly);
       await _capture('${code}_9_alert_detail_french_only');
+      await tester.binding.handlePopRoute();
+      await tester.pumpAndSettle();
+
+      await tester.scrollUntilVisible(find.text(strings.roadsTownLink), 200,
+          scrollable: find.byType(Scrollable).hitTestable().first);
+      await _capture('${code}_8b_alerts_town_work');
+      await scrollAndTap(tester, find.text(language == AppLanguage.fr
+          ? "RINÇAGE DU RÉSEAU D'AQUEDUC | MOIS D'OCTOBRE"
+          : 'WATER SYSTEM FLUSHING | MONTH OF OCTOBER'));
+      await _capture('${code}_8c_town_work_item');
       await tester.binding.handlePopRoute();
       await tester.pumpAndSettle();
       await tester.scrollUntilVisible(find.byType(SourceHealthLine), -200, scrollable: find.byType(Scrollable).hitTestable().first);
@@ -306,9 +319,9 @@ void main() {
       await tester.scrollUntilVisible(find.text(strings.roadsHighway63Heading), 300,
           scrollable: find.byType(Scrollable).hitTestable().first);
       await _capture('${code}_35_roads_highway63');
-      await tester.scrollUntilVisible(find.text(strings.roadsTownSource), 300,
+      await tester.scrollUntilVisible(find.text(strings.roadsTownWorkInAlerts), 300,
           scrollable: find.byType(Scrollable).hitTestable().first);
-      await _capture('${code}_36_roads_town_sources');
+      await _capture('${code}_36_roads_sources');
       final closure = find.text(language == AppLanguage.fr
           ? 'Route fermée à Saint-Édouard-de-Fabre'
           : 'Road closed at Saint-Édouard-de-Fabre');

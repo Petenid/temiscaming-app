@@ -214,7 +214,7 @@ void main() {
       await scrollAndTap(tester, cardTitle);
       expect(find.byType(RoadsScreen), findsOneWidget);
       expect(tester.takeException(), isNull, reason: 'Roads screen');
-      await tester.scrollUntilVisible(find.text(strings.roadsTownSource), 300,
+      await tester.scrollUntilVisible(find.text(strings.roadsTownWorkInAlerts), 300,
           scrollable: find.byType(Scrollable).hitTestable().first);
       expect(tester.takeException(), isNull, reason: 'Roads screen, to the end');
       final closure = find.text(language == AppLanguage.fr

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
+import '../roads/roads_repository.dart';
 import '../settings/app_settings.dart';
 import '../widgets/dates.dart';
 import '../widgets/links.dart';
@@ -8,6 +9,7 @@ import 'alert_detail_screen.dart';
 import 'alert_widgets.dart';
 import 'alerts_repository.dart';
 import 'town_alert.dart';
+import 'town_work_section.dart';
 
 /// The Town's sign-up page for its official alerts (DESIGN §6.1: always visible).
 Uri signUpUrl(AppLanguage language) => Uri.parse(
@@ -16,17 +18,21 @@ Uri signUpUrl(AppLanguage language) => Uri.parse(
       : 'https://temiscaming.alertesmunicipales.com/register',
 );
 
-/// Town alerts, newest first.
+/// Town alerts, newest first, then the Town's work (release-prep spec D5).
 class AlertsScreen extends StatelessWidget {
   const AlertsScreen({
     super.key,
     required this.settings,
     required this.repository,
+    required this.roads,
     required this.appBarActions,
   });
 
   final AppSettings settings;
   final AlertsRepository repository;
+
+  /// For the Town's Work Info items.
+  final RoadsRepository roads;
   final List<Widget> appBarActions;
 
   @override
@@ -36,7 +42,7 @@ class AlertsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(l10n.alertsTitle), actions: appBarActions),
       body: ListenableBuilder(
-        listenable: repository,
+        listenable: Listenable.merge([repository, roads]),
         builder: (context, _) {
           final now = DateTime.now();
           final alerts = repository.alerts;
@@ -60,6 +66,10 @@ class AlertsScreen extends StatelessWidget {
                 _AlertTile(alert: alert, language: language, now: now),
                 const Divider(height: 1),
               ],
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 32, 16, 8),
+                child: TownWorkSection(repository: roads, language: language, now: now),
+              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
                 child: OutlinedButton.icon(

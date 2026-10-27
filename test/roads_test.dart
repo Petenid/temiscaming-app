@@ -181,7 +181,7 @@ void main() {
   });
 
   group('Roads screen', () {
-    testWidgets('a quiet day: nothing reported on either road, bare and dry, Town work listed', (tester) async {
+    testWidgets('a quiet day: nothing reported on either road, bare and dry; Town work points to Alerts', (tester) async {
       final s = stringsFor(AppLanguage.en);
       await _pumpScreen(tester, AppLanguage.en, FakeRoadsRepository(items: [SampleRoads.townFlushing()]));
       expect(find.text(s.roadsRoute101Heading), findsOneWidget);
@@ -190,9 +190,10 @@ void main() {
       await _scrollTo(tester, find.text('North Bay – Thorne'));
       expect(find.text(s.roadsNothingReported), findsWidgets);
       expect(find.text('Bare and dry road'), findsOneWidget);
-      await _scrollTo(tester, find.text('WATER SYSTEM FLUSHING | MONTH OF OCTOBER'));
-      expect(find.text(s.roadsNoTownWork), findsNothing);
-      await _scrollTo(tester, find.text(s.roadsOntarioSource));
+      await _scrollTo(tester, find.text(s.roadsTownWorkInAlerts));
+      expect(find.text('WATER SYSTEM FLUSHING | MONTH OF OCTOBER'), findsNothing, reason: 'Town work is on the Alerts tab now');
+      expect(find.text(s.roadsTownWorkHeading), findsNothing);
+      expect(find.text(s.roadsOntarioSource), findsOneWidget);
     });
 
     testWidgets('stale: no "nothing reported", the health line says so', (tester) async {
@@ -200,9 +201,6 @@ void main() {
       await _pumpScreen(tester, AppLanguage.en, FakeRoadsRepository(lastSuccess: SampleRoads.checked(age: const Duration(hours: 2))));
       expect(find.text(s.roadsNothingReported), findsNothing);
       expect(find.textContaining(s.roadsCheckFailedSince('').trim()), findsWidgets);
-      // The Town's pages are read hourly and only count as failing after 3 hours.
-      await _scrollTo(tester, find.text(s.roadsNoTownWork));
-      expect(find.text(s.roadsNoTownWork), findsOneWidget);
     });
 
     testWidgets('never checked: no conditions, no "nothing reported"', (tester) async {
@@ -336,6 +334,57 @@ void main() {
       push.tapNotification(roadsTarget);
       await tester.pumpAndSettle();
       expect(find.byType(RoadsScreen), findsOneWidget);
+    });
+  });
+
+  // Release-prep spec D5: the Town's Work Info moved from Roads to Alerts.
+  group('Town work on the Alerts tab', () {
+    Future<void> openAlerts(WidgetTester tester, FakeRoadsRepository roads, Map<String, Object> prefs) async {
+      await _pumpApp(tester, prefs, roads);
+      await tester.tap(find.widgetWithText(NavigationDestination, stringsFor(AppLanguage.values.byName(prefs['language']! as String)).alertsTitle));
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('listed under its own heading, opens its own screen with the Town\'s text and link', (tester) async {
+      final s = stringsFor(AppLanguage.en);
+      await openAlerts(tester, FakeRoadsRepository(items: [SampleRoads.townFlushing()]), _en);
+      await _scrollTo(tester, find.text(s.roadsTownWorkHeading));
+      final item = find.text('WATER SYSTEM FLUSHING | MONTH OF OCTOBER');
+      await _scrollTo(tester, item);
+      expect(find.text(s.roadsNoTownWork), findsNothing);
+      await scrollAndTap(tester, item);
+      expect(find.byType(RoadItemScreen), findsOneWidget);
+      expect(find.widgetWithText(AppBar, s.roadsTownWorkHeading), findsOneWidget, reason: 'not "Roads"');
+      expect(find.textContaining('flushing of the water distribution system'), findsOneWidget);
+      expect(find.text(s.roadsOpenSource), findsOneWidget);
+    });
+
+    testWidgets('in French: the French title', (tester) async {
+      final s = stringsFor(AppLanguage.fr);
+      await openAlerts(tester, FakeRoadsRepository(items: [SampleRoads.townFlushing()]), _fr);
+      await _scrollTo(tester, find.text("RINÇAGE DU RÉSEAU D'AQUEDUC | MOIS D'OCTOBRE"));
+      expect(find.text(s.roadsTownWorkHeading), findsOneWidget);
+    });
+
+    testWidgets('nothing posted: said only after a recent check', (tester) async {
+      final s = stringsFor(AppLanguage.en);
+      await openAlerts(tester, FakeRoadsRepository(), _en);
+      await _scrollTo(tester, find.text(s.roadsNoTownWork));
+      expect(find.text(s.roadsNoTownWork), findsOneWidget);
+    });
+
+    testWidgets('the Town\'s pages not read for 4 hours: health line, no "nothing posted"', (tester) async {
+      final s = stringsFor(AppLanguage.en);
+      final roads = FakeRoadsRepository(lastSuccess: {...SampleRoads.checked(), 'town-work-info': SampleRoads.ago(const Duration(hours: 4))});
+      await openAlerts(tester, roads, _en);
+      await _scrollTo(tester, find.text(s.roadsTownLink));
+      expect(find.text(s.roadsNoTownWork), findsNothing);
+      expect(find.textContaining(s.roadsCheckFailedSince('').trim()), findsOneWidget);
+    });
+
+    testWidgets('Town work never goes on Today', (tester) async {
+      await _pumpApp(tester, _en, FakeRoadsRepository(items: [SampleRoads.townFlushing()]));
+      expect(find.text('WATER SYSTEM FLUSHING | MONTH OF OCTOBER'), findsNothing);
     });
   });
 }
