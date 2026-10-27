@@ -13,6 +13,9 @@ import {
 import { EVENTS_SOURCE_ID, EventsHealth, EventsStore, StoredEvent } from "./events/sync";
 import { FIRE_LINKS, FIRE_SOURCE_ID, FireHealth, FireStore, StoredLayer } from "./fire/sync";
 import {
+  POWER_LINKS, POWER_SOURCE_ID, PowerDoc, PowerHealth, PowerPushState, PowerStore,
+} from "./power/sync";
+import {
   PushState, RoadsHealth, RoadsStore, StoredCameras, StoredRoadItem,
 } from "./roads/sync";
 import { WeatherHealth, WeatherStore } from "./weather/sync";
@@ -317,6 +320,49 @@ export function firestoreRoadsStore(db: Firestore): RoadsStore {
     },
     async saveHealth(id, h) {
       await sources.doc(id).set(h);
+    },
+  };
+}
+
+// --- Power outages (Milestone 8): `power/temiscaming`, backend-only `power_state/temiscaming`,
+// `sources/hq-outages`, `sources/hq-planned` ---
+
+/** Firestore Timestamps → Dates at any depth, lists included (the outage lists hold dates). */
+function deepDates(value: unknown): unknown {
+  if (value instanceof Timestamp) return value.toDate();
+  if (Array.isArray(value)) return value.map(deepDates);
+  if (value && typeof value === "object" && !(value instanceof Date)) {
+    return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, deepDates(v)]));
+  }
+  return value;
+}
+
+export function firestorePowerStore(db: Firestore): PowerStore {
+  const doc = db.collection("power").doc("temiscaming");
+  const state = db.collection("power_state").doc("temiscaming");
+  const sources = db.collection("sources");
+  return {
+    async loadPower() {
+      const snap = await doc.get();
+      return snap.exists ? (deepDates(snap.data()) as PowerDoc) : null;
+    },
+    async savePower(fields) {
+      // The whole document each time: nothing stale survives (spec D11).
+      await doc.set({ ...fields, ...POWER_LINKS });
+    },
+    async loadPushState() {
+      const snap = await state.get();
+      return snap.exists ? (deepDates(snap.data()) as PowerPushState) : null;
+    },
+    async savePushState(s) {
+      await state.set(s);
+    },
+    async loadHealth(part) {
+      const snap = await sources.doc(POWER_SOURCE_ID[part]).get();
+      return snap.exists ? (deepDates(snap.data()) as PowerHealth) : null;
+    },
+    async saveHealth(part, h) {
+      await sources.doc(POWER_SOURCE_ID[part]).set(h);
     },
   };
 }

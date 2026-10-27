@@ -208,3 +208,31 @@ export function roadPushText(
     ? { title: `${name} fermée${at}`, body: `La route est fermée. ${tap}` }
     : { title: `${name} closed${at}`, body: `The road is closed. ${tap}` };
 }
+
+// --- Power outages (Milestone 8, spec power-outages D5, D6) ---
+
+export type PowerPushKind = "out" | "restored";
+export type PowerArea = "temiscaming" | "lac_tee";
+
+/**
+ * "Panne de courant à Témiscaming — 120 clients touchés" / "Power outage in
+ * Témiscaming — 120 customers affected"; "Courant rétabli …" / "Power restored …".
+ * The place is Témiscaming unless every outage is at Lac Tee.
+ */
+export function powerPushText(kind: PowerPushKind, customers: number, areas: PowerArea[], lang: Lang): PushText {
+  const fr = lang === "fr";
+  const lacTeeOnly = areas.length > 0 && areas.every((a) => a === "lac_tee");
+  const where = lacTeeOnly ? (fr ? "au lac Tee" : "at Lac Tee") : (fr ? "à Témiscaming" : "in Témiscaming");
+  const tap = fr ? "Touchez pour les détails." : "Tap for details.";
+  if (kind === "restored") {
+    return fr
+      ? { title: `Courant rétabli ${where}`, body: `Hydro-Québec ne signale plus de panne ${where}. ${tap}` }
+      : { title: `Power restored ${where}`, body: `Hydro-Québec no longer reports an outage ${where}. ${tap}` };
+  }
+  const count = fr
+    ? `${customers.toLocaleString("fr-CA")} client${customers > 1 ? "s" : ""} touché${customers > 1 ? "s" : ""}`
+    : `${customers.toLocaleString("en-CA")} customer${customers === 1 ? "" : "s"} affected`;
+  return fr
+    ? { title: `Panne de courant ${where}`, body: `${count}. ${tap}` }
+    : { title: `Power outage ${where}`, body: `${count}. ${tap}` };
+}

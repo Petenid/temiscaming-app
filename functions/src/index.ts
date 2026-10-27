@@ -9,14 +9,15 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 import {
-  fcmMessenger, firestoreCollectionStore, firestoreEventsStore, firestoreFireStore, firestoreStore,
-  firestoreRoadsStore, firestoreWeatherStore, webFetcher,
+  fcmMessenger, firestoreCollectionStore, firestoreEventsStore, firestoreFireStore, firestorePowerStore,
+  firestoreStore, firestoreRoadsStore, firestoreWeatherStore, webFetcher,
 } from "./adapters";
 import { runPoll } from "./alerts/sync";
 import { MrcCalendar } from "./collection/merge";
 import { CalendarDownload, runCollectionPoll } from "./collection/sync";
 import { runEventsPoll } from "./events/sync";
 import { runFireBanPoll } from "./fire/sync";
+import { runPowerPoll } from "./power/sync";
 import { runRoadsPoll, runTownWorkInfoPoll } from "./roads/sync";
 import { runForecastPoll, runWeatherPoll } from "./weather/sync";
 
@@ -227,5 +228,33 @@ export const pollTownWorkInfo = onSchedule(
       log: (message) => logger.info(message),
     });
     if (!r.ok) logger.warn("town work info failed", { error: r.error });
+  },
+);
+
+/**
+ * Hydro-Québec outages in Témiscaming every 15 minutes, planned interruptions
+ * about once an hour (power-outages spec D4). Pushes, opt-in, when the power
+ * goes out for at least 25 customers here and when it's back (D5).
+ */
+export const pollPowerOutages = onSchedule(
+  {
+    schedule: "every 15 minutes",
+    timeZone: "America/Toronto",
+    region: "northamerica-northeast1",
+    timeoutSeconds: 120,
+    memory: "256MiB",
+    retryCount: 0,
+    maxInstances: 1,
+  },
+  async () => {
+    const r = await runPowerPoll({
+      store: firestorePowerStore(getFirestore()),
+      fetcher: webFetcher,
+      messenger: fcmMessenger(getMessaging()),
+      now: () => new Date(),
+      log: (message) => logger.info(message),
+    });
+    if (!r.ongoing.ok) logger.warn("power outages failed", { error: r.ongoing.error });
+    if (!r.planned.ok) logger.warn("planned interruptions failed", { error: r.planned.error });
   },
 );
