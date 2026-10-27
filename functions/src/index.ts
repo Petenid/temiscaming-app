@@ -3,19 +3,21 @@ import { initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import { getMessaging } from "firebase-admin/messaging";
 import { logger } from "firebase-functions";
+import { defineSecret } from "firebase-functions/params";
 import { onSchedule } from "firebase-functions/v2/scheduler";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 import {
   fcmMessenger, firestoreCollectionStore, firestoreEventsStore, firestoreFireStore, firestoreStore,
-  firestoreWeatherStore, webFetcher,
+  firestoreRoadsStore, firestoreWeatherStore, webFetcher,
 } from "./adapters";
 import { runPoll } from "./alerts/sync";
 import { MrcCalendar } from "./collection/merge";
 import { CalendarDownload, runCollectionPoll } from "./collection/sync";
 import { runEventsPoll } from "./events/sync";
 import { runFireBanPoll } from "./fire/sync";
+import { runRoadsPoll, runTownWorkInfoPoll } from "./roads/sync";
 import { runForecastPoll, runWeatherPoll } from "./weather/sync";
 
 initializeApp();
@@ -166,5 +168,64 @@ export const pollFireBans = onSchedule(
     });
     if (!r.ifco.ok) logger.warn("fire ban (IFCO) failed", { error: r.ifco.error });
     if (!r.icaf.ok) logger.warn("forest access ban (ICAF) failed", { error: r.icaf.error });
+  },
+);
+
+/** The Ontario 511 developer key (roads spec D15): `firebase functions:secrets:set ONTARIO_511_KEY`. */
+const ontario511Key = defineSecret("ONTARIO_511_KEY");
+
+const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+/**
+ * Route 101 (Quebec) and Highway 63 (Ontario), every 15 minutes (roads spec
+ * D4): closures, incidents, roadworks, conditions, cameras once a day. Pushes
+ * when a road on our stretch closes or reopens (D7). Ontario calls are paced
+ * 7 s apart, so a run takes about a minute.
+ */
+export const pollRoads = onSchedule(
+  {
+    schedule: "every 15 minutes",
+    timeZone: "America/Toronto",
+    region: "northamerica-northeast1",
+    timeoutSeconds: 180,
+    memory: "256MiB",
+    retryCount: 0,
+    maxInstances: 1,
+    secrets: [ontario511Key],
+  },
+  async () => {
+    const r = await runRoadsPoll({
+      store: firestoreRoadsStore(getFirestore()),
+      fetcher: webFetcher,
+      messenger: fcmMessenger(getMessaging()),
+      now: () => new Date(),
+      sleep,
+      ontarioKey: ontario511Key.value(),
+      log: (message) => logger.info(message),
+    });
+    if (!r.ok) logger.warn("roads poll had failures", { sources: r.sources });
+  },
+);
+
+/** The Town's Work Info pages, every hour (roads spec D4). No pushes. */
+export const pollTownWorkInfo = onSchedule(
+  {
+    schedule: "every 1 hours",
+    timeZone: "America/Toronto",
+    region: "northamerica-northeast1",
+    timeoutSeconds: 120,
+    memory: "256MiB",
+    retryCount: 0,
+    maxInstances: 1,
+  },
+  async () => {
+    const r = await runTownWorkInfoPoll({
+      store: firestoreRoadsStore(getFirestore()),
+      fetcher: webFetcher,
+      now: () => new Date(),
+      sleep,
+      log: (message) => logger.info(message),
+    });
+    if (!r.ok) logger.warn("town work info failed", { error: r.error });
   },
 );

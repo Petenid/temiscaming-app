@@ -3,7 +3,7 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Town alerts, pickups, events, weather, fire bans and the health of each source are public information:
+    // Town alerts, pickups, events, weather, fire bans, roads and the health of each source are public information:
     // anyone may read them. Nobody may write from the app; only the backend
     // (Cloud Functions) writes, and it isn't bound by these rules.
     match /alerts/{alertId} {
@@ -27,6 +27,21 @@ service cloud.firestore {
     }
     // Fire bans for Témiscaming (Milestone 6): one public, read-only document.
     match /fire/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    // Roads (Milestone 7): items on Route 101 / Highway 63 and the Town's work,
+    // road conditions, Highway 63 cameras. Public, read-only.
+    // (roads_state, what people were last told about closures, stays closed.)
+    match /roads/{itemId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /road_conditions/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /road_cameras/{docId} {
       allow read: if true;
       allow write: if false;
     }

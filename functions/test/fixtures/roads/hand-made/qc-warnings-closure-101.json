@@ -1,0 +1,103 @@
+{
+ "type": "FeatureCollection",
+ "numberMatched": 3,
+ "name": "hand-made",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -79.3673,
+      47.1962
+     ],
+     [
+      -79.369,
+      47.201
+     ]
+    ]
+   },
+   "properties": {
+    "identifiant": 900001,
+    "entrave": "Fermeture",
+    "numeroRoute": "",
+    "localisation": "R-101 à la hauteur de Saint-Édouard-de-Fabre<br/><br/>Détails à venir.",
+    "direction": "SUD et NORD",
+    "municipalite": "Saint-Édouard-de-Fabre",
+    "duree": "Indéterminée",
+    "cause": "Accident",
+    "consequence": "",
+    "detour": "Aucun détour possible",
+    "regions": "(1:Abitibi-Témiscamingue)",
+    "regionsDiffusion": "(1:Abitibi-Témiscamingue)",
+    "enVigueurDepuis": "2026-11-03T06:40:00",
+    "couleurLigne": "#FF0000"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -79.101,
+      46.712
+     ],
+     [
+      -79.103,
+      46.716
+     ]
+    ]
+   },
+   "properties": {
+    "identifiant": 900002,
+    "entrave": "Fermeture de 1 voie sur 2",
+    "numeroRoute": "101",
+    "localisation": "R-101 à la hauteur de Témiscaming<br/><br/>Détails à venir.",
+    "direction": "SUD et NORD",
+    "municipalite": "Témiscaming",
+    "duree": "Indéterminée",
+    "cause": "Accident",
+    "consequence": "",
+    "detour": "Aucun détour possible",
+    "regions": "(1:Abitibi-Témiscamingue)",
+    "regionsDiffusion": "(1:Abitibi-Témiscamingue)",
+    "enVigueurDepuis": "2026-11-03T06:40:00",
+    "couleurLigne": "#FF0000"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -79.2557,
+      48.0995
+     ],
+     [
+      -79.256,
+      48.1
+     ]
+    ]
+   },
+   "properties": {
+    "identifiant": 900003,
+    "entrave": "Fermeture",
+    "numeroRoute": "101",
+    "localisation": "R-101 à la hauteur de Rouyn-Noranda<br/><br/>Détails à venir.",
+    "direction": "SUD et NORD",
+    "municipalite": "Rouyn-Noranda",
+    "duree": "Indéterminée",
+    "cause": "Accident",
+    "consequence": "",
+    "detour": "Aucun détour possible",
+    "regions": "(1:Abitibi-Témiscamingue)",
+    "regionsDiffusion": "(1:Abitibi-Témiscamingue)",
+    "enVigueurDepuis": "2026-11-03T06:40:00",
+    "couleurLigne": "#FF0000"
+   }
+  }
+ ]
+}

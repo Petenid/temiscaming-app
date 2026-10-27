@@ -106,3 +106,13 @@ export function distanceKm(geometry: Geometry | null | undefined, p: Point): num
 export function distanceFromTownKm(geometry: Geometry | null | undefined): number {
   return Math.min(...TOWN_POINTS.map(({ point }) => distanceKm(geometry, point)));
 }
+
+// --- Distance to a road (roads spec D1) ---
+
+/** Shortest distance (km) from `p` to a line (a road drawn as connected points). */
+export function distanceToLineKm(line: number[][], p: Point): number {
+  if (line.length === 1) return segmentKm(p, line[0], line[0]);
+  let best = Infinity;
+  for (let i = 1; i < line.length; i++) best = Math.min(best, segmentKm(p, line[i - 1], line[i]));
+  return best;
+}

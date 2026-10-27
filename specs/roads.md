@@ -1,6 +1,6 @@
 # Spec — Milestone 7: Roads
 
-Status: **draft for agreement** · 2026-10-27 (first draft 2026-10-22; Highway 63 added once the Ontario 511 key arrived)
+Status: **agreed 2026-10-27** (owner agreed all of §3) · backend built · first draft 2026-10-22; Highway 63 added once the Ontario 511 key arrived
 Reads with: `DESIGN.md` (§2 principles, §4 architecture and source health, §5 language, §6.7 roads, §7 app structure), `research/roads-sources.md` (project docs)
 
 ---
@@ -162,3 +162,13 @@ Quebec road cameras; maps drawn in the app; Route 101 beyond Ville-Marie; Highwa
 
 ## 9. DESIGN.md changes on approval
 §6.7 sources (three MTMD layers, latitude-first box, Ontario 511 endpoints and key, Town Work Info), our stretches, closure rule, cameras, opt-in push; §4 stack (`pollRoads`, `pollTownWorkInfo`, `roads` / `road_conditions` / `road_cameras` collections, `roads-fr/en` topics, `roads` channel, health thresholds, Firebase secret); §7 More tab and Today road card; §10 Ontario 511 key (obtained 2026-10).
+
+---
+
+## 10. Implementation notes (2026-10-27, backend)
+
+- **"Reopened" waits 25 minutes instead of the 6-hour re-post rule (changes D7).** Each closure is tracked by road + place, with what people were last told. "Reopened" goes out only once the closure has been gone for 25 minutes (two runs) and every source that reported it was read successfully since. So a closure the ministry deletes and re-posts sends nothing at all, and a real re-closure after a reopening always pushes. The 6-hour rule would have silenced a genuine second closure on the same day: on a safety feature, a missed "closed" is worse than an extra push.
+- What people were last told lives in a backend-only document, `roads_state/pushes` (not on each item, as §5 had it), so items can be deleted as soon as the source drops them.
+- Ontario events have no place field (it's buried in the description), so Highway 63 pushes say "Highway 63 (Ontario) closed" without a place; the description is in the app.
+- Road lines for D1 are in `functions/src/roads/corridor.ts`, simplified to within 50 m of the ministries' own lines.
+- Tests: 44 new (199 backend tests in all): real captures from both provinces and the Town, 14 hand-made files (`test/fixtures/roads/hand-made/`, see its README), whole runs with a fake clock (pushes, 25-minute reopen, Ontario failing, rate limit, key never in logs or health records).

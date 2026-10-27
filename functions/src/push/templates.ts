@@ -170,3 +170,41 @@ export function firePushText(layer: FireLayer, kind: FirePushKind, startsAt: Dat
         : { title: `${title} lifted`, body: `The ban ${where} has been lifted. ${tap}` };
   }
 }
+
+// --- Road closures (Milestone 7, spec roads D7, D8) ---
+
+export type RoadPushKind = "closed" | "reopened";
+export type RoadName = "101" | "63";
+
+/** "Route 101" in both; Highway 63 is "route 63" in Ontario's French. */
+function roadTitle(road: RoadName, lang: Lang): string {
+  if (road === "101") return "Route 101";
+  return lang === "fr" ? "Route 63 (Ontario)" : "Highway 63 (Ontario)";
+}
+
+/**
+ * "Route 101 fermée à Saint-Édouard-de-Fabre" / "Route 101 closed at …";
+ * a closure that hasn't started yet says from when (spec D7).
+ */
+export function roadPushText(
+  road: RoadName, kind: RoadPushKind, place: string, startsAt: Date | null, now: Date, lang: Lang,
+): PushText {
+  const fr = lang === "fr";
+  const name = roadTitle(road, lang);
+  const at = place ? (fr ? ` à ${place}` : ` at ${place}`) : "";
+  const tap = fr ? "Touchez pour les détails." : "Tap for details.";
+  if (kind === "reopened") {
+    return fr
+      ? { title: `${name} rouverte${at}`, body: `La fermeture est terminée. ${tap}` }
+      : { title: `${name} reopened${at}`, body: `The closure is over. ${tap}` };
+  }
+  if (startsAt && startsAt > now) {
+    const when = formatFireStart(startsAt, lang);
+    return fr
+      ? { title: `${name} fermée${at}`, body: `Fermeture prévue à partir de ${when}. ${tap}` }
+      : { title: `${name} closed${at}`, body: `Closure planned starting ${when}${when.endsWith(".") ? "" : "."} ${tap}` };
+  }
+  return fr
+    ? { title: `${name} fermée${at}`, body: `La route est fermée. ${tap}` }
+    : { title: `${name} closed${at}`, body: `The road is closed. ${tap}` };
+}

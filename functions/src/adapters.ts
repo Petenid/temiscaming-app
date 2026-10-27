@@ -12,6 +12,9 @@ import {
 } from "./collection/sync";
 import { EVENTS_SOURCE_ID, EventsHealth, EventsStore, StoredEvent } from "./events/sync";
 import { FIRE_LINKS, FIRE_SOURCE_ID, FireHealth, FireStore, StoredLayer } from "./fire/sync";
+import {
+  PushState, RoadsHealth, RoadsStore, StoredCameras, StoredRoadItem,
+} from "./roads/sync";
 import { WeatherHealth, WeatherStore } from "./weather/sync";
 
 const USER_AGENT =
@@ -239,6 +242,60 @@ export function firestoreFireStore(db: Firestore): FireStore {
     },
     async saveHealth(layer, h) {
       await sources.doc(FIRE_SOURCE_ID[layer]).set(h);
+    },
+  };
+}
+
+// --- Roads (Milestone 7): `roads`, `road_conditions`, `road_cameras`, backend-only `roads_state/pushes` ---
+
+export function firestoreRoadsStore(db: Firestore): RoadsStore {
+  const items = db.collection("roads");
+  const sources = db.collection("sources");
+  const pushes = db.collection("roads_state").doc("pushes");
+  const cameras = db.collection("road_cameras").doc("highway-63");
+  return {
+    async loadItems() {
+      // Only what's on our stretches plus the Town's work: a handful of documents.
+      const snap = await items.get();
+      return snap.docs.map((d) => toDates<StoredRoadItem>(d.data()));
+    },
+    async saveItems(docs) {
+      for (let i = 0; i < docs.length; i += 400) {
+        const batch = db.batch();
+        for (const doc of docs.slice(i, i + 400)) batch.set(items.doc(doc.id), doc);
+        await batch.commit();
+      }
+    },
+    async deleteItems(ids) {
+      for (let i = 0; i < ids.length; i += 400) {
+        const batch = db.batch();
+        for (const id of ids.slice(i, i + 400)) batch.delete(items.doc(id));
+        await batch.commit();
+      }
+    },
+    async saveConditions(id, doc) {
+      await db.collection("road_conditions").doc(id).set(doc);
+    },
+    async loadCameras() {
+      const snap = await cameras.get();
+      return snap.exists ? toDates<StoredCameras>(snap.data()!) : null;
+    },
+    async saveCameras(doc) {
+      await cameras.set(doc);
+    },
+    async loadPushState() {
+      const snap = await pushes.get();
+      return snap.exists ? toDates<PushState>(snap.data()!) : null;
+    },
+    async savePushState(state) {
+      await pushes.set(state);
+    },
+    async loadHealth(id) {
+      const snap = await sources.doc(id).get();
+      return snap.exists ? toDates<RoadsHealth>(snap.data()!) : null;
+    },
+    async saveHealth(id, h) {
+      await sources.doc(id).set(h);
     },
   };
 }
