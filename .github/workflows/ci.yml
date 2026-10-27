@@ -75,10 +75,13 @@ jobs:
           if not blocks:
               emit("Test output (end)", "\n".join(lines[-60:]))
 
+      # The "github" reporter names any screenshot test that fails on the
+      # run's summary page (they can fail on layout with the real fonts).
       - name: Take screenshots
         run: |
+          set -o pipefail
           export FLUTTER_ROOT="$(dirname "$(dirname "$(which flutter)")")"
-          flutter test --tags screenshots --update-goldens
+          flutter test --tags screenshots --update-goldens --reporter github 2>&1 | tee screenshot-output.txt
 
       # Replaces the "screenshots" branch with this run's images, so they can
       # be browsed on GitHub (switch branch to "screenshots").

@@ -4,6 +4,7 @@
 @Tags(['screenshots'])
 library;
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:community/alerts/alert_widgets.dart';
@@ -328,6 +329,17 @@ void main() {
 
     testWidgets('roads, a quiet day with cameras, in $code', (tester) async {
       phone(tester);
+      // Decode the stand-in image for real before any screen asks for it, so
+      // the picture shows instead of "Loading" (decoding needs real time).
+      await tester.runAsync(() async {
+        final done = Completer<void>();
+        final stream = testCameraImage.resolve(ImageConfiguration.empty);
+        stream.addListener(ImageStreamListener(
+          (_, _) { if (!done.isCompleted) done.complete(); },
+          onError: (_, _) { if (!done.isCompleted) done.complete(); },
+        ));
+        await done.future.timeout(const Duration(seconds: 10), onTimeout: () {});
+      });
       SharedPreferences.setMockInitialValues({'language': code, 'sector': 'town'});
       final settings = await AppSettings.load();
       await tester.pumpWidget(MaterialApp(
@@ -341,8 +353,6 @@ void main() {
           cameraImage: (_) => testCameraImage,
         ),
       ));
-      // Decode the stand-in image for real, so the picture shows instead of "Loading".
-      await tester.runAsync(() => precacheImage(testCameraImage, tester.element(find.byType(RoadsScreen))));
       await tester.pumpAndSettle();
       await _capture('${code}_40_roads_quiet');
       await tester.scrollUntilVisible(find.text(stringsFor(language).roadsCamerasHeading), 300,
