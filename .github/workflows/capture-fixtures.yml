@@ -173,12 +173,19 @@ jobs:
           get "$HQ/aipmarkers$aip.json" aipmarkers.json
           # Places in the MRC de Témiscamingue only (the full list is ~600 KB):
           # its municipalities (level 2) and the localities under them (level 3).
-          curl -sSfL --max-time 60 -A "$ua" "$PLACES" -o /tmp/places-all.json
-          jq '(map(select(.level == 2 and ((.fil // "") | startswith("Abitibi-Témiscamingue;Témiscamingue;"))))) as $mun
-              | ($mun | map(.id)) as $ids
-              | $mun + map(select(.level == 3 and (.parentId as $p | $ids | index($p) != null)))' \
-            /tmp/places-all.json > "$out/places-temiscamingue.json"
-          echo "saved places → $out/places-temiscamingue.json ($(jq length "$out/places-temiscamingue.json") places)"
+          # Not essential: if this part fails, the outage files are still saved.
+          jq --version
+          if curl -sSfL --max-time 60 -A "$ua" "$PLACES" -o /tmp/places-all.json \
+            && jq '[.[] | select(type == "object")] as $all
+                | [$all[] | select(.level == 2 and ((.fil // "") | startswith("Abitibi-Témiscamingue;Témiscamingue;")))] as $mun
+                | [$mun[] | .id] as $ids
+                | $mun + [$all[] | select(.level == 3) | select(.parentId as $p | any($ids[]; . == $p))]' \
+              /tmp/places-all.json > "$out/places-temiscamingue.json"; then
+            echo "saved places → $out/places-temiscamingue.json ($(jq length "$out/places-temiscamingue.json") places)"
+          else
+            rm -f "$out/places-temiscamingue.json"
+            echo "::warning::Hydro-Québec's list of places couldn't be saved (outage files are fine)"
+          fi
 
       # Roads (Milestone 7): Quebec transport ministry (MTMD) layers — road
       # warnings/closures, roadworks, winter road conditions — and the Town's
