@@ -1,6 +1,6 @@
 # Spec — Milestone 7: Roads
 
-Status: **agreed 2026-10-27** (owner agreed all of §3) · backend built · app built · first draft 2026-10-22; Highway 63 added once the Ontario 511 key arrived
+Status: **complete** · 2026-10-27 · agreed 2026-10-27 (owner agreed all of §3; D7 changed in §10) · first draft 2026-10-22; Highway 63 added once the Ontario 511 key arrived
 Reads with: `DESIGN.md` (§2 principles, §4 architecture and source health, §5 language, §6.7 roads, §7 app structure), `research/roads-sources.md` (project docs)
 
 ---
@@ -182,3 +182,11 @@ Quebec road cameras; maps drawn in the app; Route 101 beyond Ville-Marie; Highwa
 - Camera images load straight from Ontario 511 only while the Roads screen is open; tapping a camera refreshes it (the cached picture is dropped first). Tests and screenshots use a stand-in image.
 - Road closures: `AppSettings.roadClosuresEnabled` (saved as `road_closures`), off by default and never turned on by the notifications question; topics `roads-fr` / `roads-en`; Android channel `roads` (high importance). A tap on a road push (`screen: roads`) opens the Roads screen.
 - The Today placeholder now says only power outages are still to come; the notifications question mentions that road closures are opt-in.
+
+## 12. Verification (2026-10-27)
+
+1. **Backend tests:** 200 (45 new) on real captures from both provinces and the Town, and 14 hand-made files. They cover a closure with a blank route number, a lane closure that isn't a closure, a planned closure, ice and drifting snow, Ontario "No Report", Highway 630 left out, empty and broken answers, whole runs with pushes and the 25-minute reopen, Ontario failing, a fake-clock check that a run never makes more than 9 Ontario calls in any 60 s, the key never appearing in logs or health records, and the User-Agent staying ASCII.
+2. **App:** analyze, all tests (incl. 200% text for the Roads screens and cameras) and the iOS build are green on CI (commit 87c36a2). Screenshots were reviewed in both languages (33–41). Fixed from the review: an unlabelled French-only closure (our own label counted as English text), roadwork cards repeating their heading, the "→" missing from the font (now an en dash), and a bare "+2" on Today.
+3. **Live:** deployed with the Ontario key as a Firebase secret. `pollTownWorkInfo` logs `town work info: ok (1)`. `pollRoads` logs `roads: mtmd-warnings ok (0), mtmd-roadworks ok (0), mtmd-conditions ok (2), on511-events ok (0), on511-construction ok (0), on511-conditions ok (1)`. On the Android emulator, the Roads screen matched Québec 511 and Ontario 511, the Highway 63 cameras showed live images, and a test push to the roads topic arrived and opened the Roads screen.
+   - **Fixed during checks:** Quebec's map server answered **403** to every Cloud Function request, while the same requests from home and from GitHub got 200. Our User-Agent said "Témiscaming", and an accented letter isn't valid in an HTTP header. It is now plain ASCII (with a test), and errors now include the server's answer. Lesson for DESIGN §8: send only plain ASCII in request headers.
+4. **Still to see:** a real closure or bad-weather report on either road. Capture it with *Capture fixtures → roads* and compare it with the hand-made files.
