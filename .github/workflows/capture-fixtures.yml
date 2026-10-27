@@ -10,7 +10,7 @@ on:
       source:
         description: "Which source to save"
         type: choice
-        options: [alerts, calendar, weather, fire, roads]
+        options: [alerts, calendar, weather, fire, roads, power]
         default: alerts
       detail_paths:
         description: "alerts only: extra detail pages to save (space-separated paths, e.g. /alertes/2026/10/12/avis-d-ebullition-preventif)"
@@ -140,6 +140,45 @@ jobs:
           }
           get msp_interdiction_feu_ciel_ouvert_ifco ifco.json
           get msp_interdiction_circuler_foret_icaf icaf.json
+
+      # Power outages (Milestone 8, specs/power-outages.md §2): Hydro-Québec's
+      # open data. Each list is two requests: a "version" file (a timestamp),
+      # then the list named after that version. Both files are kept, so the
+      # tests can check the freshness rule against a real version. Also a
+      # slice of Hydro-Québec's own list of places for the MRC de
+      # Témiscamingue, which ties the IDs we filter on to their names.
+      # Run it again whenever there's an outage in Témiscaming, to save a real one.
+      - name: Download Hydro-Québec outage data
+        if: inputs.source == 'power'
+        env:
+          HQ: https://pannes.hydroquebec.com/pannes/donnees/v3_0
+          PLACES: https://infopannes.solutions.hydroquebec.com/assets/data/bilan-par-region.json
+        run: |
+          set -euo pipefail
+          day=$(TZ=America/Toronto date +%F)
+          out="functions/test/fixtures/power/$day"
+          mkdir -p "$out"
+          ua="AlloTemis-fixture-capture/1.0 (+https://github.com/${GITHUB_REPOSITORY})"
+          get() { # $1 = URL, $2 = file name
+            curl -sSfL --max-time 60 -A "$ua" "$1" -o "$out/$2"
+            echo "saved $1 → $out/$2 ($(wc -c < "$out/$2") bytes)"
+            sleep 2
+          }
+          # The version file holds a quoted timestamp, e.g. "20261027134010".
+          get "$HQ/bisversion.json" bisversion.json
+          bis=$(tr -dc '0-9' < "$out/bisversion.json")
+          get "$HQ/bismarkers$bis.json" bismarkers.json
+          get "$HQ/aipversion.json" aipversion.json
+          aip=$(tr -dc '0-9' < "$out/aipversion.json")
+          get "$HQ/aipmarkers$aip.json" aipmarkers.json
+          # Places in the MRC de Témiscamingue only (the full list is ~600 KB):
+          # its municipalities (level 2) and the localities under them (level 3).
+          curl -sSfL --max-time 60 -A "$ua" "$PLACES" -o /tmp/places-all.json
+          jq '(map(select(.level == 2 and ((.fil // "") | startswith("Abitibi-Témiscamingue;Témiscamingue;"))))) as $mun
+              | ($mun | map(.id)) as $ids
+              | $mun + map(select(.level == 3 and (.parentId as $p | $ids | index($p) != null)))' \
+            /tmp/places-all.json > "$out/places-temiscamingue.json"
+          echo "saved places → $out/places-temiscamingue.json ($(jq length "$out/places-temiscamingue.json") places)"
 
       # Roads (Milestone 7): Quebec transport ministry (MTMD) layers — road
       # warnings/closures, roadworks, winter road conditions — and the Town's
